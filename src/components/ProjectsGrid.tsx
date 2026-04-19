@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import LottieRenderer from './LottieRenderer';
-import { getProjects, getFullConfig, CATEGORIES, type Project, type SiteConfig, DEFAULT_CONFIG } from '@/lib/config';
+import { getProjects, getFullConfig, type Project, type SiteConfig, DEFAULT_CONFIG } from '@/lib/config';
 import { initialProjects } from '@/data/projects';
 import ProjectCard from './ProjectCard';
 
@@ -68,7 +68,10 @@ export default function ProjectsGrid() {
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
         >
-          {CATEGORIES.map((cat, i) => (
+          {['Todos', ...Array.from(new Set([
+            'Motion Graphics', 'Graphic Design', 'Flyer Design', 'Advertising', 'Video', 'Branding', '3D',
+            ...projects.map(p => p.category)
+          ]))].map((cat, i) => (
             <motion.button
               key={cat}
               onClick={() => setActiveCategory(cat)}

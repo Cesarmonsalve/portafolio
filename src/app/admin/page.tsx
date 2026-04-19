@@ -124,6 +124,22 @@ export default function AdminPage() {
     }
   }, []);
 
+  // ─── Auto-detect mockup style ───
+  useEffect(() => {
+    if (!pCategory && !pTitle) return;
+    const text = `${pCategory} ${pTitle}`.toLowerCase();
+    
+    if (text.includes('youtube') || text.includes('miniatura') || text.includes('thumbnail')) {
+      setPDisplayMode('youtube');
+    } else if (text.includes('spotify') || text.includes('music') || text.includes('música') || text.includes('portada') || text.includes('álbum') || text.includes('album')) {
+      setPDisplayMode('spotify');
+    } else if (text.includes('instagram') || text.includes('post') || text.includes('social') || text.includes('reel') || text.includes('feed')) {
+      setPDisplayMode('instagram');
+    } else if (text.includes('app') || text.includes('mobile') || text.includes('ui') || text.includes('celular') || text.includes('phone')) {
+      setPDisplayMode('phone');
+    }
+  }, [pCategory, pTitle]);
+
   // ─── Load all data ───
   useEffect(() => {
     if (!authenticated) return;

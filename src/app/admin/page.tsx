@@ -92,6 +92,7 @@ export default function AdminPage() {
   const [pTags, setPTags] = useState('');
   const [pClient, setPClient] = useState('');
   const [pFeatured, setPFeatured] = useState(false);
+  const [pDisplayMode, setPDisplayMode] = useState<string>('default');
 
   // ─── Skill form ───
   const [editSkill, setEditSkill] = useState<Skill | null>(null);
@@ -176,6 +177,7 @@ export default function AdminPage() {
   const resetProjectForm = () => {
     setPTitle(''); setPCategory(''); setPDesc(''); setPImage('');
     setPVideo(''); setPTags(''); setPClient(''); setPFeatured(false);
+    setPDisplayMode('default');
     setEditProject(null);
   };
 
@@ -184,6 +186,7 @@ export default function AdminPage() {
     setPTitle(p.title); setPCategory(p.category); setPDesc(p.description);
     setPImage(p.image); setPVideo(p.video || ''); setPTags(p.tags.join(', '));
     setPClient(p.client || ''); setPFeatured(p.featured || false);
+    setPDisplayMode(p.display_mode || 'default');
     setSection('add-project');
   };
 
@@ -197,6 +200,7 @@ export default function AdminPage() {
       video: pVideo || undefined,
       tags: pTags.split(',').map(t => t.trim()).filter(Boolean),
       client: pClient || undefined, featured: pFeatured,
+      display_mode: (pDisplayMode as Project['display_mode']) || 'default',
     };
     const ok = await upsertProject(project);
     if (ok) {
@@ -641,6 +645,18 @@ export default function AdminPage() {
                       <Input label="Cliente" value={pClient} onChange={setPClient} placeholder="Nombre del cliente" />
                       <Input label="Tags (separados por coma)" value={pTags} onChange={setPTags} placeholder="After Effects, Cinema 4D" />
                       <Toggle label="Marcar como Featured" value={pFeatured} onChange={setPFeatured} />
+                      <div>
+                        <label className="text-label text-[10px] mb-1.5 block">Estilo de Presentación</label>
+                        <select value={pDisplayMode} onChange={(e) => setPDisplayMode(e.target.value)}
+                          className="w-full bg-bg border border-white/[0.06] rounded-lg px-3 py-2.5 text-sm focus:border-neon-red/40 focus:outline-none transition-all text-gray-300">
+                          <option value="default">🖼️ Normal (Tarjeta clásica)</option>
+                          <option value="youtube">▶️ YouTube (Player de video)</option>
+                          <option value="spotify">🎵 Spotify (Reproductor musical)</option>
+                          <option value="instagram">📸 Instagram (Post de IG)</option>
+                          <option value="phone">📱 Phone (Mockup de celular)</option>
+                        </select>
+                        <p className="text-[9px] text-gray-500 mt-1">Elige cómo se verá tu proyecto en el portfolio</p>
+                      </div>
                     </div>
                     <div className="space-y-4">
                       <div>

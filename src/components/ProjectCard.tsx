@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Play, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import type { Project } from '@/lib/config';
+import { YouTubeMockup, SpotifyMockup, InstagramMockup, PhoneMockup } from './ThemedMockups';
 
 interface Props {
   project: Project;
@@ -15,6 +16,9 @@ export default function ProjectCard({ project, index, featured }: Props) {
   const [hovered, setHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+
+  const displayMode = project.display_mode || 'default';
+  const isThemed = displayMode !== 'default';
 
   // 3D tilt effect
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -34,6 +38,96 @@ export default function ProjectCard({ project, index, featured }: Props) {
     }
   };
 
+  // ═══════════════════════════════════════════
+  // THEMED CARD RENDER
+  // ═══════════════════════════════════════════
+
+  if (isThemed) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-40px' }}
+        transition={{ duration: 0.6, delay: index * 0.08 }}
+        className={`group relative ${featured ? 'md:col-span-2 md:row-span-2' : ''}`}
+      >
+        <div
+          ref={cardRef}
+          style={{ transformStyle: 'preserve-3d', transition: 'transform 0.15s ease-out' }}
+          onMouseEnter={() => setHovered(true)}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          data-cursor-hover
+          className="relative"
+        >
+          {/* Themed mockup */}
+          {displayMode === 'youtube' && (
+            <YouTubeMockup project={project} imageLoaded={imageLoaded} onLoad={() => setImageLoaded(true)} />
+          )}
+          {displayMode === 'spotify' && (
+            <SpotifyMockup project={project} imageLoaded={imageLoaded} onLoad={() => setImageLoaded(true)} />
+          )}
+          {displayMode === 'instagram' && (
+            <InstagramMockup project={project} imageLoaded={imageLoaded} onLoad={() => setImageLoaded(true)} />
+          )}
+          {displayMode === 'phone' && (
+            <PhoneMockup project={project} imageLoaded={imageLoaded} onLoad={() => setImageLoaded(true)} />
+          )}
+
+          {/* Hover overlay with actions */}
+          <motion.div
+            initial={false}
+            animate={{ opacity: hovered ? 1 : 0 }}
+            transition={{ duration: 0.3 }}
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm rounded-xl flex items-center justify-center gap-3 z-10"
+          >
+            <Link
+              href={`/projects/${project.id}`}
+              className="flex items-center gap-1.5 bg-white text-black px-5 py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors elastic-press"
+            >
+              <Play size={14} />
+              Ver Proyecto
+            </Link>
+            <Link
+              href={`/projects/${project.id}`}
+              className="w-10 h-10 bg-white/10 backdrop-blur rounded-xl flex items-center justify-center hover:bg-white/20 transition-colors"
+            >
+              <ExternalLink size={16} />
+            </Link>
+          </motion.div>
+
+          {/* Theme badge */}
+          <div className="absolute top-2 right-2 z-20">
+            <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider backdrop-blur-sm ${
+              displayMode === 'youtube' ? 'bg-red-600/80 text-white' :
+              displayMode === 'spotify' ? 'bg-[#1DB954]/80 text-white' :
+              displayMode === 'instagram' ? 'bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCAF45] text-white' :
+              'bg-white/20 text-white'
+            }`}>
+              {displayMode === 'youtube' ? '▶ YouTube' :
+               displayMode === 'spotify' ? '♫ Spotify' :
+               displayMode === 'instagram' ? '◎ Instagram' :
+               '📱 Mobile'}
+            </span>
+          </div>
+        </div>
+
+        {/* Tags below themed card */}
+        <div className="flex flex-wrap gap-1.5 mt-2.5 px-1">
+          {project.tags.slice(0, 3).map((tag) => (
+            <span key={tag} className="bg-white/[0.03] px-2 py-0.5 rounded-full text-[10px] text-gray-400">
+              {tag}
+            </span>
+          ))}
+        </div>
+      </motion.div>
+    );
+  }
+
+  // ═══════════════════════════════════════════
+  // DEFAULT CARD RENDER
+  // ═══════════════════════════════════════════
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
@@ -44,10 +138,15 @@ export default function ProjectCard({ project, index, featured }: Props) {
     >
       <div
         ref={cardRef}
-        className="relative overflow-hidden rounded-2xl bg-surface border border-white/[0.04] transition-[border-color] duration-500 hover:border-white/[0.1]"
+        className="relative overflow-hidden rounded-2xl bg-surface border border-white/[0.04] transition-[border-color] duration-500 hover:border-white/[0.1] card-spotlight"
         style={{ transformStyle: 'preserve-3d', transition: 'transform 0.15s ease-out, border-color 0.5s' }}
         onMouseEnter={() => setHovered(true)}
-        onMouseMove={handleMouseMove}
+        onMouseMove={(e) => {
+          handleMouseMove(e);
+          const rect = e.currentTarget.getBoundingClientRect();
+          e.currentTarget.style.setProperty('--mouse-x', `${((e.clientX - rect.left) / rect.width) * 100}%`);
+          e.currentTarget.style.setProperty('--mouse-y', `${((e.clientY - rect.top) / rect.height) * 100}%`);
+        }}
         onMouseLeave={handleMouseLeave}
         data-cursor-hover
       >
@@ -83,7 +182,7 @@ export default function ProjectCard({ project, index, featured }: Props) {
             <div className="flex items-center gap-2">
               <Link
                 href={`/projects/${project.id}`}
-                className="flex items-center gap-1.5 bg-white text-black px-4 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors"
+                className="flex items-center gap-1.5 bg-white text-black px-4 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors elastic-press"
               >
                 <Play size={12} />
                 Ver
@@ -117,9 +216,9 @@ export default function ProjectCard({ project, index, featured }: Props) {
             {project.tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
-                className="bg-white/[0.03] px-2 py-0.5 rounded-full text-[10px] text-gray-500"
+                className="bg-white/[0.03] px-2 py-0.5 rounded-full text-[10px] text-gray-400"
               >
-                {tag}
+              {tag}
               </span>
             ))}
           </div>

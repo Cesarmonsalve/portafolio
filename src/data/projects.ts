@@ -8,6 +8,7 @@ export interface Project {
   tags: string[];
   client?: string;
   featured?: boolean;
+  display_mode?: 'default' | 'youtube' | 'spotify' | 'instagram' | 'phone';
 }
 
 export const initialProjects: Project[] = [

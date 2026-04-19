@@ -4,6 +4,8 @@ import { supabase } from './supabase';
 // TYPES
 // ═══════════════════════════════════════════
 
+export type DisplayMode = 'default' | 'youtube' | 'spotify' | 'instagram' | 'phone';
+
 export interface Project {
   id: string;
   title: string;
@@ -14,6 +16,7 @@ export interface Project {
   tags: string[];
   client?: string;
   featured?: boolean;
+  display_mode?: DisplayMode;
   created_at?: string;
 }
 

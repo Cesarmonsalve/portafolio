@@ -13,7 +13,8 @@
     "react-dom": "^18.3.1",
     "framer-motion": "^11.1.7",
     "lucide-react": "^0.378.0",
-    "gsap": "^3.12.5"
+    "gsap": "^3.12.5",
+    "@supabase/supabase-js": "^2.43.4"
   },
   "devDependencies": {
     "@types/node": "^20",

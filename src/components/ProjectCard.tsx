@@ -1,39 +1,64 @@
 'use client';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, Play, Image as ImageIcon } from 'lucide-react';
-import type { Project } from '@/data/projects';
+import { Play, ExternalLink } from 'lucide-react';
+import Link from 'next/link';
+import type { Project } from '@/lib/config';
 
 interface Props {
   project: Project;
   index: number;
+  featured?: boolean;
 }
 
-export default function ProjectCard({ project, index }: Props) {
+export default function ProjectCard({ project, index, featured }: Props) {
   const [hovered, setHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  // 3D tilt effect
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    const rotateX = (y - 0.5) * -8;
+    const rotateY = (x - 0.5) * 8;
+    cardRef.current.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+  };
+
+  const handleMouseLeave = () => {
+    setHovered(false);
+    if (cardRef.current) {
+      cardRef.current.style.transform = 'perspective(800px) rotateX(0) rotateY(0) translateY(0)';
+    }
+  };
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 60 }}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      className="group relative"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.6, delay: index * 0.08 }}
+      className={`group relative ${featured ? 'md:col-span-2 md:row-span-2' : ''}`}
     >
-      <div className="relative overflow-hidden rounded-2xl bg-surface border border-white/5 gradient-border">
+      <div
+        ref={cardRef}
+        className="relative overflow-hidden rounded-2xl bg-surface border border-white/[0.04] transition-[border-color] duration-500 hover:border-white/[0.1]"
+        style={{ transformStyle: 'preserve-3d', transition: 'transform 0.15s ease-out, border-color 0.5s' }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        data-cursor-hover
+      >
         {/* Image */}
-        <div className="relative aspect-[4/3] overflow-hidden bg-bg-tertiary">
-          {!imageLoaded && (
-            <div className="absolute inset-0 shimmer" />
-          )}
+        <div className={`relative overflow-hidden bg-bg-tertiary ${featured ? 'aspect-[16/10]' : 'aspect-[4/3]'}`}>
+          {!imageLoaded && <div className="absolute inset-0 shimmer" />}
           <img
             src={project.image}
             alt={project.title}
             className={`w-full h-full object-cover transition-all duration-700 ${
-              hovered ? 'scale-110' : 'scale-100'
+              hovered ? 'scale-105' : 'scale-100'
             } ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             onLoad={() => setImageLoaded(true)}
           />
@@ -42,52 +67,57 @@ export default function ProjectCard({ project, index }: Props) {
           <motion.div
             initial={false}
             animate={{ opacity: hovered ? 1 : 0 }}
-            className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-6"
+            transition={{ duration: 0.3 }}
+            className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-5"
           >
-            <div className="flex items-center gap-3 mb-3">
-              <span className="bg-neon-red/20 border border-neon-red/30 px-3 py-1 rounded-full text-xs font-medium text-neon-red">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="bg-neon-red/20 border border-neon-red/30 px-2.5 py-0.5 rounded-full text-[10px] font-medium text-neon-red tracking-wide">
                 {project.category}
               </span>
               {project.featured && (
-                <span className="bg-neon-purple/20 border border-neon-purple/30 px-3 py-1 rounded-full text-xs font-medium text-neon-purple">
-                  ⭐ Featured
+                <span className="bg-neon-purple/20 border border-neon-purple/30 px-2.5 py-0.5 rounded-full text-[10px] font-medium text-neon-purple tracking-wide">
+                  ★ Featured
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-3">
-              <button className="flex items-center gap-2 bg-white text-black px-5 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors">
-                <Play size={14} />
-                Ver Proyecto
-              </button>
-              {project.video && (
-                <button className="w-10 h-10 bg-white/10 backdrop-blur rounded-lg flex items-center justify-center hover:bg-white/20 transition-colors">
-                  <ImageIcon size={16} />
-                </button>
-              )}
+            <div className="flex items-center gap-2">
+              <Link
+                href={`/projects/${project.id}`}
+                className="flex items-center gap-1.5 bg-white text-black px-4 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors"
+              >
+                <Play size={12} />
+                Ver
+              </Link>
+              <Link
+                href={`/projects/${project.id}`}
+                className="w-8 h-8 bg-white/10 backdrop-blur rounded-lg flex items-center justify-center hover:bg-white/20 transition-colors"
+              >
+                <ExternalLink size={14} />
+              </Link>
             </div>
           </motion.div>
 
-          {/* Category tag (always visible) */}
-          <div className="absolute top-4 left-4">
-            <span className="bg-black/60 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-gray-300">
+          {/* Category pill (always visible) */}
+          <div className="absolute top-3 left-3">
+            <span className="bg-black/50 backdrop-blur-sm px-2.5 py-1 rounded-full text-[10px] font-medium text-gray-300 tracking-wide">
               {project.category}
             </span>
           </div>
         </div>
 
         {/* Info */}
-        <div className="p-5">
-          <h3 className="font-display font-bold text-lg mb-2 group-hover:text-neon-red transition-colors">
+        <div className="p-4">
+          <h3 className="text-subheading text-sm mb-1.5 group-hover:text-neon-red transition-colors">
             {project.title}
           </h3>
-          <p className="text-sm text-gray-500 line-clamp-2 mb-4">
+          <p className="text-caption line-clamp-2 mb-3">
             {project.description}
           </p>
-          <div className="flex flex-wrap gap-2">
-            {project.tags.map((tag) => (
+          <div className="flex flex-wrap gap-1.5">
+            {project.tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
-                className="bg-white/5 px-3 py-1 rounded-full text-xs text-gray-400"
+                className="bg-white/[0.03] px-2 py-0.5 rounded-full text-[10px] text-gray-500"
               >
                 {tag}
               </span>

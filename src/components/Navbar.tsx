@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Shield } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -27,50 +27,45 @@ export default function Navbar() {
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
-            ? 'bg-bg/90 backdrop-blur-xl border-b border-white/5 py-3'
+            ? 'glass-strong py-3'
             : 'bg-transparent py-5'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          <Link href="#home" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 bg-neon-red rounded-lg flex items-center justify-center font-display font-black text-lg group-hover:scale-110 transition-transform">
+        <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
+          <Link href="#home" className="flex items-center gap-2.5 group" data-cursor-hover>
+            <div className="w-9 h-9 bg-neon-red rounded-lg flex items-center justify-center font-display font-extrabold text-sm group-hover:scale-110 transition-transform duration-300">
               CM
             </div>
-            <span className="font-display font-bold text-lg hidden sm:block">
+            <span className="font-display font-bold text-sm tracking-tight-custom hidden sm:block">
               DESIGN
             </span>
           </Link>
 
           {/* Desktop Links */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-7">
             {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm text-gray-400 hover:text-white transition-colors relative group"
+                className="text-label !text-[12px] !text-gray-400 hover:!text-white transition-colors relative group"
+                data-cursor-hover
               >
                 {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-red group-hover:w-full transition-all duration-300" />
+                <span className="absolute -bottom-1 left-0 w-0 h-[1.5px] bg-neon-red group-hover:w-full transition-all duration-300" />
               </Link>
             ))}
-            <Link
-              href="/admin"
-              className="flex items-center gap-1.5 bg-white/5 border border-white/10 px-4 py-2 rounded-lg text-xs font-medium hover:bg-neon-red/20 hover:border-neon-red/50 transition-all"
-            >
-              <Shield size={14} />
-              Admin
-            </Link>
           </div>
 
           {/* Mobile Toggle */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden text-white"
+            className="md:hidden text-white p-2"
+            data-cursor-hover
           >
-            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </motion.nav>
@@ -82,27 +77,31 @@ export default function Navbar() {
             initial={{ opacity: 0, x: '100%' }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-50 bg-bg/98 backdrop-blur-xl md:hidden flex flex-col items-center justify-center gap-8"
+            transition={{ type: 'spring', damping: 30, stiffness: 250 }}
+            className="fixed inset-0 z-50 bg-bg/98 backdrop-blur-2xl md:hidden flex flex-col items-center justify-center gap-6"
           >
-            {links.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className="font-display text-3xl font-bold hover:text-neon-red transition-colors"
-              >
-                {link.label}
-              </Link>
-            ))}
-            <Link
-              href="/admin"
+            <button
               onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-2 bg-neon-red/20 border border-neon-red/50 px-6 py-3 rounded-lg text-sm font-medium"
+              className="absolute top-5 right-6 text-white p-2"
             >
-              <Shield size={16} />
-              Admin Panel
-            </Link>
+              <X size={20} />
+            </button>
+            {links.map((link, i) => (
+              <motion.div
+                key={link.href}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
+              >
+                <Link
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="font-display text-2xl font-bold tracking-tight-custom hover:text-neon-red transition-colors"
+                >
+                  {link.label}
+                </Link>
+              </motion.div>
+            ))}
           </motion.div>
         )}
       </AnimatePresence>

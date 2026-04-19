@@ -1,15 +1,20 @@
 'use client';
 import { motion } from 'framer-motion';
-import { Mail, Send, Instagram, Youtube, Globe, Twitter, Linkedin, Facebook, Github, Dribbble, Twitch, MessageCircle } from 'lucide-react';
+import { Mail, Send } from 'lucide-react';
+import { 
+  FaInstagram, FaYoutube, FaTiktok, FaWhatsapp, 
+  FaBehance, FaXTwitter, FaLinkedin, FaFacebook, 
+  FaGithub, FaDribbble, FaTwitch, FaLink 
+} from 'react-icons/fa6';
 import { useState, useEffect } from 'react';
 import { getFullConfig, getSocialLinks, sendMessage, type SiteConfig, type SocialLink, DEFAULT_CONFIG } from '@/lib/config';
 
-const platformIcons: Record<string, typeof Mail> = {
-  instagram: Instagram, youtube: Youtube, behance: Globe,
-  twitter: Twitter, x: Twitter, linkedin: Linkedin,
-  facebook: Facebook, github: Github, dribbble: Dribbble,
-  twitch: Twitch, whatsapp: MessageCircle, tiktok: Globe,
-  default: Globe,
+const platformIcons: Record<string, React.ElementType> = {
+  instagram: FaInstagram, youtube: FaYoutube, behance: FaBehance,
+  twitter: FaXTwitter, x: FaXTwitter, linkedin: FaLinkedin,
+  facebook: FaFacebook, github: FaGithub, dribbble: FaDribbble,
+  twitch: FaTwitch, whatsapp: FaWhatsapp, tiktok: FaTiktok,
+  default: FaLink,
 };
 
 export default function Contact() {

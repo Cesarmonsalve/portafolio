@@ -31,67 +31,80 @@ export default function Hero() {
       />
 
       {/* Content */}
-      <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
+      <div className="relative z-10 text-center px-6 max-w-4xl mx-auto w-full">
+        
+        {/* Floating animated cinematic bars */}
+        <motion.div 
+          className="absolute top-10 left-10 w-32 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"
+          animate={{ x: [-50, 50, -50], opacity: [0, 1, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div 
+          className="absolute bottom-32 right-10 w-24 h-[1px] bg-gradient-to-r from-transparent via-neon-red/40 to-transparent"
+          animate={{ x: [50, -50, 50], opacity: [0, 1, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "linear", delay: 1 }}
+        />
+
         {/* Badge */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="inline-flex items-center gap-2 bg-white/[0.03] border border-white/[0.06] px-4 py-1.5 rounded-full mb-10"
+          initial={{ opacity: 0, scale: 0.8, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2, type: "spring", stiffness: 100 }}
+          className="inline-flex items-center gap-2 bg-white/[0.02] border border-white/[0.04] px-5 py-2 rounded-full mb-12 backdrop-blur-md hover:border-white/10 hover:bg-white/[0.04] transition-all"
         >
-          <Sparkles size={12} className="text-neon-red" />
-          <span className="text-label !text-[10px]">
+          <Sparkles size={14} className="text-neon-red animate-pulse-neon" />
+          <span className="text-label !text-[10px] tracking-wide-custom">
             {cfg.hero_badge}
           </span>
         </motion.div>
 
         {/* Main Title */}
         <motion.h1
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-5"
+          initial={{ opacity: 0, y: 50, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 1.2, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-6 relative"
         >
-          <span className="block text-gray-500 font-body text-sm font-normal mb-4 tracking-label uppercase">
+          <span className="block text-gray-500 font-body text-xs md:text-sm font-medium mb-5 tracking-wide-custom uppercase">
             Portfolio
           </span>
           <GlitchText
             text={cfg.hero_name}
-            className="block text-display text-5xl sm:text-6xl md:text-7xl"
+            className="block text-display text-5xl sm:text-7xl md:text-8xl drop-shadow-[0_0_25px_rgba(255,0,51,0.2)]"
           />
-          <span className="block neon-text text-heading text-lg sm:text-xl md:text-2xl mt-3">
+          <span className="block neon-text text-heading text-lg sm:text-2xl md:text-3xl mt-4 bg-clip-text">
             {cfg.hero_subtitle.toUpperCase()}
           </span>
         </motion.h1>
 
         {/* Description */}
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.9 }}
-          className="text-gray-400 text-sm md:text-[15px] max-w-lg mx-auto mb-10 leading-body"
+          transition={{ duration: 0.8, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="text-gray-400 text-sm md:text-base max-w-xl mx-auto mb-12 leading-relaxed"
         >
           {cfg.hero_description}
         </motion.p>
 
         {/* CTA Buttons */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 1.1 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-3"
+          initial={{ opacity: 0, scale: 0.9, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.1, type: "spring", stiffness: 120 }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <a
             href="#work"
-            className="group flex items-center gap-2 bg-neon-red hover:bg-red-600 px-6 py-3 rounded-lg font-display font-bold text-xs tracking-label transition-all hover:shadow-[0_0_30px_rgba(255,0,51,0.3)]"
+            className="group relative overflow-hidden flex items-center justify-center gap-2 bg-neon-red px-8 py-4 rounded-xl font-display font-bold text-[11px] tracking-wide-custom transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(255,0,51,0.4)]"
             data-cursor-hover
           >
-            VER TRABAJOS
-            <span className="group-hover:translate-y-0.5 transition-transform">↓</span>
+            <span className="relative z-10 text-white flex items-center gap-2">VER TRABAJOS <span className="group-hover:translate-y-1 transition-transform">↓</span></span>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
           </a>
           <a
             href="#contact"
-            className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.08] hover:border-neon-red/40 hover:bg-neon-red/[0.05] px-6 py-3 rounded-lg font-display font-bold text-xs tracking-label transition-all"
+            className="group flex items-center justify-center gap-2 bg-white/[0.02] border border-white/[0.08] backdrop-blur-md hover:border-neon-red/40 hover:bg-neon-red/[0.05] px-8 py-4 rounded-xl font-display font-bold text-[11px] text-gray-300 hover:text-white tracking-wide-custom transition-all hover:scale-105"
             data-cursor-hover
           >
             CONTACTAR

@@ -243,12 +243,43 @@ export default function AdminPage() {
     setEditSocial(s); setSocPlatform(s.platform); setSocUrl(s.url); setSocEnabled(s.enabled);
   };
 
+  const autoDetectPlatform = (url: string) => {
+    const lower = url.toLowerCase();
+    if (lower.includes('wa.me') || /^[0-9+\s]+$/.test(lower)) return 'WhatsApp';
+    if (lower.includes('instagram.com')) return 'Instagram';
+    if (lower.includes('tiktok.com')) return 'TikTok';
+    if (lower.includes('youtube.com')) return 'YouTube';
+    if (lower.includes('behance.net')) return 'Behance';
+    if (lower.includes('linkedin.com')) return 'LinkedIn';
+    if (lower.includes('twitter.com') || lower.includes('x.com')) return 'X';
+    if (lower.includes('facebook.com')) return 'Facebook';
+    if (lower.includes('github.com')) return 'GitHub';
+    if (lower.includes('dribbble.com')) return 'Dribbble';
+    if (lower.includes('twitch.tv')) return 'Twitch';
+    return 'Website';
+  };
+
+  const handleSocUrlChange = (val: string) => {
+    setSocUrl(val);
+    setSocPlatform(autoDetectPlatform(val));
+  };
+
   const saveSocial = async () => {
-    if (!socPlatform || !socUrl) return;
+    if (!socUrl) return;
     setSaving(true);
+
+    let finalUrl = socUrl.trim();
+    const finalPlatform = autoDetectPlatform(finalUrl);
+    
+    // Auto WhatsApp Link Generator
+    if (finalPlatform === 'WhatsApp' && /^[0-9+\s]+$/.test(finalUrl)) {
+      const cleanNumber = finalUrl.replace(/[\s+]/g, '');
+      finalUrl = `https://wa.me/${cleanNumber}`;
+    }
+
     const link: Partial<SocialLink> = {
       id: editSocial?.id || crypto.randomUUID(),
-      platform: socPlatform, url: socUrl, icon: socPlatform.toLowerCase(),
+      platform: finalPlatform, url: finalUrl, icon: finalPlatform.toLowerCase(),
       enabled: socEnabled, position: editSocial?.position ?? socials.length,
     };
     const ok = await upsertSocialLink(link);
@@ -812,15 +843,19 @@ export default function AdminPage() {
                   {/* Social form */}
                   <div className="card p-4 !rounded-xl mb-6">
                     <p className="text-subheading text-xs mb-3">{editSocial ? 'Editar Red Social' : 'Agregar Red Social'}</p>
-                    <div className="grid grid-cols-3 gap-3">
-                      <Input label="Plataforma" value={socPlatform} onChange={setSocPlatform} placeholder="Instagram" />
-                      <Input label="URL" value={socUrl} onChange={setSocUrl} placeholder="https://instagram.com/..." />
-                      <div className="flex items-end pb-1">
-                        <Toggle label="Activa" value={socEnabled} onChange={setSocEnabled} />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <Input label="URL del perfil o Número de Whatsapp" value={socUrl} onChange={handleSocUrlChange} placeholder="https://tiktok.com/@... o +34600000" />
+                        {socPlatform && (
+                          <p className="text-[9px] text-neon-red mt-1 ml-1 font-bold">DETECTADO: {socPlatform.toUpperCase()}</p>
+                        )}
+                      </div>
+                      <div className="flex items-end pb-1 md:pl-4">
+                        <Toggle label="Visible en la Web" value={socEnabled} onChange={setSocEnabled} />
                       </div>
                     </div>
                     <div className="flex gap-2 mt-3">
-                      <button onClick={saveSocial} disabled={saving || !socPlatform || !socUrl}
+                      <button onClick={saveSocial} disabled={saving || !socUrl}
                         className="flex items-center gap-1.5 bg-neon-red hover:bg-red-600 disabled:opacity-50 px-4 py-2 rounded-lg text-xs font-bold transition-all">
                         <Save size={12} /> {editSocial ? 'Actualizar' : 'Agregar'}
                       </button>

@@ -41,6 +41,7 @@ module.exports = {
         'progress': 'progressBar 1s cubic-bezier(0.16, 1, 0.3, 1) forwards',
         'shimmer': 'shimmer 2s infinite',
         'glow': 'glow 3s ease-in-out infinite alternate',
+        'marquee': 'marquee 25s linear infinite',
       },
       keyframes: {
         glitch: {
@@ -87,6 +88,10 @@ module.exports = {
         glow: {
           from: { boxShadow: '0 0 20px var(--glow-color, rgba(255,0,51,0.2))' },
           to: { boxShadow: '0 0 40px var(--glow-color, rgba(255,0,51,0.4))' },
+        },
+        marquee: {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-50%)' },
         },
       },
       backgroundImage: {

@@ -127,16 +127,27 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2.5, duration: 1 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+      {/* Cinematic Marquee Bar */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 2, duration: 1 }}
+        className="absolute bottom-0 w-full overflow-hidden border-t border-b border-white/[0.04] bg-white/[0.01] backdrop-blur-xl py-3.5 z-20"
       >
-        <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 2.5, repeat: Infinity }}>
-          <ArrowDown size={16} className="text-gray-600" />
-        </motion.div>
+        <div className="flex whitespace-nowrap animate-marquee w-[200%] sm:w-max hover:[animation-play-state:paused] cursor-default">
+          {[...Array(8)].map((_, i) => (
+            <div key={i} className="flex items-center gap-8 px-4">
+              <span className="font-display font-bold text-[10px] tracking-widest text-gray-400 uppercase">MOTION GRAPHICS</span>
+              <Sparkles size={10} className="text-neon-red animate-pulse-neon" />
+              <span className="font-display font-bold text-[10px] tracking-widest text-gray-400 uppercase">VISUAL DESIGN</span>
+              <Sparkles size={10} className="text-neon-purple animate-pulse-neon" />
+              <span className="font-display font-bold text-[10px] tracking-widest text-gray-400 uppercase">BRANDING</span>
+              <Sparkles size={10} className="text-neon-accent animate-pulse-neon" />
+              <span className="font-display font-bold text-[10px] tracking-widest text-gray-400 uppercase">FLYER DESIGN</span>
+              <Sparkles size={10} className="text-gray-600" />
+            </div>
+          ))}
+        </div>
       </motion.div>
     </section>
   );

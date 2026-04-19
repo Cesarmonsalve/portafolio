@@ -566,10 +566,15 @@ export default function ProjectsGrid() {
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
           >
-            {['Todos', ...Array.from(new Set([
-              'Motion Graphics', 'Graphic Design', 'Flyer Design', 'Advertising', 'Video', 'Branding', '3D',
-              ...projects.map(p => p.category)
-            ]))].map((cat, i) => (
+            {['Todos', ...Array.from(new Set(
+              projects
+                .filter(p => {
+                  if (mediaFilter === 'videos') return isVideoProject(p);
+                  if (mediaFilter === 'images') return !isVideoProject(p);
+                  return true;
+                })
+                .map(p => p.category)
+            ))].map((cat, i) => (
               <motion.button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}

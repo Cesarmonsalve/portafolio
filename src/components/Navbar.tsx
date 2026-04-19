@@ -17,6 +17,7 @@ export default function Navbar() {
   const links = [
     { href: '#home', label: 'Inicio' },
     { href: '#work', label: 'Trabajos' },
+    { href: '#videos', label: 'Videos' },
     { href: '#about', label: 'Sobre Mí' },
     { href: '#skills', label: 'Skills' },
     { href: '#contact', label: 'Contacto' },

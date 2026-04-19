@@ -196,9 +196,26 @@ export async function getProjects(): Promise<Project[]> {
   return data && data.length > 0 ? (data as Project[]) : initialProjects;
 }
 
-export async function upsertProject(project: Project): Promise<boolean> {
-  const { error } = await supabase.from('projects').upsert(project, { onConflict: 'id' });
-  return !error;
+export async function upsertProject(project: Project): Promise<{ ok: boolean; error?: string }> {
+  try {
+    // Check payload size — Supabase has a ~6MB limit per row
+    const payloadSize = new Blob([JSON.stringify(project)]).size;
+    const maxSize = 5 * 1024 * 1024; // 5MB safe limit
+    if (payloadSize > maxSize) {
+      const sizeMB = (payloadSize / (1024 * 1024)).toFixed(1);
+      return { ok: false, error: `El archivo es demasiado grande (${sizeMB}MB). Máximo: 5MB. Usa una URL externa para imágenes/videos grandes.` };
+    }
+
+    const { error } = await supabase.from('projects').upsert(project, { onConflict: 'id' });
+    if (error) {
+      console.error('Supabase upsert error:', error);
+      return { ok: false, error: error.message || 'Error de base de datos' };
+    }
+    return { ok: true };
+  } catch (e) {
+    console.error('upsertProject exception:', e);
+    return { ok: false, error: e instanceof Error ? e.message : 'Error desconocido' };
+  }
 }
 
 export async function deleteProject(id: string): Promise<boolean> {

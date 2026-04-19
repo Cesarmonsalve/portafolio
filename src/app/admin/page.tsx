@@ -219,14 +219,14 @@ export default function AdminPage() {
       client: pClient || undefined, featured: pFeatured,
       display_mode: (pDisplayMode as Project['display_mode']) || 'default',
     };
-    const ok = await upsertProject(project);
-    if (ok) {
+    const result = await upsertProject(project);
+    if (result.ok) {
       const data = await getProjects();
       setProjects(data);
       resetProjectForm();
       setSection('projects');
       notify('Proyecto guardado ✓');
-    } else { alert('Error guardando proyecto'); }
+    } else { alert(`Error guardando proyecto: ${result.error || 'Error desconocido'}`); }
     setSaving(false);
   };
 

@@ -15,9 +15,11 @@ import {
   getSkills, upsertSkill, deleteSkill as dbDeleteSkill,
   getSocialLinks, upsertSocialLink, deleteSocialLink as dbDeleteSocial,
   getMessages, markMessageRead, deleteMessage as dbDeleteMessage,
-  DEFAULT_CONFIG, DEFAULT_LOTTIE, CATEGORIES,
+  DEFAULT_CONFIG, DEFAULT_LOTTIE,
   type Project, type Skill, type SocialLink, type Message, type SiteConfig, type LottieSlot
 } from '@/lib/config';
+
+const CATEGORIES = ['Motion Graphics', 'Graphic Design', 'Flyer Design', 'Advertising', 'Video', 'Branding', '3D'];
 
 type Section = 'dashboard' | 'projects' | 'add-project' | 'hero' | 'about' | 'skills' | 'contact' | 'messages' | 'appearance' | 'lottie' | 'deploy';
 

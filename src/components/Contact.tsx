@@ -1,12 +1,15 @@
 'use client';
 import { motion } from 'framer-motion';
-import { Mail, Send, Instagram, Youtube, Globe } from 'lucide-react';
+import { Mail, Send, Instagram, Youtube, Globe, Twitter, Linkedin, Facebook, Github, Dribbble, Twitch, MessageCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { getFullConfig, getSocialLinks, sendMessage, type SiteConfig, type SocialLink, DEFAULT_CONFIG } from '@/lib/config';
 
 const platformIcons: Record<string, typeof Mail> = {
   instagram: Instagram, youtube: Youtube, behance: Globe,
-  twitter: Globe, linkedin: Globe, tiktok: Globe, default: Globe,
+  twitter: Twitter, x: Twitter, linkedin: Linkedin,
+  facebook: Facebook, github: Github, dribbble: Dribbble,
+  twitch: Twitch, whatsapp: MessageCircle, tiktok: Globe,
+  default: Globe,
 };
 
 export default function Contact() {

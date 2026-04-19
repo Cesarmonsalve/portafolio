@@ -159,9 +159,11 @@ export async function deleteSocialLink(id: string): Promise<boolean> {
 // PROJECTS HELPERS
 // ═══════════════════════════════════════════
 
+import { initialProjects } from '../data/projects';
+
 export async function getProjects(): Promise<Project[]> {
   const { data } = await supabase.from('projects').select('*').order('created_at', { ascending: false });
-  return (data as Project[]) || [];
+  return data && data.length > 0 ? (data as Project[]) : initialProjects;
 }
 
 export async function upsertProject(project: Project): Promise<boolean> {

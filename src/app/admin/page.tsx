@@ -734,16 +734,54 @@ export default function AdminPage() {
                         </div>
                       </div>
                       <div>
-                        <label className="text-label text-[10px] mb-1.5 block">Video (opcional)</label>
-                        <div className="relative border border-dashed border-white/[0.08] rounded-xl overflow-hidden cursor-pointer hover:border-neon-purple/30 transition-colors" style={{ minHeight: 120 }}>
-                          <input type="file" accept="video/*" onChange={(e) => handleFileToBase64(e, setPVideo)} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
-                          {pVideo ? <video src={pVideo} className="w-full h-28 object-cover" muted /> : (
-                            <div className="flex flex-col items-center justify-center h-28 text-gray-700">
-                              <Video size={20} className="mb-2" />
-                              <p className="text-xs">Subir video</p>
-                            </div>
-                          )}
+                        <label className="text-label text-[10px] mb-1.5 block">Video URL</label>
+                        <div className="relative">
+                          <Video size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600" />
+                          <input
+                            type="text"
+                            value={pVideo}
+                            onChange={(e) => setPVideo(e.target.value)}
+                            placeholder="https://youtube.com/watch?v=... o URL de video"
+                            className="w-full bg-bg border border-white/[0.06] rounded-lg pl-9 pr-3 py-2.5 text-sm focus:border-neon-purple/40 focus:outline-none transition-all placeholder:text-gray-600"
+                          />
                         </div>
+                        <div className="flex flex-wrap gap-1.5 mt-2">
+                          {['YouTube', 'Vimeo', 'Google Drive', '.mp4', 'TikTok'].map(p => (
+                            <span key={p} className="bg-white/[0.03] px-2 py-0.5 rounded text-[9px] text-gray-500">{p}</span>
+                          ))}
+                        </div>
+                        {/* Video Preview */}
+                        {pVideo && (
+                          <div className="mt-3 rounded-xl overflow-hidden border border-white/[0.06] bg-black">
+                            {pVideo.includes('youtube.com') || pVideo.includes('youtu.be') ? (
+                              <iframe
+                                src={`https://www.youtube.com/embed/${
+                                  pVideo.includes('youtu.be/')
+                                    ? pVideo.split('youtu.be/')[1]?.split('?')[0]
+                                    : new URL(pVideo).searchParams.get('v')
+                                }?rel=0`}
+                                className="w-full aspect-video"
+                                allow="encrypted-media"
+                                allowFullScreen
+                                title="Video preview"
+                              />
+                            ) : pVideo.includes('vimeo.com') ? (
+                              <iframe
+                                src={`https://player.vimeo.com/video/${pVideo.split('vimeo.com/')[1]?.split('?')[0]}`}
+                                className="w-full aspect-video"
+                                allow="fullscreen"
+                                allowFullScreen
+                                title="Video preview"
+                              />
+                            ) : (pVideo.includes('.mp4') || pVideo.includes('.webm') || pVideo.includes('.mov')) ? (
+                              <video src={pVideo} className="w-full aspect-video object-contain" controls muted playsInline />
+                            ) : (
+                              <div className="flex items-center justify-center h-20 text-gray-500 text-xs gap-2">
+                                <Clapperboard size={16} /> Link de video guardado
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                       <Input label="O pega URL de imagen" value={pImage.startsWith('data:') ? '' : pImage} onChange={setPImage} placeholder="https://..." />
                     </div>

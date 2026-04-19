@@ -36,8 +36,8 @@ export default function Navbar() {
       >
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
           <Link href="#home" className="flex items-center gap-2.5 group" data-cursor-hover>
-            <div className="w-9 h-9 bg-neon-red rounded-lg flex items-center justify-center font-display font-extrabold text-sm group-hover:scale-110 transition-transform duration-300">
-              CM
+            <div className="relative w-10 h-10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <img src="/logo.png" alt="CM Design Logo" className="w-full h-full object-contain" />
             </div>
             <span className="font-display font-bold text-sm tracking-tight-custom hidden sm:block">
               DESIGN

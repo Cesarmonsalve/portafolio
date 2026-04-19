@@ -333,8 +333,8 @@ export default function AdminPage() {
           className="w-full max-w-sm"
         >
           <div className="text-center mb-8">
-            <div className="w-14 h-14 bg-neon-red rounded-xl flex items-center justify-center font-display font-extrabold text-xl mx-auto mb-4">
-              CM
+            <div className="w-16 h-16 relative mx-auto mb-4">
+              <img src="/logo.png" alt="CM Design Logo" className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(255,0,51,0.3)]" />
             </div>
             <h1 className="text-heading text-xl">Admin Panel</h1>
             <p className="text-caption mt-1">Acceso restringido</p>
@@ -415,8 +415,8 @@ export default function AdminPage() {
         className="bg-bg-secondary border-r border-white/[0.04] flex flex-col flex-shrink-0 overflow-hidden h-screen sticky top-0"
       >
         <div className="p-4 border-b border-white/[0.04] flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-neon-red rounded-lg flex items-center justify-center font-display font-extrabold text-[11px] flex-shrink-0">
-            CM
+          <div className="w-9 h-9 relative flex-shrink-0">
+            <img src="/logo.png" alt="CM Design Logo" className="w-full h-full object-contain" />
           </div>
           {sidebarOpen && (
             <div>

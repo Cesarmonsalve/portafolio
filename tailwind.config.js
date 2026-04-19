@@ -7,9 +7,9 @@ module.exports = {
         bg: { DEFAULT: '#060606', secondary: '#0c0c0c', tertiary: '#141414' },
         surface: { DEFAULT: '#111111', hover: '#1a1a1a' },
         neon: {
-          red: '#ff0033',
-          purple: '#a855f7',
-          pink: '#ec4899',
+          red: 'rgb(var(--theme-primary) / <alpha-value>)',
+          purple: 'rgb(var(--theme-secondary) / <alpha-value>)',
+          pink: 'rgb(var(--theme-accent) / <alpha-value>)',
           cyan: '#00D1FF',
           gold: '#f59e0b',
         },

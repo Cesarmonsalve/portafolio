@@ -243,13 +243,30 @@ function VideoCard({ project, index, onPlay }: { project: Project; index: number
 
 // ═══════════════════════════════════════════
 // CINEMATIC MODE TRANSITION
+// onSwitch fires at midpoint (content changes while screen is black)
+// onDone fires at end (overlay removed)
 // ═══════════════════════════════════════════
 
-function ModeTransition({ mode, onComplete }: { mode: MediaFilter; onComplete: () => void }) {
+function ModeTransition({ mode, onSwitch, onDone }: { mode: MediaFilter; onSwitch: () => void; onDone: () => void }) {
+  const switchedRef = useRef(false);
+
   useEffect(() => {
-    const timer = setTimeout(onComplete, 1800);
-    return () => clearTimeout(timer);
-  }, [onComplete]);
+    // Switch content at midpoint — screen is fully black at ~450ms
+    const switchTimer = setTimeout(() => {
+      if (!switchedRef.current) {
+        switchedRef.current = true;
+        onSwitch();
+      }
+    }, 450);
+
+    // Remove overlay after full animation
+    const doneTimer = setTimeout(onDone, 1100);
+
+    return () => {
+      clearTimeout(switchTimer);
+      clearTimeout(doneTimer);
+    };
+  }, [onSwitch, onDone]);
 
   const label = mode === 'videos' ? 'VIDEOS' : mode === 'images' ? 'IMÁGENES' : 'PORTFOLIO';
   const subtitle = mode === 'videos' ? 'Motion Graphics & Ediciones' : mode === 'images' ? 'Diseño Visual & Branding' : 'Trabajos Seleccionados';
@@ -257,12 +274,11 @@ function ModeTransition({ mode, onComplete }: { mode: MediaFilter; onComplete: (
   return (
     <motion.div
       className="fixed inset-0 z-[9980] pointer-events-none"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
+      transition={{ duration: 0.15 }}
     >
-      {/* Black wipe panels */}
+      {/* Black wipe — covers at 40%, reveals at 60% */}
       <motion.div
         className="absolute inset-0 bg-black"
         initial={{ clipPath: 'inset(0 100% 0 0)' }}
@@ -274,28 +290,25 @@ function ModeTransition({ mode, onComplete }: { mode: MediaFilter; onComplete: (
             'inset(0 0 0 100%)',
           ],
         }}
-        transition={{ duration: 1.8, times: [0, 0.35, 0.65, 1], ease: [0.7, 0, 0.3, 1] }}
+        transition={{ duration: 1.1, times: [0, 0.38, 0.55, 1], ease: [0.7, 0, 0.3, 1] }}
       />
 
-      {/* Scan lines overlay */}
+      {/* Scan lines */}
       <motion.div
         className="absolute inset-0"
         initial={{ opacity: 0 }}
         animate={{ opacity: [0, 0.6, 0.6, 0] }}
-        transition={{ duration: 1.8, times: [0, 0.3, 0.7, 1] }}
-        style={{
-          background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,0,51,0.03) 2px, rgba(255,0,51,0.03) 4px)',
-        }}
+        transition={{ duration: 1.1, times: [0, 0.3, 0.6, 1] }}
+        style={{ background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,0,51,0.04) 2px, rgba(255,0,51,0.04) 4px)' }}
       />
 
       {/* Center content */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="text-center overflow-hidden">
-          {/* Glitch title */}
           <motion.div
-            initial={{ opacity: 0, y: 60, skewY: 8 }}
-            animate={{ opacity: [0, 1, 1, 0], y: [60, 0, 0, -40], skewY: [8, 0, 0, -4] }}
-            transition={{ duration: 1.8, times: [0, 0.3, 0.65, 1], ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, y: 50, skewY: 6 }}
+            animate={{ opacity: [0, 1, 1, 0], y: [50, 0, 0, -30], skewY: [6, 0, 0, -3] }}
+            transition={{ duration: 1.1, times: [0.05, 0.3, 0.6, 0.9], ease: [0.16, 1, 0.3, 1] }}
           >
             <h2
               className="text-display text-6xl md:text-8xl lg:text-9xl tracking-tighter glitch"
@@ -315,19 +328,17 @@ function ModeTransition({ mode, onComplete }: { mode: MediaFilter; onComplete: (
             </h2>
           </motion.div>
 
-          {/* Subtitle */}
           <motion.p
-            className="text-label text-gray-400 mt-4 tracking-[0.3em]"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: [0, 1, 1, 0], y: [20, 0, 0, -20] }}
-            transition={{ duration: 1.8, times: [0.1, 0.35, 0.6, 0.9], ease: [0.16, 1, 0.3, 1] }}
+            className="text-label text-gray-400 mt-3 tracking-[0.3em]"
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: [0, 1, 1, 0], y: [15, 0, 0, -15] }}
+            transition={{ duration: 1.1, times: [0.1, 0.32, 0.58, 0.88], ease: [0.16, 1, 0.3, 1] }}
           >
             {subtitle}
           </motion.p>
 
-          {/* Horizontal line accent */}
           <motion.div
-            className="mx-auto mt-6 h-[2px] rounded-full"
+            className="mx-auto mt-5 h-[2px] rounded-full"
             style={{
               background: mode === 'videos'
                 ? 'linear-gradient(90deg, transparent, #ff0033, transparent)'
@@ -336,11 +347,8 @@ function ModeTransition({ mode, onComplete }: { mode: MediaFilter; onComplete: (
                   : 'linear-gradient(90deg, transparent, #fff, transparent)',
             }}
             initial={{ width: 0, opacity: 0 }}
-            animate={{
-              width: [0, 200, 200, 0],
-              opacity: [0, 1, 1, 0],
-            }}
-            transition={{ duration: 1.8, times: [0.15, 0.4, 0.6, 0.85] }}
+            animate={{ width: [0, 180, 180, 0], opacity: [0, 1, 1, 0] }}
+            transition={{ duration: 1.1, times: [0.15, 0.35, 0.6, 0.85] }}
           />
         </div>
       </div>
@@ -350,13 +358,13 @@ function ModeTransition({ mode, onComplete }: { mode: MediaFilter; onComplete: (
         className="absolute top-8 left-8 w-8 h-8 border-l-2 border-t-2 border-neon-red/60"
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: [0, 1, 1, 0], scale: [0.5, 1, 1, 0.5] }}
-        transition={{ duration: 1.8, times: [0.2, 0.4, 0.6, 0.8] }}
+        transition={{ duration: 1.1, times: [0.2, 0.38, 0.58, 0.8] }}
       />
       <motion.div
         className="absolute bottom-8 right-8 w-8 h-8 border-r-2 border-b-2 border-neon-red/60"
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: [0, 1, 1, 0], scale: [0.5, 1, 1, 0.5] }}
-        transition={{ duration: 1.8, times: [0.2, 0.4, 0.6, 0.8] }}
+        transition={{ duration: 1.1, times: [0.2, 0.38, 0.58, 0.8] }}
       />
     </motion.div>
   );
@@ -405,14 +413,19 @@ export default function ProjectsGrid() {
     }
   }, [mediaFilter]);
 
-  const handleTransitionComplete = useCallback(() => {
+  // Content switches at MIDPOINT (screen is covered by black)
+  const handleTransitionSwitch = useCallback(() => {
     if (pendingMode) {
       setMediaFilter(pendingMode);
       setActiveCategory('Todos');
     }
+  }, [pendingMode]);
+
+  // Overlay removed at END
+  const handleTransitionDone = useCallback(() => {
     setTransitioning(false);
     setPendingMode(null);
-  }, [pendingMode]);
+  }, []);
 
   // Combined filter
   const filtered = projects.filter((p) => {
@@ -648,7 +661,8 @@ export default function ProjectsGrid() {
         {transitioning && pendingMode && (
           <ModeTransition
             mode={pendingMode}
-            onComplete={handleTransitionComplete}
+            onSwitch={handleTransitionSwitch}
+            onDone={handleTransitionDone}
           />
         )}
       </AnimatePresence>

@@ -1,7 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getProjects, CATEGORIES, type Project } from '@/lib/config';
+import LottieRenderer from './LottieRenderer';
+import { getProjects, getFullConfig, CATEGORIES, type Project, type SiteConfig, DEFAULT_CONFIG } from '@/lib/config';
 import { initialProjects } from '@/data/projects';
 import ProjectCard from './ProjectCard';
 
@@ -9,18 +10,20 @@ export default function ProjectsGrid() {
   const [projects, setProjects] = useState<Project[]>(initialProjects);
   const [activeCategory, setActiveCategory] = useState('Todos');
   const [loading, setLoading] = useState(true);
+  const [cfg, setCfg] = useState<SiteConfig>(DEFAULT_CONFIG);
 
   useEffect(() => {
-    async function fetchProjects() {
-      const data = await getProjects();
+    async function fetchData() {
+      const [data, config] = await Promise.all([getProjects(), getFullConfig()]);
       if (data.length > 0) {
         setProjects(data);
       } else {
         setProjects(initialProjects);
       }
+      setCfg(config);
       setLoading(false);
     }
-    fetchProjects();
+    fetchData();
   }, []);
 
   const filtered = activeCategory === 'Todos'
@@ -28,8 +31,18 @@ export default function ProjectsGrid() {
     : projects.filter((p) => p.category === activeCategory);
 
   return (
-    <section id="work" className="py-20 md:py-28 px-6">
-      <div className="max-w-6xl mx-auto">
+    <section id="work" className="py-20 md:py-28 px-6 relative overflow-hidden">
+      {/* Background orb */}
+      <div className="floating-orb" style={{ width: 300, height: 300, top: '30%', right: '-10%', background: 'var(--neon-red)' }} />
+
+      {/* Lottie decoration */}
+      {cfg.lottie_projects?.enabled && cfg.lottie_projects?.source && (
+        <div className="lottie-section" style={{ opacity: cfg.lottie_projects.opacity || 0.35 }}>
+          <LottieRenderer source={cfg.lottie_projects.source} speed={cfg.lottie_projects.speed} />
+        </div>
+      )}
+
+      <div className="max-w-6xl mx-auto relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -40,7 +53,7 @@ export default function ProjectsGrid() {
           <span className="text-label text-neon-red">Portfolio</span>
           <h2 className="text-heading text-3xl md:text-4xl mt-3 mb-3">
             Trabajos{' '}
-            <span className="neon-text">Seleccionados</span>
+            <span className="gradient-text-animated">Seleccionados</span>
           </h2>
           <p className="text-caption text-sm max-w-md mx-auto">
             Cada proyecto es una pieza única diseñada para impactar y comunicar.
@@ -48,22 +61,33 @@ export default function ProjectsGrid() {
         </motion.div>
 
         {/* Filters */}
-        <div className="flex flex-wrap items-center justify-center gap-1.5 mb-10">
-          {CATEGORIES.map((cat) => (
-            <button
+        <motion.div
+          className="flex flex-wrap items-center justify-center gap-1.5 mb-10"
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+        >
+          {CATEGORIES.map((cat, i) => (
+            <motion.button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-1.5 rounded-full text-[11px] font-medium tracking-wide transition-all duration-300 ${
+              className={`px-4 py-1.5 rounded-full text-[11px] font-medium tracking-wide transition-all duration-300 elastic-press ${
                 activeCategory === cat
-                  ? 'bg-neon-red text-white'
-                  : 'bg-white/[0.03] text-gray-500 hover:text-gray-300 hover:bg-white/[0.06]'
+                  ? 'bg-neon-red text-white shadow-[0_0_15px_rgba(255,0,51,0.3)]'
+                  : 'bg-white/[0.03] text-gray-400 hover:text-gray-200 hover:bg-white/[0.06]'
               }`}
               data-cursor-hover
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
             >
               {cat}
-            </button>
+            </motion.button>
           ))}
-        </div>
+        </motion.div>
 
         {/* Loading */}
         {loading && (
@@ -80,15 +104,15 @@ export default function ProjectsGrid() {
           </div>
         )}
 
-        {/* Grid — bento style with featured projects larger */}
+        {/* Grid */}
         {!loading && (
           <AnimatePresence mode="wait">
             <motion.div
               key={activeCategory}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
             >
               {filtered.map((project, index) => (
@@ -105,7 +129,7 @@ export default function ProjectsGrid() {
 
         {!loading && filtered.length === 0 && (
           <div className="text-center py-16">
-            <p className="text-gray-600 text-sm">No hay proyectos en esta categoría.</p>
+            <p className="text-gray-400 text-sm">No hay proyectos en esta categoría.</p>
           </div>
         )}
       </div>

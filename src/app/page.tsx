@@ -18,12 +18,12 @@ export default function Home() {
       <ScrollProgress />
       <Navbar />
       <Hero />
-      <div className="section-divider" />
+      <div className="glow-line max-w-[80%] mx-auto" />
       <ProjectsGrid />
-      <div className="section-divider" />
+      <div className="glow-line max-w-[80%] mx-auto" />
       <About />
       <Skills />
-      <div className="section-divider" />
+      <div className="glow-line max-w-[80%] mx-auto" />
       <Contact />
       <Footer />
     </main>

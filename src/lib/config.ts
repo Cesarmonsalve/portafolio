@@ -44,6 +44,20 @@ export interface Message {
   created_at: string;
 }
 
+export interface LottieSlot {
+  source: string;  // URL or raw JSON string
+  enabled: boolean;
+  speed: number;
+  opacity: number;
+}
+
+export const DEFAULT_LOTTIE: LottieSlot = {
+  source: '',
+  enabled: false,
+  speed: 1,
+  opacity: 0.6,
+};
+
 export interface SiteConfig {
   hero_name: string;
   hero_subtitle: string;
@@ -60,6 +74,13 @@ export interface SiteConfig {
   theme_primary: string;
   theme_secondary: string;
   theme_accent: string;
+  // Lottie animation slots
+  lottie_hero: LottieSlot;
+  lottie_about: LottieSlot;
+  lottie_skills: LottieSlot;
+  lottie_projects: LottieSlot;
+  lottie_contact: LottieSlot;
+  lottie_footer: LottieSlot;
 }
 
 export const DEFAULT_CONFIG: SiteConfig = {
@@ -86,6 +107,12 @@ export const DEFAULT_CONFIG: SiteConfig = {
   theme_primary: '#ff0033',
   theme_secondary: '#a855f7',
   theme_accent: '#ec4899',
+  lottie_hero: { ...DEFAULT_LOTTIE },
+  lottie_about: { ...DEFAULT_LOTTIE },
+  lottie_skills: { ...DEFAULT_LOTTIE },
+  lottie_projects: { ...DEFAULT_LOTTIE },
+  lottie_contact: { ...DEFAULT_LOTTIE },
+  lottie_footer: { ...DEFAULT_LOTTIE },
 };
 
 // ═══════════════════════════════════════════

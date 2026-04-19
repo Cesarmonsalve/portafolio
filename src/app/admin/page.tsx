@@ -6,20 +6,30 @@ import {
   Image as ImageIcon, Video, Save, X, ChevronLeft, ChevronRight,
   Check, Settings, LogOut, Loader2, User, Wrench,
   MessageSquare, Palette, Rocket, Mail, Eye, EyeOff,
-  Lock, Globe, Zap
+  Lock, Globe, Zap, Clapperboard
 } from 'lucide-react';
+import LottieRenderer from '@/components/LottieRenderer';
 import {
   getFullConfig, setConfigValue, getProjects, upsertProject, deleteProject as dbDeleteProject,
   getSkills, upsertSkill, deleteSkill as dbDeleteSkill,
   getSocialLinks, upsertSocialLink, deleteSocialLink as dbDeleteSocial,
   getMessages, markMessageRead, deleteMessage as dbDeleteMessage,
-  DEFAULT_CONFIG,
-  type Project, type Skill, type SocialLink, type Message, type SiteConfig
+  DEFAULT_CONFIG, DEFAULT_LOTTIE,
+  type Project, type Skill, type SocialLink, type Message, type SiteConfig, type LottieSlot
 } from '@/lib/config';
 
 const CATEGORIES = ['Motion Graphics', 'Graphic Design', 'Flyer Design', 'Advertising', 'Video', 'Branding', '3D'];
 
-type Section = 'dashboard' | 'projects' | 'add-project' | 'hero' | 'about' | 'skills' | 'contact' | 'messages' | 'appearance' | 'deploy';
+type Section = 'dashboard' | 'projects' | 'add-project' | 'hero' | 'about' | 'skills' | 'contact' | 'messages' | 'appearance' | 'lottie' | 'deploy';
+
+const LOTTIE_SLOTS = [
+  { key: 'lottie_hero' as const, label: 'Hero', desc: 'Fondo animado del encabezado' },
+  { key: 'lottie_about' as const, label: 'Sobre Mí', desc: 'Decoración lateral en Sobre Mí' },
+  { key: 'lottie_skills' as const, label: 'Skills', desc: 'Decoración en la sección de herramientas' },
+  { key: 'lottie_projects' as const, label: 'Proyectos', desc: 'Decoración en el portfolio' },
+  { key: 'lottie_contact' as const, label: 'Contacto', desc: 'Decoración en la sección de contacto' },
+  { key: 'lottie_footer' as const, label: 'Footer', desc: 'Animación sutil en el pie de página' },
+];
 
 // ═══════════════════════════════════════════
 // UI COMPONENTS
@@ -421,6 +431,7 @@ export default function AdminPage() {
     { id: 'contact', icon: Globe, label: 'Contacto / Social' },
     { id: 'messages', icon: MessageSquare, label: 'Mensajes', badge: messages.filter(m => !m.read).length },
     { id: 'appearance', icon: Palette, label: 'Apariencia' },
+    { id: 'lottie', icon: Clapperboard, label: 'Motion Graphics' },
     { id: 'deploy', icon: Rocket, label: 'Publicar' },
   ];
 
@@ -956,6 +967,102 @@ export default function AdminPage() {
                       disabled={saving}
                       className="flex items-center gap-1.5 bg-neon-red hover:bg-red-600 disabled:opacity-50 px-6 py-2.5 rounded-lg text-xs font-bold transition-all">
                       {saving ? <Loader2 size={13} className="animate-spin" /> : <Save size={13} />} Guardar Apariencia
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* ═══ LOTTIE / MOTION GRAPHICS ═══ */}
+              {section === 'lottie' && (
+                <motion.div key="lottie" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -15 }}>
+                  <h1 className="text-heading text-2xl mb-1">Motion Graphics (AE)</h1>
+                  <p className="text-caption mb-6">Agrega animaciones Lottie de After Effects a tu portafolio</p>
+
+                  <div className="card p-4 !rounded-xl mb-6">
+                    <p className="text-subheading text-xs mb-2">¿Cómo funciona?</p>
+                    <ol className="text-[11px] text-gray-400 space-y-1.5 list-decimal list-inside">
+                      <li>Exporta tu animación de After Effects con el plugin <code className="text-neon-red bg-white/[0.03] px-1 rounded">Bodymovin</code></li>
+                      <li>Sube el archivo .json a <a href="https://lottiefiles.com" target="_blank" className="text-neon-red hover:underline">LottieFiles.com</a> y copia la URL</li>
+                      <li>Pega la URL aquí abajo, actívala y dale a guardar</li>
+                      <li>¡Listo! Tu animación aparecerá en la sección elegida</li>
+                    </ol>
+                  </div>
+
+                  <div className="space-y-4">
+                    {LOTTIE_SLOTS.map((slot) => {
+                      const lottieData = cfgDraft[slot.key] || { ...DEFAULT_LOTTIE };
+                      return (
+                        <div key={slot.key} className="card p-4 !rounded-xl">
+                          <div className="flex items-center justify-between mb-3">
+                            <div>
+                              <p className="text-subheading text-xs">{slot.label}</p>
+                              <p className="text-caption text-[10px]">{slot.desc}</p>
+                            </div>
+                            <button
+                              onClick={() => {
+                                const updated = { ...lottieData, enabled: !lottieData.enabled };
+                                setCfgDraft({ ...cfgDraft, [slot.key]: updated });
+                              }}
+                              className={`w-10 h-5 rounded-full transition-all flex items-center px-0.5 ${lottieData.enabled ? 'bg-neon-red' : 'bg-white/[0.08]'}`}
+                            >
+                              <div className={`w-4 h-4 bg-white rounded-full transition-all ${lottieData.enabled ? 'translate-x-5' : ''}`} />
+                            </button>
+                          </div>
+
+                          <div className="grid md:grid-cols-2 gap-4">
+                            <div className="space-y-3">
+                              <div>
+                                <label className="text-label text-[10px] mb-1.5 block">URL del Lottie JSON</label>
+                                <input
+                                  type="text"
+                                  value={lottieData.source}
+                                  onChange={(e) => {
+                                    setCfgDraft({ ...cfgDraft, [slot.key]: { ...lottieData, source: e.target.value } });
+                                  }}
+                                  placeholder="https://lottie.host/xxx/animation.json"
+                                  className="w-full bg-bg border border-white/[0.06] rounded-lg px-3 py-2.5 text-sm focus:border-neon-red/40 focus:outline-none transition-all placeholder:text-gray-500 text-white"
+                                />
+                              </div>
+                              <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                  <label className="text-label text-[10px] mb-1.5 block">Velocidad ({lottieData.speed}x)</label>
+                                  <input type="range" min={0.1} max={3} step={0.1} value={lottieData.speed}
+                                    onChange={(e) => setCfgDraft({ ...cfgDraft, [slot.key]: { ...lottieData, speed: Number(e.target.value) } })}
+                                    className="w-full accent-neon-red" />
+                                </div>
+                                <div>
+                                  <label className="text-label text-[10px] mb-1.5 block">Opacidad ({Math.round(lottieData.opacity * 100)}%)</label>
+                                  <input type="range" min={0.05} max={1} step={0.05} value={lottieData.opacity}
+                                    onChange={(e) => setCfgDraft({ ...cfgDraft, [slot.key]: { ...lottieData, opacity: Number(e.target.value) } })}
+                                    className="w-full accent-neon-purple" />
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Live Preview */}
+                            <div className="bg-bg-secondary border border-white/[0.06] rounded-xl overflow-hidden flex items-center justify-center" style={{ minHeight: 140 }}>
+                              {lottieData.source ? (
+                                <div className="w-full h-full" style={{ opacity: lottieData.opacity }}>
+                                  <LottieRenderer source={lottieData.source} speed={lottieData.speed} />
+                                </div>
+                              ) : (
+                                <div className="text-center text-gray-600">
+                                  <Clapperboard size={24} className="mx-auto mb-2" />
+                                  <p className="text-[10px]">Preview</p>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className="mt-6 pt-5 border-t border-white/[0.04]">
+                    <button onClick={() => saveConfig(['lottie_hero', 'lottie_about', 'lottie_skills', 'lottie_projects', 'lottie_contact', 'lottie_footer'])}
+                      disabled={saving}
+                      className="flex items-center gap-1.5 bg-neon-red hover:bg-red-600 disabled:opacity-50 px-6 py-2.5 rounded-lg text-xs font-bold transition-all">
+                      {saving ? <Loader2 size={13} className="animate-spin" /> : <Save size={13} />} Guardar Animaciones
                     </button>
                   </div>
                 </motion.div>

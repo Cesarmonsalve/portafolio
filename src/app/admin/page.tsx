@@ -22,6 +22,35 @@ const CATEGORIES = ['Motion Graphics', 'Graphic Design', 'Flyer Design', 'Advert
 type Section = 'dashboard' | 'projects' | 'add-project' | 'hero' | 'about' | 'skills' | 'contact' | 'messages' | 'appearance' | 'deploy';
 
 // ═══════════════════════════════════════════
+// UI COMPONENTS
+// ═══════════════════════════════════════════
+
+const Input = ({ label, value, onChange, placeholder, textarea, type }: {
+  label: string; value: string; onChange: (v: string) => void; placeholder?: string; textarea?: boolean; type?: string;
+}) => (
+  <div>
+    <label className="text-label text-[10px] mb-1.5 block">{label}</label>
+    {textarea ? (
+      <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={3} placeholder={placeholder}
+        className="w-full bg-bg border border-white/[0.06] rounded-lg px-3 py-2.5 text-sm focus:border-neon-red/40 focus:outline-none transition-all resize-none placeholder:text-gray-600" />
+    ) : (
+      <input type={type || 'text'} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
+        className="w-full bg-bg border border-white/[0.06] rounded-lg px-3 py-2.5 text-sm focus:border-neon-red/40 focus:outline-none transition-all placeholder:text-gray-600" />
+    )}
+  </div>
+);
+
+const Toggle = ({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) => (
+  <div className="flex items-center gap-2.5">
+    <button onClick={() => onChange(!value)}
+      className={`w-10 h-5 rounded-full transition-all flex items-center px-0.5 ${value ? 'bg-neon-red' : 'bg-white/[0.08]'}`}>
+      <div className={`w-4 h-4 bg-white rounded-full transition-all ${value ? 'translate-x-5' : ''}`} />
+    </button>
+    <span className="text-xs text-gray-400">{label}</span>
+  </div>
+);
+
+// ═══════════════════════════════════════════
 // ADMIN PAGE
 // ═══════════════════════════════════════════
 
@@ -293,32 +322,7 @@ export default function AdminPage() {
     reader.readAsDataURL(file);
   };
 
-  // ─── INPUT COMPONENT ───
-  const Input = ({ label, value, onChange, placeholder, textarea, type }: {
-    label: string; value: string; onChange: (v: string) => void; placeholder?: string; textarea?: boolean; type?: string;
-  }) => (
-    <div>
-      <label className="text-label text-[10px] mb-1.5 block">{label}</label>
-      {textarea ? (
-        <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={3} placeholder={placeholder}
-          className="w-full bg-bg border border-white/[0.06] rounded-lg px-3 py-2.5 text-sm focus:border-neon-red/40 focus:outline-none transition-all resize-none placeholder:text-gray-600" />
-      ) : (
-        <input type={type || 'text'} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
-          className="w-full bg-bg border border-white/[0.06] rounded-lg px-3 py-2.5 text-sm focus:border-neon-red/40 focus:outline-none transition-all placeholder:text-gray-600" />
-      )}
-    </div>
-  );
-
-  // ─── TOGGLE COMPONENT ───
-  const Toggle = ({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) => (
-    <div className="flex items-center gap-2.5">
-      <button onClick={() => onChange(!value)}
-        className={`w-10 h-5 rounded-full transition-all flex items-center px-0.5 ${value ? 'bg-neon-red' : 'bg-white/[0.08]'}`}>
-        <div className={`w-4 h-4 bg-white rounded-full transition-all ${value ? 'translate-x-5' : ''}`} />
-      </button>
-      <span className="text-xs text-gray-400">{label}</span>
-    </div>
-  );
+  // ─── LOGIN SCREEN ───
 
   // ═══════════════════════════════════════════
   // LOGIN SCREEN

@@ -217,6 +217,15 @@ export default function AdminPage() {
     return null;
   };
 
+  // Convert Cloudinary video URL to thumbnail URL
+  const getCloudinaryThumbnail = (url: string): string | null => {
+    if (url.includes('res.cloudinary.com/') && url.includes('/video/upload/')) {
+      // Cloudinary allows requesting .jpg instead of .mp4 for the first frame
+      return url.replace(/\.(mp4|webm|mov|avi)$/i, '.jpg');
+    }
+    return null;
+  };
+
   const saveProject = async () => {
     if (!pTitle || !pCategory || !pDesc) { alert('Completa título, categoría y descripción'); return; }
     setSaving(true);
@@ -224,9 +233,12 @@ export default function AdminPage() {
     // Auto-generate thumbnail from video URL if no image provided
     let finalImage = pImage;
     if ((!finalImage || finalImage === '/images/placeholder.jpg') && pVideo) {
-      const ytId = getYouTubeId(pVideo);
-      if (ytId) {
-        finalImage = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+      if (pVideo.includes('youtube') || pVideo.includes('youtu.be')) {
+        const ytId = getYouTubeId(pVideo);
+        if (ytId) finalImage = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+      } else if (pVideo.includes('res.cloudinary.com')) {
+        const cloudThumb = getCloudinaryThumbnail(pVideo);
+        if (cloudThumb) finalImage = cloudThumb;
       }
     }
 
@@ -763,10 +775,15 @@ export default function AdminPage() {
                             onChange={(e) => {
                               const url = e.target.value;
                               setPVideo(url);
-                              // Auto-fill thumbnail from YouTube if no image set
+                              // Auto-fill thumbnail from YouTube or Cloudinary if no image set
                               if (url && (!pImage || pImage === '/images/placeholder.jpg')) {
-                                const ytId = getYouTubeId(url);
-                                if (ytId) setPImage(`https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`);
+                                if (url.includes('youtube') || url.includes('youtu.be')) {
+                                  const ytId = getYouTubeId(url);
+                                  if (ytId) setPImage(`https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`);
+                                } else if (url.includes('res.cloudinary.com')) {
+                                  const cloudThumb = getCloudinaryThumbnail(url);
+                                  if (cloudThumb) setPImage(cloudThumb);
+                                }
                               }
                             }}
                             placeholder="https://youtube.com/watch?v=... o URL de video"

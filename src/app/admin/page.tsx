@@ -9,16 +9,15 @@ import {
   Lock, Globe, Zap, Clapperboard
 } from 'lucide-react';
 import LottieRenderer from '@/components/LottieRenderer';
+import ProjectCard from '@/components/ProjectCard';
 import {
   getFullConfig, setConfigValue, getProjects, upsertProject, deleteProject as dbDeleteProject,
   getSkills, upsertSkill, deleteSkill as dbDeleteSkill,
   getSocialLinks, upsertSocialLink, deleteSocialLink as dbDeleteSocial,
   getMessages, markMessageRead, deleteMessage as dbDeleteMessage,
-  DEFAULT_CONFIG, DEFAULT_LOTTIE,
+  DEFAULT_CONFIG, DEFAULT_LOTTIE, CATEGORIES,
   type Project, type Skill, type SocialLink, type Message, type SiteConfig, type LottieSlot
 } from '@/lib/config';
-
-const CATEGORIES = ['Motion Graphics', 'Graphic Design', 'Flyer Design', 'Advertising', 'Video', 'Branding', '3D'];
 
 type Section = 'dashboard' | 'projects' | 'add-project' | 'hero' | 'about' | 'skills' | 'contact' | 'messages' | 'appearance' | 'lottie' | 'deploy';
 
@@ -367,8 +366,6 @@ export default function AdminPage() {
     reader.readAsDataURL(file);
   };
 
-  // ─── LOGIN SCREEN ───
-
   // ═══════════════════════════════════════════
   // LOGIN SCREEN
   // ═══════════════════════════════════════════
@@ -462,7 +459,7 @@ export default function AdminPage() {
       {/* Sidebar */}
       <motion.aside
         animate={{ width: sidebarOpen ? 240 : 64 }}
-        className="bg-bg-secondary border-r border-white/[0.04] flex flex-col flex-shrink-0 overflow-hidden h-screen sticky top-0"
+        className="bg-bg-secondary border-r border-white/[0.04] flex flex-shrink-0 overflow-hidden h-screen sticky top-0"
       >
         <div className="p-4 border-b border-white/[0.04] flex items-center gap-2.5">
           <div className="w-9 h-9 relative flex-shrink-0">
@@ -635,11 +632,21 @@ export default function AdminPage() {
                       <Input label="Título *" value={pTitle} onChange={setPTitle} placeholder="DISTRICT 909 — Event Motion" />
                       <div>
                         <label className="text-label text-[10px] mb-1.5 block">Categoría *</label>
-                        <select value={pCategory} onChange={(e) => setPCategory(e.target.value)}
-                          className="w-full bg-bg border border-white/[0.06] rounded-lg px-3 py-2.5 text-sm focus:border-neon-red/40 focus:outline-none transition-all text-gray-300">
-                          <option value="">Seleccionar</option>
-                          {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-                        </select>
+                        <input
+                          list="category-options"
+                          value={pCategory}
+                          onChange={(e) => setPCategory(e.target.value)}
+                          placeholder="Selecciona o escribe una nueva..."
+                          className="w-full bg-bg border border-white/[0.06] rounded-lg px-3 py-2.5 text-sm focus:border-neon-red/40 focus:outline-none transition-all text-gray-300"
+                        />
+                        <datalist id="category-options">
+                          {CATEGORIES.map((c) => (
+                            <option key={c} value={c} />
+                          ))}
+                          {Array.from(new Set(projects.map(p => p.category))).filter(c => !CATEGORIES.includes(c)).map(c => (
+                            <option key={c} value={c} />
+                          ))}
+                        </datalist>
                       </div>
                       <Input label="Descripción *" value={pDesc} onChange={setPDesc} textarea placeholder="Describe el proyecto..." />
                       <Input label="Cliente" value={pClient} onChange={setPClient} placeholder="Nombre del cliente" />
@@ -659,6 +666,30 @@ export default function AdminPage() {
                       </div>
                     </div>
                     <div className="space-y-4">
+                      {/* Live Preview Panel */}
+                      <div className="bg-bg border border-white/[0.06] rounded-xl p-4 sticky top-6">
+                        <h3 className="text-subheading text-[11px] mb-4 flex items-center gap-1.5 uppercase"><Eye size={14}/> Preview en Vivo</h3>
+                        <div className="max-w-[320px] mx-auto opacity-90 transition-opacity pointer-events-none">
+                          <ProjectCard 
+                            index={0} 
+                            project={{
+                              id: editProject?.id || 'preview',
+                              title: pTitle || 'Título del Proyecto',
+                              category: pCategory || 'Categoría',
+                              description: pDesc || 'Descripción del proyecto se mostrará aquí.',
+                              image: pImage || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop',
+                              video: pVideo,
+                              tags: pTags ? pTags.split(',').map(t => t.trim()).filter(Boolean) : ['Motion', 'Design'],
+                              client: pClient || 'Cliente Ejemplo',
+                              featured: pFeatured,
+                              display_mode: (pDisplayMode as Project['display_mode']) || 'default',
+                              created_at: new Date().toISOString()
+                            }} 
+                          />
+                        </div>
+                        <p className="text-[10px] text-gray-500 text-center mt-3">Así se expone tu trabajo en vivo.</p>
+                      </div>
+                      
                       <div>
                         <label className="text-label text-[10px] mb-1.5 block">Imagen</label>
                         <div className="relative border border-dashed border-white/[0.08] rounded-xl overflow-hidden cursor-pointer hover:border-neon-red/30 transition-colors" style={{ minHeight: 160 }}>

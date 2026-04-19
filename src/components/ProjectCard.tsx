@@ -81,16 +81,29 @@ export default function ProjectCard({ project, index, featured }: Props) {
             transition={{ duration: 0.3 }}
             className="absolute inset-0 bg-black/60 backdrop-blur-sm rounded-xl flex items-center justify-center gap-3 z-10"
           >
-            <Link
-              href={`/projects/${project.id}`}
-              className="flex items-center gap-1.5 bg-white text-black px-5 py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors elastic-press"
-            >
-              <Play size={14} />
-              Ver Proyecto
-            </Link>
+            {project.video ? (
+              <a
+                href={project.video}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 bg-white text-black px-5 py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors elastic-press"
+              >
+                <Play size={14} />
+                Ver Video
+              </a>
+            ) : (
+              <Link
+                href={`/projects/${project.id}`}
+                className="flex items-center gap-1.5 bg-white text-black px-5 py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors elastic-press"
+              >
+                <Play size={14} />
+                Ver Proyecto
+              </Link>
+            )}
             <Link
               href={`/projects/${project.id}`}
               className="w-10 h-10 bg-white/10 backdrop-blur rounded-xl flex items-center justify-center hover:bg-white/20 transition-colors"
+              title="Detalles del proyecto"
             >
               <ExternalLink size={16} />
             </Link>
@@ -180,16 +193,29 @@ export default function ProjectCard({ project, index, featured }: Props) {
               )}
             </div>
             <div className="flex items-center gap-2">
-              <Link
-                href={`/projects/${project.id}`}
-                className="flex items-center gap-1.5 bg-white text-black px-4 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors elastic-press"
-              >
-                <Play size={12} />
-                Ver
-              </Link>
+              {project.video ? (
+                <a
+                  href={project.video}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 bg-white text-black px-4 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors elastic-press"
+                >
+                  <Play size={12} />
+                  Video
+                </a>
+              ) : (
+                <Link
+                  href={`/projects/${project.id}`}
+                  className="flex items-center gap-1.5 bg-white text-black px-4 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors elastic-press"
+                >
+                  <Play size={12} />
+                  Ver
+                </Link>
+              )}
               <Link
                 href={`/projects/${project.id}`}
                 className="w-8 h-8 bg-white/10 backdrop-blur rounded-lg flex items-center justify-center hover:bg-white/20 transition-colors"
+                title="Detalles del proyecto"
               >
                 <ExternalLink size={14} />
               </Link>

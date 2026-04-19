@@ -207,13 +207,33 @@ export default function AdminPage() {
     setSection('add-project');
   };
 
+  // Extract YouTube video ID from various URL formats
+  const getYouTubeId = (url: string): string | null => {
+    if (url.includes('youtu.be/')) return url.split('youtu.be/')[1]?.split('?')[0] || null;
+    if (url.includes('youtube.com/watch')) {
+      try { return new URL(url).searchParams.get('v'); } catch { return null; }
+    }
+    if (url.includes('youtube.com/embed/')) return url.split('embed/')[1]?.split('?')[0] || null;
+    return null;
+  };
+
   const saveProject = async () => {
     if (!pTitle || !pCategory || !pDesc) { alert('Completa título, categoría y descripción'); return; }
     setSaving(true);
+
+    // Auto-generate thumbnail from video URL if no image provided
+    let finalImage = pImage;
+    if ((!finalImage || finalImage === '/images/placeholder.jpg') && pVideo) {
+      const ytId = getYouTubeId(pVideo);
+      if (ytId) {
+        finalImage = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+      }
+    }
+
     const project: Project = {
       id: editProject?.id || Date.now().toString(),
       title: pTitle, category: pCategory, description: pDesc,
-      image: pImage || '/images/placeholder.jpg',
+      image: finalImage || '/images/placeholder.jpg',
       video: pVideo || undefined,
       tags: pTags.split(',').map(t => t.trim()).filter(Boolean),
       client: pClient || undefined, featured: pFeatured,
@@ -740,7 +760,15 @@ export default function AdminPage() {
                           <input
                             type="text"
                             value={pVideo}
-                            onChange={(e) => setPVideo(e.target.value)}
+                            onChange={(e) => {
+                              const url = e.target.value;
+                              setPVideo(url);
+                              // Auto-fill thumbnail from YouTube if no image set
+                              if (url && (!pImage || pImage === '/images/placeholder.jpg')) {
+                                const ytId = getYouTubeId(url);
+                                if (ytId) setPImage(`https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`);
+                              }
+                            }}
                             placeholder="https://youtube.com/watch?v=... o URL de video"
                             className="w-full bg-bg border border-white/[0.06] rounded-lg pl-9 pr-3 py-2.5 text-sm focus:border-neon-purple/40 focus:outline-none transition-all placeholder:text-gray-600"
                           />

@@ -150,16 +150,15 @@ function VideoLightbox({ project, onClose }: { project: Project; onClose: () => 
 // VIDEO-ONLY CARD (used in video mode)
 // ═══════════════════════════════════════════
 
-function VideoCard({ project, index, onPlay }: { project: Project; index: number; onPlay: () => void }) {
+function VideoCard({ project, index, onPlay, instant }: { project: Project; index: number; onPlay: () => void; instant?: boolean }) {
   const [hovered, setHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 50, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: -30, scale: 0.95 }}
-      transition={{ duration: 0.5, delay: index * 0.07, ease: [0.16, 1, 0.3, 1] }}
+      initial={instant ? false : { opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={instant ? { duration: 0 } : { duration: 0.35, delay: Math.min(index * 0.04, 0.2), ease: [0.16, 1, 0.3, 1] }}
       className="group"
     >
       <div
@@ -242,25 +241,29 @@ function VideoCard({ project, index, onPlay }: { project: Project; index: number
 }
 
 // ═══════════════════════════════════════════
-// CINEMATIC MODE TRANSITION
-// onSwitch fires at midpoint (content changes while screen is black)
-// onDone fires at end (overlay removed)
+// CINEMATIC MODE TRANSITION (FAST VERSION)
+// Total: ~700ms. Switch at ~220ms (screen fully black).
+// Content is already rendered behind the wipe, so it
+// appears INSTANTLY when the black curtain slides away.
 // ═══════════════════════════════════════════
+
+const TRANSITION_TOTAL = 700;
+const TRANSITION_SWITCH = 220;
 
 function ModeTransition({ mode, onSwitch, onDone }: { mode: MediaFilter; onSwitch: () => void; onDone: () => void }) {
   const switchedRef = useRef(false);
 
   useEffect(() => {
-    // Switch content at midpoint — screen is fully black at ~450ms
+    // Switch content ASAP — screen is fully covered at ~220ms
     const switchTimer = setTimeout(() => {
       if (!switchedRef.current) {
         switchedRef.current = true;
         onSwitch();
       }
-    }, 450);
+    }, TRANSITION_SWITCH);
 
-    // Remove overlay after full animation
-    const doneTimer = setTimeout(onDone, 1100);
+    // Remove overlay right after reveal animation finishes
+    const doneTimer = setTimeout(onDone, TRANSITION_TOTAL);
 
     return () => {
       clearTimeout(switchTimer);
@@ -271,44 +274,46 @@ function ModeTransition({ mode, onSwitch, onDone }: { mode: MediaFilter; onSwitc
   const label = mode === 'videos' ? 'VIDEOS' : mode === 'images' ? 'IMÁGENES' : 'PORTFOLIO';
   const subtitle = mode === 'videos' ? 'Motion Graphics & Ediciones' : mode === 'images' ? 'Diseño Visual & Branding' : 'Trabajos Seleccionados';
 
+  const dur = TRANSITION_TOTAL / 1000; // 0.7s
+
   return (
     <motion.div
       className="fixed inset-0 z-[9980] pointer-events-none"
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.15 }}
+      transition={{ duration: 0.1 }}
     >
-      {/* Black wipe — covers at 40%, reveals at 60% */}
+      {/* Black wipe — fast cover + reveal */}
       <motion.div
         className="absolute inset-0 bg-black"
         initial={{ clipPath: 'inset(0 100% 0 0)' }}
         animate={{
           clipPath: [
-            'inset(0 100% 0 0)',
-            'inset(0 0% 0 0)',
-            'inset(0 0% 0 0)',
-            'inset(0 0 0 100%)',
+            'inset(0 100% 0 0)',   // start: nothing
+            'inset(0 0% 0 0)',     // fully covered
+            'inset(0 0% 0 0)',     // hold briefly
+            'inset(0 0 0 100%)',   // reveal from left
           ],
         }}
-        transition={{ duration: 1.1, times: [0, 0.38, 0.55, 1], ease: [0.7, 0, 0.3, 1] }}
+        transition={{ duration: dur, times: [0, 0.3, 0.45, 1], ease: [0.7, 0, 0.3, 1] }}
       />
 
       {/* Scan lines */}
       <motion.div
         className="absolute inset-0"
         initial={{ opacity: 0 }}
-        animate={{ opacity: [0, 0.6, 0.6, 0] }}
-        transition={{ duration: 1.1, times: [0, 0.3, 0.6, 1] }}
+        animate={{ opacity: [0, 0.5, 0.5, 0] }}
+        transition={{ duration: dur, times: [0, 0.25, 0.55, 1] }}
         style={{ background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,0,51,0.04) 2px, rgba(255,0,51,0.04) 4px)' }}
       />
 
-      {/* Center content */}
+      {/* Center content — appears and disappears faster */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="text-center overflow-hidden">
           <motion.div
-            initial={{ opacity: 0, y: 50, skewY: 6 }}
-            animate={{ opacity: [0, 1, 1, 0], y: [50, 0, 0, -30], skewY: [6, 0, 0, -3] }}
-            transition={{ duration: 1.1, times: [0.05, 0.3, 0.6, 0.9], ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, y: 40, skewY: 5 }}
+            animate={{ opacity: [0, 1, 1, 0], y: [40, 0, 0, -20], skewY: [5, 0, 0, -2] }}
+            transition={{ duration: dur, times: [0.05, 0.28, 0.55, 0.85], ease: [0.16, 1, 0.3, 1] }}
           >
             <h2
               className="text-display text-6xl md:text-8xl lg:text-9xl tracking-tighter glitch"
@@ -330,9 +335,9 @@ function ModeTransition({ mode, onSwitch, onDone }: { mode: MediaFilter; onSwitc
 
           <motion.p
             className="text-label text-gray-400 mt-3 tracking-[0.3em]"
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: [0, 1, 1, 0], y: [15, 0, 0, -15] }}
-            transition={{ duration: 1.1, times: [0.1, 0.32, 0.58, 0.88], ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: [0, 1, 1, 0], y: [12, 0, 0, -12] }}
+            transition={{ duration: dur, times: [0.1, 0.3, 0.55, 0.85], ease: [0.16, 1, 0.3, 1] }}
           >
             {subtitle}
           </motion.p>
@@ -348,7 +353,7 @@ function ModeTransition({ mode, onSwitch, onDone }: { mode: MediaFilter; onSwitc
             }}
             initial={{ width: 0, opacity: 0 }}
             animate={{ width: [0, 180, 180, 0], opacity: [0, 1, 1, 0] }}
-            transition={{ duration: 1.1, times: [0.15, 0.35, 0.6, 0.85] }}
+            transition={{ duration: dur, times: [0.15, 0.32, 0.55, 0.82] }}
           />
         </div>
       </div>
@@ -358,13 +363,13 @@ function ModeTransition({ mode, onSwitch, onDone }: { mode: MediaFilter; onSwitc
         className="absolute top-8 left-8 w-8 h-8 border-l-2 border-t-2 border-neon-red/60"
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: [0, 1, 1, 0], scale: [0.5, 1, 1, 0.5] }}
-        transition={{ duration: 1.1, times: [0.2, 0.38, 0.58, 0.8] }}
+        transition={{ duration: dur, times: [0.18, 0.35, 0.55, 0.78] }}
       />
       <motion.div
         className="absolute bottom-8 right-8 w-8 h-8 border-r-2 border-b-2 border-neon-red/60"
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: [0, 1, 1, 0], scale: [0.5, 1, 1, 0.5] }}
-        transition={{ duration: 1.1, times: [0.2, 0.38, 0.58, 0.8] }}
+        transition={{ duration: dur, times: [0.18, 0.35, 0.55, 0.78] }}
       />
     </motion.div>
   );
@@ -383,6 +388,7 @@ export default function ProjectsGrid() {
   const [transitioning, setTransitioning] = useState(false);
   const [pendingMode, setPendingMode] = useState<MediaFilter | null>(null);
   const [selectedVideo, setSelectedVideo] = useState<Project | null>(null);
+  const [instantCards, setInstantCards] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -413,18 +419,22 @@ export default function ProjectsGrid() {
     }
   }, [mediaFilter]);
 
-  // Content switches at MIDPOINT (screen is covered by black)
+  // Content switches at MIDPOINT (screen is fully covered by black wipe)
+  // Cards are set to "instant" mode so they render with zero delay
   const handleTransitionSwitch = useCallback(() => {
     if (pendingMode) {
+      setInstantCards(true);
       setMediaFilter(pendingMode);
       setActiveCategory('Todos');
     }
   }, [pendingMode]);
 
-  // Overlay removed at END
+  // Overlay removed at END — clear instant flag after a tick
   const handleTransitionDone = useCallback(() => {
     setTransitioning(false);
     setPendingMode(null);
+    // Keep instantCards true briefly so the cards don't re-animate
+    requestAnimationFrame(() => setInstantCards(false));
   }, []);
 
   // Combined filter
@@ -597,13 +607,13 @@ export default function ProjectsGrid() {
 
           {/* ═══ GRID ═══ */}
           {!loading && (
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode={transitioning ? 'sync' : 'wait'}>
               <motion.div
                 key={`${activeCategory}-${mediaFilter}`}
-                initial={{ opacity: 0, y: 25 }}
+                initial={instantCards ? false : { opacity: 0, y: 25 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                exit={transitioning ? { opacity: 0 } : { opacity: 0, y: -20 }}
+                transition={instantCards ? { duration: 0 } : { duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
               >
                 {filtered.map((project, index) =>
@@ -613,6 +623,7 @@ export default function ProjectsGrid() {
                       project={project}
                       index={index}
                       onPlay={() => setSelectedVideo(project)}
+                      instant={instantCards}
                     />
                   ) : (
                     <ProjectCard

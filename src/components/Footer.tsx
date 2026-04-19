@@ -12,12 +12,11 @@ export default function Footer() {
   return (
     <footer className="py-8 px-6 border-t border-white/[0.04]">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-neon-red rounded-md flex items-center justify-center font-display font-extrabold text-[10px]">
-            CM
+        <a href="#home" className="flex items-center">
+          <div className="relative w-28 h-8 flex items-center justify-start">
+            <img src="/logo.png" alt="CM Design Logo" className="w-full h-full object-contain object-left" />
           </div>
-          <span className="font-display font-bold text-xs tracking-tight-custom">CM DESIGN</span>
-        </div>
+        </a>
         <p className="text-[11px] text-gray-600">
           © {new Date().getFullYear()} CM Design. Todos los derechos reservados.
         </p>

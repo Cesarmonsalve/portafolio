@@ -475,7 +475,7 @@ export default function AdminPage() {
       {/* Sidebar */}
       <motion.aside
         animate={{ width: sidebarOpen ? 240 : 64 }}
-        className="bg-bg-secondary border-r border-white/[0.04] flex flex-shrink-0 overflow-hidden h-screen sticky top-0"
+        className="bg-bg-secondary border-r border-white/[0.04] flex flex-col flex-shrink-0 overflow-hidden h-screen sticky top-0"
       >
         <div className="p-4 border-b border-white/[0.04] flex items-center gap-2.5">
           <div className="w-9 h-9 relative flex-shrink-0">
@@ -648,21 +648,34 @@ export default function AdminPage() {
                       <Input label="Título *" value={pTitle} onChange={setPTitle} placeholder="DISTRICT 909 — Event Motion" />
                       <div>
                         <label className="text-label text-[10px] mb-1.5 block">Categoría *</label>
-                        <input
-                          list="category-options"
-                          value={pCategory}
-                          onChange={(e) => setPCategory(e.target.value)}
-                          placeholder="Selecciona o escribe una nueva..."
-                          className="w-full bg-bg border border-white/[0.06] rounded-lg px-3 py-2.5 text-sm focus:border-neon-red/40 focus:outline-none transition-all text-gray-300"
-                        />
-                        <datalist id="category-options">
-                          {CATEGORIES.map((c) => (
-                            <option key={c} value={c} />
+                        <select 
+                          value={
+                            CATEGORIES.includes(pCategory) || Array.from(new Set(projects.map(p => p.category))).includes(pCategory) 
+                              ? pCategory 
+                              : (pCategory ? 'custom' : '')
+                          }
+                          onChange={(e) => {
+                            if (e.target.value !== 'custom') setPCategory(e.target.value);
+                            else setPCategory(''); // reset for custom input
+                          }}
+                          className="w-full bg-bg border border-white/[0.06] rounded-lg px-3 py-2.5 text-sm focus:border-neon-red/40 focus:outline-none transition-all text-gray-300 mb-2"
+                        >
+                          <option value="" disabled>Selecciona una categoría</option>
+                          {Array.from(new Set([...CATEGORIES, ...projects.map(p => p.category)])).map(c => (
+                            <option key={c} value={c}>{c}</option>
                           ))}
-                          {Array.from(new Set(projects.map(p => p.category))).filter(c => !CATEGORIES.includes(c)).map(c => (
-                            <option key={c} value={c} />
-                          ))}
-                        </datalist>
+                          <option value="custom">➕ Crear nueva categoría...</option>
+                        </select>
+                        {(!CATEGORIES.includes(pCategory) && !Array.from(new Set(projects.map(p => p.category))).includes(pCategory)) && (
+                          <input
+                            type="text"
+                            value={pCategory}
+                            onChange={(e) => setPCategory(e.target.value)}
+                            placeholder="Escribe la nueva categoría..."
+                            className="w-full bg-bg border border-neon-red/40 rounded-lg px-3 py-2.5 text-sm focus:border-neon-red focus:outline-none transition-all text-white"
+                            autoFocus
+                          />
+                        )}
                       </div>
                       <Input label="Descripción *" value={pDesc} onChange={setPDesc} textarea placeholder="Describe el proyecto..." />
                       <Input label="Cliente" value={pClient} onChange={setPClient} placeholder="Nombre del cliente" />

@@ -89,6 +89,7 @@ export default function ProjectCard({ project, index, featured }: Props) {
             initial={false}
             animate={{ opacity: hovered ? 1 : 0 }}
             transition={{ duration: 0.3 }}
+            style={{ pointerEvents: hovered ? 'auto' : 'none', transform: 'translateZ(40px)' }}
             className="absolute inset-0 bg-black/60 backdrop-blur-sm rounded-xl flex items-center justify-center gap-3 z-10"
           >
             {project.video ? (
@@ -96,7 +97,8 @@ export default function ProjectCard({ project, index, featured }: Props) {
                 href={sanitizeUrl(project.video)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 bg-white text-black px-5 py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors elastic-press"
+                onClick={(e) => e.stopPropagation()}
+                className="flex items-center gap-1.5 bg-white text-black px-5 py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors elastic-press cursor-pointer"
               >
                 <Play size={14} />
                 Ver Video
@@ -190,7 +192,8 @@ export default function ProjectCard({ project, index, featured }: Props) {
             initial={false}
             animate={{ opacity: hovered ? 1 : 0 }}
             transition={{ duration: 0.3 }}
-            className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-5"
+            style={{ pointerEvents: hovered ? 'auto' : 'none', transform: 'translateZ(40px)' }}
+            className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-5 z-10"
           >
             <div className="flex items-center gap-2 mb-3">
               <span className="bg-neon-red/20 border border-neon-red/30 px-2.5 py-0.5 rounded-full text-[10px] font-medium text-neon-red tracking-wide">
@@ -208,7 +211,8 @@ export default function ProjectCard({ project, index, featured }: Props) {
                   href={sanitizeUrl(project.video)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 bg-white text-black px-4 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors elastic-press"
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex items-center gap-1.5 bg-white text-black px-4 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors elastic-press cursor-pointer"
                 >
                   <Play size={12} />
                   Video
@@ -216,7 +220,8 @@ export default function ProjectCard({ project, index, featured }: Props) {
               ) : (
                 <Link
                   href={`/projects/${project.id}`}
-                  className="flex items-center gap-1.5 bg-white text-black px-4 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors elastic-press"
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex items-center gap-1.5 bg-white text-black px-4 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors elastic-press cursor-pointer"
                 >
                   <Play size={12} />
                   Ver
@@ -224,7 +229,8 @@ export default function ProjectCard({ project, index, featured }: Props) {
               )}
               <Link
                 href={`/projects/${project.id}`}
-                className="w-8 h-8 bg-white/10 backdrop-blur rounded-lg flex items-center justify-center hover:bg-white/20 transition-colors"
+                onClick={(e) => e.stopPropagation()}
+                className="w-8 h-8 bg-white/10 backdrop-blur rounded-lg flex items-center justify-center hover:bg-white/20 transition-colors cursor-pointer"
                 title="Detalles del proyecto"
               >
                 <ExternalLink size={14} />

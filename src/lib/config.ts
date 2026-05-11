@@ -157,3 +157,10 @@ export async function upsertProject(project: Project): Promise<{ ok: boolean; er
 export async function deleteProject(id: string): Promise<boolean> {
   return true;
 }
+export async function markMessageRead(id: string): Promise<boolean> {
+  return true;
+}
+
+export async function deleteMessage(id: string): Promise<boolean> {
+  return true
+}

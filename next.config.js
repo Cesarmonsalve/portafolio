@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ['lenis'],
   images: {
     remotePatterns: [{ protocol: 'https', hostname: '**' }],
   },

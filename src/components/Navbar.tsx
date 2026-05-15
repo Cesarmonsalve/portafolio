@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ShoppingBag, LayoutGrid } from 'lucide-react';
+import { Menu, X, ShoppingBag, LayoutGrid, Search } from 'lucide-react';
 import { useSiteConfig } from '@/lib/SiteConfigContext';
 
 export default function Navbar() {
@@ -39,11 +39,28 @@ export default function Navbar() {
         }`}
       >
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
-          <Link href="/" className="flex items-center group" data-cursor-hover>
-            <div className="relative w-32 h-10 flex items-center justify-start group-hover:scale-[1.02] transition-transform duration-300">
-              <img src={cfg.logo_url || '/logo.png'} alt="CM Design Logo" className="w-full h-full object-contain object-left" />
+          <div className="flex items-center gap-6">
+            <Link href="/" className="flex items-center group" data-cursor-hover>
+              <div className="relative w-32 h-10 flex items-center justify-start group-hover:scale-[1.02] transition-transform duration-300">
+                <img src={cfg.logo_url || '/logo.png'} alt="CM Design Logo" className="w-full h-full object-contain object-left" />
+              </div>
+            </Link>
+
+            {/* Availability Indicator */}
+            <div className="hidden lg:flex items-center gap-2 bg-white/[0.03] border border-white/[0.05] px-3 py-1.5 rounded-full cursor-default group" title="Disponible para proyectos">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              <span className="text-[10px] font-medium text-gray-400 tracking-wide group-hover:text-gray-300 transition-colors">Disponible</span>
             </div>
-          </Link>
+            
+            {/* Cmd+K Hint */}
+            <div className="hidden lg:flex items-center gap-1 text-[10px] text-gray-500 font-medium bg-white/[0.02] px-2 py-1 rounded-md border border-white/[0.03]">
+              <Search size={10} />
+              <span>Cmd+K</span>
+            </div>
+          </div>
 
           {/* Desktop Links */}
           <div className="hidden md:flex items-center gap-6">

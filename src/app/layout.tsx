@@ -1,12 +1,14 @@
 import type { Metadata } from 'next';
-import { Syne, Inter } from 'next/font/google';
+import { Outfit, Inter } from 'next/font/google';
 import { getFullConfig } from '@/lib/config';
 import ThemeApplier from '@/components/ThemeApplier';
+import CommandPalette from '@/components/CommandPalette';
+import ToastContainer from '@/components/ui/Toast';
 import './globals.css';
 
-const syne = Syne({ 
+const outfit = Outfit({ 
   subsets: ['latin'], 
-  variable: '--font-syne',
+  variable: '--font-outfit',
   display: 'swap' 
 });
 
@@ -42,7 +44,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const cfg = await getFullConfig();
 
   return (
-    <html lang="es" className={`${syne.variable} ${inter.variable}`} style={{
+    <html lang="es" className={`${outfit.variable} ${inter.variable}`} style={{
       '--theme-primary': hexToRgb(cfg.theme_primary || '#ff0033'),
       '--theme-secondary': hexToRgb(cfg.theme_secondary || '#a855f7'),
       '--theme-accent': hexToRgb(cfg.theme_accent || '#ec4899'),
@@ -52,6 +54,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="bg-bg antialiased">
         <ThemeApplier />
+        <CommandPalette />
+        <ToastContainer />
         <div className="scanlines hidden md:block" />
         <div className="grain-overlay hidden md:block" />
         {children}

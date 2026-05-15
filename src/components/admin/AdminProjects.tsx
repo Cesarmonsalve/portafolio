@@ -3,16 +3,18 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Plus, Edit2, Trash2, Save, X, Image as ImageIcon,
-  Star, Tag, Loader2, Search, Grid3X3, List
+  Star, Tag, Loader2, Search, Grid3X3, List, Eye
 } from 'lucide-react';
 import { initialProjects } from '@/data/projects';
 import { notifyConfigUpdate, saveConfigData } from '@/lib/SiteConfigContext';
 import { loadFromDB } from '@/lib/loadFromDB';
+import { toast } from '@/components/ui/Toast';
 
 interface Project {
   id: string; title: string; category: string; description: string;
   image: string; video?: string; tags: string[]; client?: string;
   featured?: boolean; display_mode?: string; created_at?: string;
+  hidden?: boolean;
 }
 
 interface Props { onUnreadChange?: (n: number) => void; }
@@ -23,6 +25,7 @@ const emptyProject: Project = {
   id: '', title: '', category: CATEGORIES[0], description: '',
   image: '', video: '', tags: [], client: '', featured: false,
   display_mode: 'default', created_at: new Date().toISOString(),
+  hidden: false,
 };
 
 export default function AdminProjects(_props: Props) {
@@ -74,12 +77,30 @@ export default function AdminProjects(_props: Props) {
       setShowForm(false);
       setEditing(null);
       setSaving(false);
+      toast('Proyecto guardado correctamente', 'success');
     }, 400);
   };
 
   const handleDelete = (id: string) => {
     if (!confirm('¿Eliminar este proyecto?')) return;
     save(projects.filter(p => p.id !== id));
+    toast('Proyecto eliminado', 'info');
+  };
+
+  const moveUp = (index: number) => {
+    if (index === 0) return;
+    const newArr = [...projects];
+    [newArr[index - 1], newArr[index]] = [newArr[index], newArr[index - 1]];
+    save(newArr);
+    toast('Orden actualizado', 'success');
+  };
+
+  const moveDown = (index: number) => {
+    if (index === projects.length - 1) return;
+    const newArr = [...projects];
+    [newArr[index + 1], newArr[index]] = [newArr[index], newArr[index + 1]];
+    save(newArr);
+    toast('Orden actualizado', 'success');
   };
 
   const addTag = () => {
@@ -139,7 +160,7 @@ export default function AdminProjects(_props: Props) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
-            className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 group hover:border-zinc-700 transition"
+            className={`glass-premium rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 group transition ${p.hidden ? 'opacity-50' : ''}`}
           >
             {/* Image */}
             <div className="w-full sm:w-20 h-20 rounded-xl bg-zinc-800 overflow-hidden flex-shrink-0">
@@ -180,15 +201,36 @@ export default function AdminProjects(_props: Props) {
 
             {/* Actions */}
             <div className="flex gap-2 flex-shrink-0">
+              {search === '' && (
+                <>
+                  <button onClick={() => moveUp(i)} className="p-2 rounded-lg bg-white/5 text-zinc-400 hover:text-white transition">
+                    ↑
+                  </button>
+                  <button onClick={() => moveDown(i)} className="p-2 rounded-lg bg-white/5 text-zinc-400 hover:text-white transition">
+                    ↓
+                  </button>
+                </>
+              )}
+              <button
+                onClick={() => {
+                  const updated = projects.map(proj => proj.id === p.id ? { ...proj, hidden: !proj.hidden } : proj);
+                  save(updated);
+                  toast(p.hidden ? 'Proyecto público' : 'Proyecto oculto', 'info');
+                }}
+                className={`p-2 rounded-lg bg-white/5 transition ${p.hidden ? 'text-zinc-500 hover:text-white' : 'text-green-400 hover:text-green-300'}`}
+                title={p.hidden ? "Publicar" : "Ocultar"}
+              >
+                <Eye size={16} />
+              </button>
               <button
                 onClick={() => openEdit(p)}
-                className="p-2 rounded-lg bg-zinc-800 text-zinc-400 hover:text-blue-400 hover:bg-blue-900/20 transition"
+                className="p-2 rounded-lg bg-white/5 text-zinc-400 hover:text-blue-400 transition"
               >
                 <Edit2 size={16} />
               </button>
               <button
                 onClick={() => handleDelete(p.id)}
-                className="p-2 rounded-lg bg-zinc-800 text-zinc-400 hover:text-red-400 hover:bg-red-900/20 transition"
+                className="p-2 rounded-lg bg-white/5 text-zinc-400 hover:text-red-400 transition"
               >
                 <Trash2 size={16} />
               </button>

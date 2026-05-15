@@ -1,9 +1,10 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit2, Trash2, Save, X, Loader2, Wrench } from 'lucide-react';
+import { Plus, Edit2, Trash2, Save, X, Loader2, Wrench, ArrowUp, ArrowDown } from 'lucide-react';
 import { notifyConfigUpdate, saveConfigData } from '@/lib/SiteConfigContext';
 import { loadFromDB } from '@/lib/loadFromDB';
+import { toast } from '@/components/ui/Toast';
 
 interface Skill {
   id: string; name: string; level: number; icon: string;
@@ -42,10 +43,32 @@ export default function AdminSkills(_p: Props) {
       const idx = skills.findIndex(s => s.id === editing.id);
       persist(idx >= 0 ? skills.map(s => s.id === editing.id ? editing : s) : [...skills, editing]);
       setShowForm(false); setEditing(null); setSaving(false);
+      toast('Skill guardado', 'success');
     }, 300);
   };
 
-  const del = (id: string) => { if (confirm('¿Eliminar?')) persist(skills.filter(s => s.id !== id)); };
+  const del = (id: string) => { 
+    if (confirm('¿Eliminar?')) {
+      persist(skills.filter(s => s.id !== id)); 
+      toast('Skill eliminado', 'info');
+    }
+  };
+
+  const moveUp = (sk: Skill) => {
+    const idx = skills.findIndex(s => s.id === sk.id);
+    if (idx <= 0) return;
+    const newArr = [...skills];
+    [newArr[idx - 1], newArr[idx]] = [newArr[idx], newArr[idx - 1]];
+    persist(newArr);
+  };
+
+  const moveDown = (sk: Skill) => {
+    const idx = skills.findIndex(s => s.id === sk.id);
+    if (idx === -1 || idx === skills.length - 1) return;
+    const newArr = [...skills];
+    [newArr[idx + 1], newArr[idx]] = [newArr[idx], newArr[idx + 1]];
+    persist(newArr);
+  };
 
   const grouped = CATS.reduce((a, c) => {
     const items = skills.filter(s => s.category === c).sort((x, y) => x.position - y.position);
@@ -77,7 +100,11 @@ export default function AdminSkills(_p: Props) {
             <div className="space-y-2">
               {items.map((sk, i) => (
                 <motion.div key={sk.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-                  className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex items-center gap-4 group hover:border-zinc-700 transition">
+                  className="glass-premium border border-zinc-800/50 rounded-xl p-4 flex items-center gap-4 group hover:border-zinc-700 transition">
+                  <div className="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition mr-1">
+                    <button onClick={() => moveUp(sk)} className="text-zinc-500 hover:text-white p-0.5"><ArrowUp size={12} /></button>
+                    <button onClick={() => moveDown(sk)} className="text-zinc-500 hover:text-white p-0.5"><ArrowDown size={12} /></button>
+                  </div>
                   <span className="text-xl">{sk.icon}</span>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-white">{sk.name}</p>

@@ -95,18 +95,19 @@ export default function Hero() {
 
         {/* CTA Buttons */}
         <div
-          className="flex flex-col sm:flex-row items-center justify-center gap-6 opacity-0 animate-slide-up"
+          className={`flex flex-col sm:flex-row gap-4 sm:gap-6 opacity-0 animate-slide-up ${cfg.hero_name_align === 'left' ? 'justify-start' : cfg.hero_name_align === 'right' ? 'justify-end' : 'justify-center'}`}
           style={{ animationDelay: '0.6s' }}
         >
-          <MagneticButton strength={0.3} className="group rounded-2xl">
-            <a href="#work" className="moving-border-btn flex items-center justify-center gap-3 px-10 py-4 font-display font-bold text-[12px] tracking-[0.1em] text-white">
+          <MagneticButton strength={0.3} className="group rounded-2xl w-full sm:w-auto">
+            <a href="#work" className="moving-border-btn flex items-center justify-center gap-3 px-10 py-4 font-display font-bold text-[12px] tracking-[0.1em] text-white w-full">
               VER TRABAJOS <span className="group-hover:translate-y-1 transition-transform">↓</span>
             </a>
           </MagneticButton>
 
-          <MagneticButton strength={0.15} className="group rounded-2xl">
-            <a href="#contact" className="glass-premium flex items-center justify-center gap-2 px-10 py-4 font-display font-bold text-[12px] text-gray-300 hover:text-white tracking-[0.1em] transition-all rounded-2xl">
-              CONTACTAR
+          <MagneticButton strength={0.15} className="group rounded-2xl w-full sm:w-auto">
+            <a href="https://calendly.com/" target="_blank" rel="noopener noreferrer" className="glass-premium flex items-center justify-center gap-3 px-10 py-4 font-display font-bold text-[12px] text-gray-300 hover:text-white tracking-[0.1em] transition-all rounded-2xl border hover:border-purple-500/30 w-full">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>
+              AGENDAR LLAMADA
             </a>
           </MagneticButton>
         </div>

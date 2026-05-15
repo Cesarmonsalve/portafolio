@@ -183,6 +183,19 @@ export default function AdminStore(_p: Props) {
                 </div>
 
                 <div>
+                  <label className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1 block">Imagen de Portada (URL)</label>
+                  <input value={editing.image || ''} onChange={e => setEditing({ ...editing, image: e.target.value })}
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-teal-500/50 transition" placeholder="https://i.imgur.com/ejemplo.jpg" />
+                  {editing.image && (
+                    <div className="mt-2 relative rounded-xl overflow-hidden border border-zinc-700 h-32">
+                      <img src={editing.image} alt="Preview" className="w-full h-full object-cover" />
+                      <button onClick={() => setEditing({ ...editing, image: '' })} className="absolute top-2 right-2 p-1 rounded-lg bg-black/70 text-white hover:bg-red-600 transition"><X size={14} /></button>
+                    </div>
+                  )}
+                  <p className="text-[10px] text-zinc-500 mt-1">Opcional. Si no pones imagen se mostrará el emoji como portada.</p>
+                </div>
+
+                <div>
                   <div className="flex items-center justify-between mb-2">
                     <label className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">Links de Descarga / Compra</label>
                     <button onClick={() => setEditing({...editing, downloadLinks: [...editing.downloadLinks, {platform: 'Mediafire', url: '', color: '#4285F4'}]})} 

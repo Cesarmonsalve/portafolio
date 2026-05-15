@@ -51,6 +51,7 @@ export interface StoreItem {
   price: string;
   tags: string[];
   emoji: string;
+  image?: string;
   downloadLinks: { platform: string; url: string; color: string }[];
   paymentUrl?: string;
   badge?: string;

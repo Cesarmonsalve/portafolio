@@ -33,6 +33,7 @@ function StoreCard({ item, index }: { item: StoreItem; index: number }) {
   const [expanded, setExpanded] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const catColor = getCatColor(item.category);
+  const isFree = item.price.toUpperCase() === 'GRATIS';
 
   // Mouse spotlight effect
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -49,81 +50,113 @@ function StoreCard({ item, index }: { item: StoreItem; index: number }) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay: index * 0.08, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       onMouseMove={handleMouseMove}
-      className="store-card card-spotlight rounded-2xl bg-white/[0.02] border border-white/[0.06]"
+      className="store-card card-spotlight rounded-2xl bg-white/[0.02] border border-white/[0.06] group"
     >
       {/* Shimmer sweep */}
       <div className="store-shimmer rounded-2xl" />
 
-      {/* Badge */}
-      {item.badge && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8, x: 10 }}
-          animate={{ opacity: 1, scale: 1, x: 0 }}
-          transition={{ delay: index * 0.08 + 0.3 }}
-          className="absolute top-4 right-4 z-20 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider text-white border"
-          style={{ background: `${catColor.bg}`, borderColor: catColor.border }}
-        >
-          {item.badge}
-        </motion.div>
-      )}
+      {/* ═══ COVER IMAGE / HEADER ═══ */}
+      <div className="relative overflow-hidden rounded-t-2xl">
+        {item.image ? (
+          /* Cover image */
+          <div className="relative h-44 overflow-hidden">
+            <img
+              src={item.image}
+              alt={item.title}
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            {/* Gradient overlay for readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-      {/* Header — Mesh gradient with floating emoji */}
-      <div
-        className="store-header-mesh relative p-6 pb-5"
-        style={{ '--cat-color': catColor.glow } as React.CSSProperties}
-      >
-        {/* Decorative dots pattern */}
-        <div className="absolute top-3 right-3 opacity-[0.04] pointer-events-none">
-          <div className="grid grid-cols-4 gap-1.5">
-            {Array.from({ length: 16 }).map((_, i) => (
-              <div key={i} className="w-1 h-1 rounded-full bg-white" />
-            ))}
+            {/* Category pill — on image */}
+            <span
+              className="absolute bottom-3 left-4 z-10 px-3 py-1.5 rounded-full text-[9px] font-semibold tracking-[0.12em] uppercase border backdrop-blur-md"
+              style={{ background: `${catColor.bg.replace('0.08', '0.6')}`, color: '#fff', borderColor: `${catColor.border}` }}
+            >
+              {item.category}
+            </span>
+
+            {/* Emoji floating on image */}
+            <div
+              className="absolute bottom-3 right-4 z-10 w-10 h-10 rounded-xl flex items-center justify-center text-lg border backdrop-blur-md"
+              style={{ background: 'rgba(0,0,0,0.5)', borderColor: 'rgba(255,255,255,0.1)' }}
+            >
+              {item.emoji}
+            </div>
           </div>
-        </div>
+        ) : (
+          /* Fallback: mesh gradient header with big emoji */
+          <div
+            className="store-header-mesh relative p-6 pb-5"
+            style={{ '--cat-color': catColor.glow } as React.CSSProperties}
+          >
+            <div className="absolute top-3 right-3 opacity-[0.04] pointer-events-none">
+              <div className="grid grid-cols-4 gap-1.5">
+                {Array.from({ length: 16 }).map((_, i) => (
+                  <div key={i} className="w-1 h-1 rounded-full bg-white" />
+                ))}
+              </div>
+            </div>
+            <div className="flex items-start justify-between mb-3 relative z-10">
+              <motion.div
+                whileHover={{ scale: 1.15, rotate: [0, -5, 5, 0] }}
+                transition={{ duration: 0.4 }}
+                className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl border"
+                style={{
+                  background: catColor.bg,
+                  borderColor: catColor.border,
+                  boxShadow: `0 8px 32px ${catColor.glow}`,
+                }}
+              >
+                {item.emoji}
+              </motion.div>
+              <span
+                className="px-3 py-1.5 rounded-full text-[9px] font-semibold tracking-[0.12em] uppercase border backdrop-blur-sm"
+                style={{ background: catColor.bg, color: catColor.text, borderColor: catColor.border }}
+              >
+                {item.category}
+              </span>
+            </div>
+          </div>
+        )}
 
-        {/* Emoji icon + category */}
-        <div className="flex items-start justify-between mb-5 relative z-10">
+        {/* Badge — always on top right, never overlapping category */}
+        {item.badge && (
           <motion.div
-            whileHover={{ scale: 1.15, rotate: [0, -5, 5, 0] }}
-            transition={{ duration: 0.4 }}
-            className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl border"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: index * 0.08 + 0.3 }}
+            className="absolute top-3 right-3 z-30 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider text-white border shadow-lg"
             style={{
-              background: catColor.bg,
-              borderColor: catColor.border,
-              boxShadow: `0 8px 32px ${catColor.glow}`,
+              background: 'rgba(255,0,51,0.85)',
+              borderColor: 'rgba(255,255,255,0.15)',
+              boxShadow: '0 4px 16px rgba(255,0,51,0.3)',
             }}
           >
-            {item.emoji}
+            {item.badge}
           </motion.div>
-          <span
-            className="px-3 py-1.5 rounded-full text-[9px] font-semibold tracking-[0.12em] uppercase border backdrop-blur-sm"
-            style={{ background: catColor.bg, color: catColor.text, borderColor: catColor.border }}
-          >
-            {item.category}
-          </span>
-        </div>
-
-        {/* Title */}
-        <h3 className="font-display font-bold text-[16px] text-white mb-2 leading-tight group-hover:text-neon-red transition-colors">
-          {item.title}
-        </h3>
-        <p className="text-[12px] text-gray-500 leading-relaxed line-clamp-2">
-          {item.description}
-        </p>
+        )}
       </div>
 
-      {/* Tags + Actions */}
-      <div className="px-6 pb-6 relative z-10">
+      {/* ═══ CONTENT ═══ */}
+      <div className="px-6 pt-4 pb-2 relative z-10">
+        <h3 className="font-display font-bold text-[16px] text-white mb-1.5 leading-tight group-hover:text-neon-red transition-colors">
+          {item.title}
+        </h3>
+        <p className="text-[12px] text-gray-500 leading-relaxed line-clamp-2 mb-4">
+          {item.description}
+        </p>
+
         {/* Tags */}
-        <div className="flex flex-wrap gap-1.5 mb-5">
+        <div className="flex flex-wrap gap-1.5 mb-4">
           {item.tags.map((tag) => (
             <span
               key={tag}
               className="px-2.5 py-1 rounded-lg text-[10px] font-medium border backdrop-blur-sm"
               style={{
-                background: `${catColor.bg}`,
+                background: catColor.bg,
                 color: catColor.text,
-                borderColor: `${catColor.border}`,
+                borderColor: catColor.border,
                 opacity: 0.7,
               }}
             >
@@ -131,22 +164,23 @@ function StoreCard({ item, index }: { item: StoreItem; index: number }) {
             </span>
           ))}
         </div>
+      </div>
 
+      {/* ═══ ACTIONS — Free vs Paid ═══ */}
+      <div className="px-6 pb-6 relative z-10">
         {/* Price badge */}
         <div className="flex items-center gap-3 mb-4">
-          <div className="flex items-center gap-2">
-            {item.price.toUpperCase() === 'GRATIS' ? (
-              <span className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-1.5 rounded-xl text-[11px] font-bold tracking-wider flex items-center gap-1.5">
-                <Sparkles size={11} />
-                GRATIS
-              </span>
-            ) : (
-              <span className="bg-neon-red/10 border border-neon-red/20 text-neon-red px-4 py-1.5 rounded-xl text-[12px] font-bold tracking-wide">
-                {item.price}
-              </span>
-            )}
-          </div>
-          {item.downloadLinks.length > 0 && (
+          {isFree ? (
+            <span className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-1.5 rounded-xl text-[11px] font-bold tracking-wider flex items-center gap-1.5">
+              <Sparkles size={11} />
+              GRATIS
+            </span>
+          ) : (
+            <span className="bg-neon-red/10 border border-neon-red/20 text-neon-red px-4 py-1.5 rounded-xl text-[12px] font-bold tracking-wide">
+              {item.price}
+            </span>
+          )}
+          {isFree && item.downloadLinks.length > 0 && (
             <span className="text-[10px] text-gray-600 flex items-center gap-1">
               <Download size={10} />
               {item.downloadLinks.length} {item.downloadLinks.length === 1 ? 'link' : 'links'}
@@ -154,25 +188,64 @@ function StoreCard({ item, index }: { item: StoreItem; index: number }) {
           )}
         </div>
 
-        {/* Action button */}
-        {item.price.toUpperCase() === 'GRATIS' ? (
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={() => setExpanded(!expanded)}
-            className="w-full flex items-center justify-center gap-2.5 backdrop-blur-sm border px-4 py-3.5 rounded-xl text-[11px] font-bold tracking-wider transition-all duration-300 group/btn"
-            style={{
-              background: expanded ? catColor.bg : 'rgba(255,255,255,0.03)',
-              borderColor: expanded ? catColor.border : 'rgba(255,255,255,0.06)',
-              color: expanded ? catColor.text : '#d1d5db',
-            }}
-          >
-            <Download size={13} />
-            {expanded ? 'OCULTAR LINKS' : 'VER DESCARGAS'}
-            <motion.div animate={{ rotate: expanded ? 90 : 0 }} transition={{ duration: 0.2 }}>
-              <ArrowRight size={12} />
-            </motion.div>
-          </motion.button>
+        {isFree ? (
+          /* ── FREE: Show download button + expandable links ── */
+          <>
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setExpanded(!expanded)}
+              className="w-full flex items-center justify-center gap-2.5 backdrop-blur-sm border px-4 py-3.5 rounded-xl text-[11px] font-bold tracking-wider transition-all duration-300"
+              style={{
+                background: expanded ? catColor.bg : 'rgba(255,255,255,0.03)',
+                borderColor: expanded ? catColor.border : 'rgba(255,255,255,0.06)',
+                color: expanded ? catColor.text : '#d1d5db',
+              }}
+            >
+              <Download size={13} />
+              {expanded ? 'OCULTAR LINKS' : 'VER DESCARGAS'}
+              <motion.div animate={{ rotate: expanded ? 90 : 0 }} transition={{ duration: 0.2 }}>
+                <ArrowRight size={12} />
+              </motion.div>
+            </motion.button>
+
+            <AnimatePresence>
+              {expanded && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                  className="overflow-hidden"
+                >
+                  <div className="pt-3 space-y-2">
+                    {item.downloadLinks.map((link, idx) => (
+                      <motion.a
+                        key={link.platform}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.08 }}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between gap-3 w-full bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.15] hover:bg-white/[0.04] px-4 py-3 rounded-xl transition-all duration-300 group/link"
+                      >
+                        <span className="text-[11px] font-bold tracking-wide flex items-center gap-2.5 text-gray-300">
+                          <span
+                            className="w-2.5 h-2.5 rounded-full"
+                            style={{ background: link.color }}
+                          />
+                          {link.platform}
+                        </span>
+                        <ExternalLink size={12} className="text-gray-600 group-hover/link:text-white transition-colors" />
+                      </motion.a>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </>
         ) : (
+          /* ── PAID: Only show buy button, no download links ── */
           <motion.a
             whileTap={{ scale: 0.97 }}
             href={item.paymentUrl || '#'}
@@ -185,43 +258,6 @@ function StoreCard({ item, index }: { item: StoreItem; index: number }) {
             <ArrowUpRight size={12} />
           </motion.a>
         )}
-
-        {/* Expandable download links */}
-        <AnimatePresence>
-          {expanded && item.price.toUpperCase() === 'GRATIS' && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="overflow-hidden"
-            >
-              <div className="pt-3 space-y-2">
-                {item.downloadLinks.map((link, idx) => (
-                  <motion.a
-                    key={link.platform}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.08 }}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-between gap-3 w-full bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.15] hover:bg-white/[0.04] px-4 py-3 rounded-xl transition-all duration-300 group/link"
-                  >
-                    <span className="text-[11px] font-bold tracking-wide flex items-center gap-2.5 text-gray-300">
-                      <span
-                        className="w-2.5 h-2.5 rounded-full ring-2 ring-offset-1 ring-offset-black/50"
-                        style={{ background: link.color }}
-                      />
-                      {link.platform}
-                    </span>
-                    <ExternalLink size={12} className="text-gray-600 group-hover/link:text-white transition-colors" />
-                  </motion.a>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </motion.div>
   );

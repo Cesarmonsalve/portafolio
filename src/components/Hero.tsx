@@ -44,7 +44,7 @@ export default function Hero() {
       )}
 
       {/* ═══ CONTENT ═══ */}
-      <div className={`relative z-10 px-6 max-w-5xl mx-auto w-full flex flex-col ${cfg.hero_name_align === 'left' ? 'items-start text-left' : cfg.hero_name_align === 'right' ? 'items-end text-right' : 'items-center text-center'}`}>
+      <div className={`relative z-10 px-6 pt-24 pb-40 max-w-5xl mx-auto w-full flex flex-col ${cfg.hero_name_align === 'left' ? 'items-start text-left' : cfg.hero_name_align === 'right' ? 'items-end text-right' : 'items-center text-center'}`}>
 
         {/* Badge pill */}
         {/* Badge pill */}
@@ -122,7 +122,7 @@ export default function Hero() {
 
       {/* Scroll indicator */}
       <div 
-        className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 opacity-0 animate-fade-in"
+        className="absolute bottom-[80px] left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 opacity-0 animate-fade-in"
         style={{ animationDelay: '1s' }}
       >
         <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
@@ -132,7 +132,7 @@ export default function Hero() {
 
       {/* Marquee — reads from config */}
       <div 
-        className="absolute bottom-0 w-full overflow-hidden border-t border-white/[0.04] bg-black/50 backdrop-blur-xl py-4 z-20 opacity-0 animate-fade-in"
+        className="absolute bottom-0 w-full overflow-hidden bg-gradient-to-t from-black via-black/80 to-transparent pt-16 pb-4 z-20 opacity-0 animate-fade-in"
         style={{ animationDelay: '0.8s' }}
       >
         <div className="animate-marquee cursor-default select-none">

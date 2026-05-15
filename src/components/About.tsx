@@ -54,7 +54,7 @@ export default function About() {
                 <img src={cfg.about_heading_image} alt={cfg.about_heading} className="object-contain" style={{ width: `${cfg.about_heading_scale || 100}%`, maxWidth: '100%', maxHeight: '200px' }} />
               </div>
             ) : (
-              <h2 className={`font-bold leading-tight mb-8 ${hCls} ${cfg.about_heading_align === 'center' ? 'text-center' : cfg.about_heading_align === 'right' ? 'text-right' : 'text-left'}`} style={{ fontFamily: `${cfg.font_display}, sans-serif`, transform: `scale(${(cfg.about_heading_scale || 100) / 100})`, transformOrigin: cfg.about_heading_align === 'center' ? 'center' : cfg.about_heading_align === 'right' ? 'right' : 'left' }}>
+              <h2 className={`font-black leading-tight mb-8 morphing-gradient-text inline-block ${hCls} ${cfg.about_heading_align === 'center' ? 'text-center' : cfg.about_heading_align === 'right' ? 'text-right' : 'text-left'}`} style={{ fontFamily: `${cfg.font_display}, sans-serif`, transform: `scale(${(cfg.about_heading_scale || 100) / 100})`, transformOrigin: cfg.about_heading_align === 'center' ? 'center' : cfg.about_heading_align === 'right' ? 'right' : 'left' }}>
                 {cfg.about_heading}
               </h2>
             )}

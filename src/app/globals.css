@@ -341,8 +341,36 @@ body {
 }
 
 /* ═══════════════════════════════════════════
-   GRADIENT BORDER
+   GRADIENT BORDER & MORPHING GLOW
    ═══════════════════════════════════════════ */
+
+.morphing-gradient-text {
+  background: linear-gradient(
+    to right,
+    var(--theme-primary, #ff0033),
+    var(--theme-secondary, #a855f7),
+    var(--theme-accent, #ec4899),
+    var(--theme-primary, #ff0033)
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: morphing-gradient 6s ease infinite;
+  text-shadow: 0 0 20px rgba(var(--theme-primary-rgb, 255, 0, 51), 0.3);
+  transition: text-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.morphing-gradient-text:hover {
+  text-shadow: 0 0 40px rgba(var(--theme-secondary-rgb, 168, 85, 247), 0.6);
+  transform: scale(1.02);
+}
+
+@keyframes morphing-gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 
 .gradient-border {
   position: relative;

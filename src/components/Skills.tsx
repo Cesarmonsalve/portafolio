@@ -91,7 +91,7 @@ export default function Skills() {
             <span className="w-10 h-[1px] bg-neon-red" />
             <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-neon-red">{cfg.skills_label}</span>
           </div>
-          <h2 className={`font-bold leading-tight mb-4 ${hCls}`} style={{ fontFamily: `${cfg.font_display}, sans-serif` }}>{cfg.skills_heading}</h2>
+          <h2 className={`font-black leading-tight mb-4 morphing-gradient-text inline-block ${hCls}`} style={{ fontFamily: `${cfg.font_display}, sans-serif` }}>{cfg.skills_heading}</h2>
           <p className="text-gray-500 text-sm md:text-base max-w-lg">{cfg.skills_desc}</p>
         </div>
 

@@ -51,7 +51,7 @@ export default function ProjectsGrid() {
           </div>
           
           <h2
-            className={`font-bold mb-6 leading-tight ${hCls}`}
+            className={`font-black mb-6 leading-tight morphing-gradient-text inline-block ${hCls}`}
             style={{ fontFamily: `${cfg.font_display}, sans-serif` }}
           >
             {cfg.projects_heading}

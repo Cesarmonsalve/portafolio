@@ -21,12 +21,12 @@ export default function Hero() {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_100%_100%,rgba(168,85,247,0.08),transparent_60%)] pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_30%_at_0%_80%,rgba(236,72,153,0.06),transparent_50%)] pointer-events-none" />
 
-      {/* Static gradient mesh (no animation = no GPU drain) */}
+      {/* Static gradient mesh (Optimized - No CSS blur, uses radial gradient instead) */}
       <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[120%] h-[60%] opacity-20 pointer-events-none"
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[60%] opacity-30 pointer-events-none"
         style={{
-          background: 'conic-gradient(from 180deg at 50% 50%, rgba(255,0,51,0.15), rgba(168,85,247,0.1), rgba(236,72,153,0.08), rgba(255,0,51,0.15))',
-          filter: 'blur(80px)',
+          background: 'radial-gradient(ellipse at 50% 50%, rgba(255,0,51,0.1) 0%, rgba(168,85,247,0.05) 30%, rgba(236,72,153,0.02) 60%, transparent 100%)',
+          transform: 'translateZ(0)', // Hardware acceleration
         }}
       />
 
@@ -136,20 +136,61 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Marquee — reads from config */}
+      {/* Marquee — reads from config with multiple styles */}
       <div 
         className="absolute bottom-0 w-full overflow-hidden bg-gradient-to-t from-black via-black/80 to-transparent pt-16 pb-4 z-20 opacity-0 animate-fade-in"
         style={{ animationDelay: '0.8s' }}
       >
         <div className="animate-marquee cursor-default select-none">
           {[0, 1].map(rep => (
-            <div key={rep} className="flex items-center gap-8 px-4">
-              {marqueeItems.map((text, i) => (
-                <div key={`${rep}-${i}`} className="flex items-center gap-8 shrink-0">
-                  <span className="font-display font-bold text-[10px] tracking-[0.2em] text-gray-500 uppercase hover:text-gray-300 transition-colors">{text}</span>
-                  <span className="text-[7px] shrink-0 text-neon-red">◆</span>
-                </div>
-              ))}
+            <div key={rep} className="flex items-center px-4" style={{ gap: cfg.marquee_style === 'lasso' ? '3rem' : '2rem' }}>
+              {marqueeItems.map((text, i) => {
+                const style = cfg.marquee_style || 'lasso';
+                
+                if (style === 'minimal') {
+                  return (
+                    <div key={`${rep}-${i}`} className="flex items-center gap-8 shrink-0">
+                      <span className="font-body text-[10px] md:text-xs tracking-[0.3em] text-gray-500 uppercase transition-colors hover:text-white">{text}</span>
+                      <span className="text-[8px] shrink-0 text-gray-800">/</span>
+                    </div>
+                  );
+                }
+                
+                if (style === 'neon') {
+                  return (
+                    <div key={`${rep}-${i}`} className="flex items-center gap-8 shrink-0">
+                      <span className="font-display font-bold text-[11px] tracking-[0.2em] text-white drop-shadow-[0_0_10px_rgba(255,0,51,0.6)] uppercase">{text}</span>
+                      <span className="text-[10px] shrink-0 text-neon-pink animate-pulse">✦</span>
+                    </div>
+                  );
+                }
+                
+                if (style === 'cyberpunk') {
+                  return (
+                    <div key={`${rep}-${i}`} className="flex items-center gap-6 shrink-0">
+                      <span className="bg-neon-red text-black font-display font-black text-[12px] tracking-widest px-3 py-1 uppercase skew-x-[-15deg]">{text}</span>
+                      <span className="text-[12px] shrink-0 text-neon-red px-2 font-black">||</span>
+                    </div>
+                  );
+                }
+                
+                if (style === 'glitch') {
+                  return (
+                    <div key={`${rep}-${i}`} className="flex items-center gap-8 shrink-0">
+                      <span className="font-display font-black text-[12px] tracking-[0.3em] uppercase text-white/90 hover:animate-pulse" style={{ textShadow: '2px 0 #ff0033, -2px 0 #00D1FF' }}>{text}</span>
+                      <span className="text-[10px] shrink-0 text-gray-600">»</span>
+                    </div>
+                  );
+                }
+                
+                // default (lasso)
+                return (
+                  <div key={`${rep}-${i}`} className="flex items-center gap-12 shrink-0">
+                    <span className="font-display font-bold text-lg md:text-xl tracking-widest uppercase morphing-gradient-text" style={{ paddingBottom: '0.15em', marginBottom: '-0.15em' }}>{text}</span>
+                    <span className="text-[8px] shrink-0 text-white/10">●</span>
+                  </div>
+                );
+              })}
             </div>
           ))}
         </div>

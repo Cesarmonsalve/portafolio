@@ -1,6 +1,7 @@
 'use client';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import dynamic from 'next/dynamic';
+import { useInView } from 'framer-motion';
 
 // Lazy-load Lottie for performance — only loads when needed
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
@@ -30,6 +31,9 @@ export default function LottieRenderer({
 }: LottieRendererProps) {
   const [animationData, setAnimationData] = useState<object | null>(null);
   const [error, setError] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const lottieRef = useRef<any>(null);
+  const isInView = useInView(containerRef, { margin: "200px" });
 
   useEffect(() => {
     if (!source) {
@@ -68,6 +72,17 @@ export default function LottieRenderer({
     }
   }, [source]);
 
+  // Pause when out of view to save CPU/Battery
+  useEffect(() => {
+    if (lottieRef.current) {
+      if (isInView && autoplay) {
+        lottieRef.current.play();
+      } else {
+        lottieRef.current.pause();
+      }
+    }
+  }, [isInView, autoplay]);
+
   // Memoize the lottie options so they don't cause re-renders
   const lottieStyle = useMemo(
     () => ({ width: '100%', height: '100%', ...style }),
@@ -77,11 +92,14 @@ export default function LottieRenderer({
   if (!animationData || error) return null;
 
   return (
-    <div className={`lottie-container ${className}`}>
+    <div ref={containerRef} className={`lottie-container ${className}`}>
+      {/* Only render Lottie when it's near the viewport to save RAM, but wait, 
+          mounting/unmounting is heavy. Pausing is enough. */}
       <Lottie
+        lottieRef={lottieRef}
         animationData={animationData}
         loop={loop}
-        autoplay={autoplay}
+        autoplay={autoplay && isInView}
         style={lottieStyle}
         // @ts-expect-error lottie-react speed type
         speed={speed}

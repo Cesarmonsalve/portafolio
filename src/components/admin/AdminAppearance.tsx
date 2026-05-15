@@ -497,6 +497,21 @@ export default function AdminAppearance(_p: Props) {
           {openSections.marquee && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
               <div className="px-5 pb-5 space-y-3">
+                <div className="mb-4">
+                  <label className="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-2">Estilo de Animación</label>
+                  <select
+                    value={cfg.marquee_style || 'lasso'}
+                    onChange={e => setCfg(p => ({ ...p, marquee_style: e.target.value }))}
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-pink-500/50 transition appearance-none"
+                  >
+                    <option value="minimal">Minimalista (Limpio)</option>
+                    <option value="neon">Neón (Brillante)</option>
+                    <option value="lasso">Lazo (Motion Graphic)</option>
+                    <option value="cyberpunk">Cyberpunk (Agresivo)</option>
+                    <option value="glitch">Glitch (Señal Rota)</option>
+                  </select>
+                </div>
+                <div className="h-px w-full bg-zinc-800 my-4" />
                 <p className="text-[10px] text-zinc-600">Los textos que aparecen en la barra animada al fondo del Hero. Separados por item.</p>
                 {(cfg.marquee_items || []).map((item, i) => (
                   <div key={i} className="flex items-center gap-2">

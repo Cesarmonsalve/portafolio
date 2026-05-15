@@ -227,6 +227,7 @@ export interface SiteConfig {
 
   // ── Marquee ──
   marquee_items: string[];
+  marquee_style: string; // 'minimal' | 'neon' | 'lasso' | 'cyberpunk' | 'glitch'
 
   // ── Global Effects ──
   show_cursor: boolean;
@@ -331,6 +332,7 @@ export const DEFAULT_CONFIG: SiteConfig = {
   font_body: 'Inter',
 
   marquee_items: ['Motion Graphics', 'Visual Design', 'Branding', 'Flyer Design', 'After Effects', '3D Animation', 'Cinema 4D', 'Video Editing'],
+  marquee_style: 'lasso',
 
   show_cursor: true,
   show_scroll_progress: true,

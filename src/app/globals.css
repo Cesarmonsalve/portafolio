@@ -347,28 +347,36 @@ body {
 .morphing-gradient-text {
   background: linear-gradient(
     to right,
-    var(--theme-primary, #ff0033),
-    var(--theme-secondary, #a855f7),
-    var(--theme-accent, #ec4899),
-    var(--theme-primary, #ff0033)
+    var(--neon-red) 0%,
+    var(--neon-purple) 25%,
+    var(--neon-pink) 50%,
+    var(--neon-cyan) 75%,
+    var(--neon-red) 100%
   );
-  background-size: 300% 300%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  background-size: 200% auto;
   color: transparent;
-  animation: morphing-gradient 6s ease infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15);
+  animation: lasso-flow 4s linear infinite;
   display: inline-block;
+  /* Anti-clipping fix */
+  padding-bottom: 0.2em;
+  margin-bottom: -0.2em;
+  padding-right: 0.1em;
+  margin-right: -0.1em;
+  line-height: 1.1;
 }
 
 .morphing-gradient-text:hover {
   transform: scale(1.02);
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
 }
 
-@keyframes morphing-gradient {
+@keyframes lasso-flow {
   0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
 }
 
 .gradient-border {

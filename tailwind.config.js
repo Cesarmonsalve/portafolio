@@ -16,8 +16,8 @@ module.exports = {
         border: { DEFAULT: 'rgba(255,255,255,0.06)', hover: 'rgba(255,255,255,0.12)' },
       },
       fontFamily: {
-        display: ['Syne', 'sans-serif'],
-        body: ['Inter', 'sans-serif'],
+        display: ['var(--font-syne)', 'sans-serif'],
+        body: ['var(--font-inter)', 'sans-serif'],
       },
       letterSpacing: {
         'tighter-custom': '-0.03em',
@@ -37,6 +37,7 @@ module.exports = {
         'grain': 'grain 8s steps(10) infinite',
         'reveal': 'reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
         'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'slide-down': 'slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
         'fade-in': 'fadeIn 0.6s ease forwards',
         'progress': 'progressBar 1s cubic-bezier(0.16, 1, 0.3, 1) forwards',
         'shimmer': 'shimmer 2s infinite',
@@ -71,6 +72,10 @@ module.exports = {
         },
         slideUp: {
           from: { opacity: '0', transform: 'translateY(30px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        slideDown: {
+          from: { opacity: '0', transform: 'translateY(-100px)' },
           to: { opacity: '1', transform: 'translateY(0)' },
         },
         fadeIn: {

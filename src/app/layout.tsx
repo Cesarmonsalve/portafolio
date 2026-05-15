@@ -1,7 +1,20 @@
 import type { Metadata } from 'next';
+import { Syne, Inter } from 'next/font/google';
 import { getFullConfig } from '@/lib/config';
 import ThemeApplier from '@/components/ThemeApplier';
 import './globals.css';
+
+const syne = Syne({ 
+  subsets: ['latin'], 
+  variable: '--font-syne',
+  display: 'swap' 
+});
+
+const inter = Inter({ 
+  subsets: ['latin'], 
+  variable: '--font-inter',
+  display: 'swap' 
+});
 
 export const metadata: Metadata = {
   title: 'CM Design — Motion Graphics & Visual Design',
@@ -29,7 +42,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const cfg = await getFullConfig();
 
   return (
-    <html lang="es" style={{
+    <html lang="es" className={`${syne.variable} ${inter.variable}`} style={{
       '--theme-primary': hexToRgb(cfg.theme_primary || '#ff0033'),
       '--theme-secondary': hexToRgb(cfg.theme_secondary || '#a855f7'),
       '--theme-accent': hexToRgb(cfg.theme_accent || '#ec4899'),

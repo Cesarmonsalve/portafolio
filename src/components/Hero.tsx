@@ -47,22 +47,19 @@ export default function Hero() {
       <div className={`relative z-10 px-6 max-w-5xl mx-auto w-full flex flex-col ${cfg.hero_name_align === 'left' ? 'items-start text-left' : cfg.hero_name_align === 'right' ? 'items-end text-right' : 'items-center text-center'}`}>
 
         {/* Badge pill */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="inline-flex items-center gap-2.5 bg-white/[0.03] border border-white/[0.06] px-6 py-2.5 rounded-full mb-10 backdrop-blur-md hover:border-neon-red/30 hover:bg-white/[0.05] transition-all cursor-default"
+        {/* Badge pill */}
+        <div
+          className="inline-flex items-center gap-2.5 bg-white/[0.03] border border-white/[0.06] px-6 py-2.5 rounded-full mb-10 backdrop-blur-md hover:border-neon-red/30 hover:bg-white/[0.05] transition-all cursor-default opacity-0 animate-slide-up"
+          style={{ animationDelay: '0.1s' }}
         >
           <span className="w-2 h-2 rounded-full bg-neon-red animate-pulse" />
           <span className="text-[10px] font-medium tracking-[0.15em] uppercase text-gray-400">{cfg.hero_badge}</span>
-        </motion.div>
+        </div>
 
         {/* Title */}
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className={`mb-6 relative flex flex-col w-full ${cfg.hero_name_align === 'left' ? 'items-start text-left' : cfg.hero_name_align === 'right' ? 'items-end text-right' : 'items-center text-center'}`}
+        <h1
+          className={`mb-6 relative flex flex-col w-full opacity-0 animate-slide-up ${cfg.hero_name_align === 'left' ? 'items-start text-left' : cfg.hero_name_align === 'right' ? 'items-end text-right' : 'items-center text-center'}`}
+          style={{ animationDelay: '0.2s' }}
         >
           <span className="block text-gray-500 text-xs md:text-sm font-medium mb-4 tracking-[0.2em] uppercase" style={{ fontFamily: `${cfg.font_body}, sans-serif` }}>
             Portfolio
@@ -79,33 +76,26 @@ export default function Hero() {
             </div>
           )}
 
-          <motion.span
-            className="block text-lg sm:text-xl md:text-2xl mt-5 gradient-text-animated font-bold"
-            style={{ fontFamily: `${cfg.font_display}, sans-serif` }}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
+          <span
+            className="block text-lg sm:text-xl md:text-2xl mt-5 gradient-text-animated font-bold opacity-0 animate-slide-up"
+            style={{ fontFamily: `${cfg.font_display}, sans-serif`, animationDelay: '0.4s' }}
           >
             {cfg.hero_subtitle.toUpperCase()}
-          </motion.span>
-        </motion.h1>
+          </span>
+        </h1>
 
         {/* Description */}
-        <motion.p
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className={`text-gray-400 text-sm md:text-base max-w-xl mb-14 leading-relaxed ${cfg.hero_name_align === 'center' ? 'mx-auto' : ''}`}
+        <p
+          className={`text-gray-400 text-sm md:text-base max-w-xl mb-14 leading-relaxed opacity-0 animate-slide-up ${cfg.hero_name_align === 'center' ? 'mx-auto' : ''}`}
+          style={{ animationDelay: '0.5s' }}
         >
           {cfg.hero_description}
-        </motion.p>
+        </p>
 
         {/* CTA Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
+        <div
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 opacity-0 animate-slide-up"
+          style={{ animationDelay: '0.6s' }}
         >
           <a href="#work" className="group relative overflow-hidden flex items-center justify-center gap-3 bg-neon-red px-10 py-4 rounded-2xl font-display font-bold text-[12px] tracking-[0.1em] transition-all hover:scale-105 hover:shadow-[0_0_50px_rgba(255,0,51,0.4)] elastic-press" data-cursor-hover>
             <span className="relative z-10 text-white flex items-center gap-2">VER TRABAJOS <span className="group-hover:translate-y-1 transition-transform">↓</span></span>
@@ -114,30 +104,37 @@ export default function Hero() {
           <a href="#contact" className="group flex items-center justify-center gap-2 bg-white/[0.03] border border-white/[0.08] backdrop-blur-md hover:border-neon-red/40 hover:bg-neon-red/[0.06] px-10 py-4 rounded-2xl font-display font-bold text-[12px] text-gray-300 hover:text-white tracking-[0.1em] transition-all hover:scale-105 elastic-press" data-cursor-hover>
             CONTACTAR
           </a>
-        </motion.div>
+        </div>
 
         {/* Stats */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.6 }}
-          className="flex items-center justify-center gap-10 md:gap-16 mt-20 pt-8 border-t border-white/[0.04]">
+        <div 
+          className="flex items-center justify-center gap-10 md:gap-16 mt-20 pt-8 border-t border-white/[0.04] opacity-0 animate-fade-in"
+          style={{ animationDelay: '0.8s' }}
+        >
           {cfg.hero_stats.map((stat, i) => (
-            <motion.div key={stat.label} className="text-center" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 + i * 0.1 }}>
+            <div key={stat.label} className="text-center opacity-0 animate-slide-up" style={{ animationDelay: `${0.9 + i * 0.1}s` }}>
               <div className="text-3xl md:text-4xl font-bold gradient-text-animated" style={{ fontFamily: `${cfg.font_display}, sans-serif` }}>{stat.value}</div>
               <div className="text-[10px] font-medium tracking-[0.12em] uppercase text-gray-500 mt-2">{stat.label}</div>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
 
       {/* Scroll indicator */}
-      <motion.div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
+      <div 
+        className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 opacity-0 animate-fade-in"
+        style={{ animationDelay: '1s' }}
+      >
         <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
           <ArrowDown size={16} className="text-gray-500" />
         </motion.div>
-      </motion.div>
+      </div>
 
       {/* Marquee — reads from config */}
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8, duration: 0.5 }}
-        className="absolute bottom-0 w-full overflow-hidden border-t border-white/[0.04] bg-black/50 backdrop-blur-xl py-4 z-20">
+      <div 
+        className="absolute bottom-0 w-full overflow-hidden border-t border-white/[0.04] bg-black/50 backdrop-blur-xl py-4 z-20 opacity-0 animate-fade-in"
+        style={{ animationDelay: '0.8s' }}
+      >
         <div className="animate-marquee cursor-default select-none">
           {[0, 1].map(rep => (
             <div key={rep} className="flex items-center gap-8 px-4">
@@ -150,7 +147,7 @@ export default function Hero() {
             </div>
           ))}
         </div>
-      </motion.div>
+      </div>
     </SectionWrapper>
   );
 }

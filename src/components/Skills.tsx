@@ -1,5 +1,4 @@
 'use client';
-import { motion } from 'framer-motion';
 import {
   SiCinema4D, SiBlender, SiFigma, SiSketch, SiCanva, SiInvision,
   SiUnity, SiUnrealengine, SiAutodesk, SiHoudini, SiGimp, SiInkscape, SiCoreldraw, SiDavinciresolve
@@ -87,14 +86,14 @@ export default function Skills() {
 
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Header */}
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="mb-14">
+        <div className="mb-14 animate-slide-up">
           <div className="flex items-center gap-3 mb-5">
             <span className="w-10 h-[1px] bg-neon-red" />
             <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-neon-red">{cfg.skills_label}</span>
           </div>
           <h2 className={`font-bold leading-tight mb-4 ${hCls}`} style={{ fontFamily: `${cfg.font_display}, sans-serif` }}>{cfg.skills_heading}</h2>
           <p className="text-gray-500 text-sm md:text-base max-w-lg">{cfg.skills_desc}</p>
-        </motion.div>
+        </div>
 
         {/* Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
@@ -102,29 +101,30 @@ export default function Skills() {
             const brandIcon = getSkillIcon(skill.name);
             const Icon = brandIcon?.icon;
             return (
-              <motion.div key={skill.id}
-                initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                transition={{ delay: index * 0.06, duration: 0.5 }}
-                whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                className="group relative bg-bg border border-white/[0.04] rounded-2xl p-5 hover:border-white/[0.1] transition-all duration-300 overflow-hidden">
+              <div key={skill.id}
+                className="group relative bg-bg border border-white/[0.04] rounded-2xl p-5 hover:border-white/[0.1] hover:-translate-y-1 transition-all duration-300 overflow-hidden opacity-0 animate-slide-up"
+                style={{ animationDelay: `${index * 0.06}s` }}>
                 <div className="absolute top-0 left-0 right-0 h-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                   style={{ background: brandIcon ? `linear-gradient(90deg, transparent, ${brandIcon.color}80, transparent)` : 'linear-gradient(90deg, transparent, rgba(255,0,51,0.5), transparent)' }} />
-                <motion.div className="mb-4" whileHover={{ scale: 1.15, rotate: [-3, 3, 0] }} transition={{ duration: 0.4 }}>
+                <div className="mb-4 hover:scale-110 transition-transform">
                   {brandIcon ? (brandIcon.custom ? <div className="drop-shadow-[0_0_8px_rgba(255,255,255,0.1)]">{brandIcon.custom}</div> : Icon ? <Icon size={28} style={{ color: brandIcon.color }} /> : null) : <span className="text-2xl">{skill.icon}</span>}
-                </motion.div>
+                </div>
                 <h4 className="text-white font-semibold text-sm mb-1" style={{ fontFamily: `${cfg.font_display}, sans-serif` }}>{skill.name}</h4>
                 <span className="inline-block text-[9px] font-bold uppercase tracking-widest text-gray-600 mb-3">{skill.category}</span>
                 <div className="w-full h-1 bg-white/[0.04] rounded-full overflow-hidden">
-                  <motion.div initial={{ width: 0 }} whileInView={{ width: `${skill.level}%` }} viewport={{ once: true }}
-                    transition={{ duration: 1.4, delay: index * 0.08 }} className="h-full rounded-full"
-                    style={{ background: brandIcon ? `linear-gradient(90deg, ${brandIcon.color}55, ${brandIcon.color})` : 'linear-gradient(90deg, #ff0033, #a855f7)',
-                      boxShadow: brandIcon ? `0 0 8px ${brandIcon.color}44` : '0 0 8px rgba(255,0,51,0.3)' }} />
+                  <div className="h-full rounded-full animate-bar-fill"
+                    style={{
+                      width: `${skill.level}%`,
+                      animationDelay: `${index * 0.08}s`,
+                      background: brandIcon ? `linear-gradient(90deg, ${brandIcon.color}55, ${brandIcon.color})` : 'linear-gradient(90deg, #ff0033, #a855f7)',
+                      boxShadow: brandIcon ? `0 0 8px ${brandIcon.color}44` : '0 0 8px rgba(255,0,51,0.3)',
+                    }} />
                 </div>
                 <div className="flex items-center justify-between mt-2">
                   <span className="text-[9px] text-gray-600 uppercase tracking-widest font-bold">Nivel</span>
                   <span className="text-[11px] font-bold" style={{ color: brandIcon?.color || '#ff0033' }}>{skill.level}%</span>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>

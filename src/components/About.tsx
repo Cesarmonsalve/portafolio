@@ -1,5 +1,4 @@
 'use client';
-import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import LottieRenderer from './LottieRenderer';
 import SectionWrapper from './SectionWrapper';
@@ -24,13 +23,7 @@ export default function About() {
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
 
           {/* Left — Photo */}
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-5"
-          >
+          <div className="lg:col-span-5 animate-slide-left">
             <div className="relative group">
               <div className="absolute -inset-3 border border-white/[0.04] rounded-3xl translate-x-2 translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-700" />
               <div className="relative aspect-[3/4] rounded-2xl overflow-hidden border border-white/[0.06] bg-surface shadow-2xl">
@@ -47,16 +40,10 @@ export default function About() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Right — Text */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-            className="lg:col-span-7 pt-2 lg:pt-8"
-          >
+          <div className="lg:col-span-7 pt-2 lg:pt-8 animate-slide-right" style={{ animationDelay: '0.15s' }}>
             <div className="flex items-center gap-3 mb-5">
               <span className="w-10 h-[1px] bg-neon-red" />
               <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-neon-red">{cfg.about_label}</span>
@@ -80,22 +67,22 @@ export default function About() {
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-10 py-8 border-y border-white/[0.05]">
               {(cfg.about_stats || []).map((stat, i) => (
-                <motion.div key={i} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 + i * 0.1 }}>
+                <div key={i} className="opacity-0 animate-slide-up" style={{ animationDelay: `${0.2 + i * 0.1}s` }}>
                   <div className="text-2xl font-bold text-white mb-1" style={{ fontFamily: `${cfg.font_display}, sans-serif` }}>{stat.value}</div>
                   <div className="text-[10px] text-gray-600 uppercase tracking-widest font-bold">{stat.label}</div>
-                </motion.div>
+                </div>
               ))}
             </div>
 
-            <motion.div whileHover={{ x: 5 }} transition={{ type: 'spring', stiffness: 300 }}>
+            <div className="hover:translate-x-1 transition-transform">
               <a href="#contact" className="inline-flex items-center gap-3 group">
                 <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-white group-hover:text-neon-red transition-colors">Hablemos de tu proyecto</span>
                 <div className="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center group-hover:border-neon-red group-hover:bg-neon-red transition-all duration-300">
                   <ArrowRight size={14} />
                 </div>
               </a>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </div>
       </div>
     </SectionWrapper>

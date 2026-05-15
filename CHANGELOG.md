@@ -63,7 +63,16 @@ Registro cronológico de todas las modificaciones realizadas al proyecto.
 
 ### ⚡ Eliminación de Framer-Motion (Páginas Públicas)
 - **Tienda** (`src/app/tienda/page.tsx`): Eliminada completamente la dependencia de `framer-motion`. Reemplazada por clases CSS nativas (`animate-slide-up`, `animate-fade-in`).
-- Reducción de JS: 5.37kB → 5.15kB.
+- **Footer** (`src/components/Footer.tsx`): Eliminada `motion` completamente. Hover effects ahora son CSS puro.
+- **About** (`src/components/About.tsx`): Reemplazadas `motion.div` (whileInView) por `animate-slide-left`, `animate-slide-right`.
+- **Skills** (`src/components/Skills.tsx`): Eliminadas animaciones `motion.div` y `motion.div` para barras. Ahora usan `animate-slide-up` y `animate-bar-fill` (CSS).
+- **Contact** (`src/components/Contact.tsx`): Eliminadas `motion.div`, `motion.a`, `motion.button` y `AnimatePresence`. Reemplazadas con animaciones CSS.
+
+### 🎨 Sistema de Animaciones CSS (globals.css)
+- **Nuevas clases**: `animate-slide-up`, `animate-fade-in`, `animate-slide-left`, `animate-slide-right`, `animate-bar-fill`.
+- Todas usan `cubic-bezier(0.16, 1, 0.3, 1)` para curvas orgánicas premium.
+- Se ejecutan 100% en el compositor GPU (off-main-thread), no bloquean el rendering.
+- Reducción de JS: 5.37kB → 5.15kB (tienda).
 
 ### 🔧 Font Loading
 - Eliminado `@import` de Google Fonts. Migrado a `next/font/google` con `display: 'swap'`.

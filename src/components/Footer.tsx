@@ -1,5 +1,4 @@
 'use client';
-import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowUp } from 'lucide-react';
 import LottieRenderer from './LottieRenderer';
@@ -32,29 +31,29 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Top */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-16">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
+          <div className="animate-slide-up">
             <div className="text-[9px] font-bold tracking-[0.25em] text-neon-red uppercase mb-3">{cfg.footer_brand}</div>
             <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight" style={{ fontFamily: `${cfg.font_display}, sans-serif` }}>
               {cfg.footer_brand_sub}
             </h2>
-          </motion.div>
+          </div>
 
-          <motion.button onClick={scrollToTop} whileHover={{ scale: 1.1, y: -2 }} whileTap={{ scale: 0.95 }}
-            className="group flex items-center gap-3 px-5 py-3 bg-white/[0.03] border border-white/[0.06] rounded-2xl hover:border-neon-red/30 hover:bg-neon-red/[0.05] transition-all duration-300">
+          <button onClick={scrollToTop}
+            className="group flex items-center gap-3 px-5 py-3 bg-white/[0.03] border border-white/[0.06] rounded-2xl hover:border-neon-red/30 hover:bg-neon-red/[0.05] hover:scale-105 hover:-translate-y-0.5 active:scale-95 transition-all duration-300">
             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 group-hover:text-white transition-colors">Volver al inicio</span>
             <div className="w-8 h-8 bg-white/[0.04] rounded-xl flex items-center justify-center group-hover:bg-neon-red transition-all duration-300">
               <ArrowUp size={14} />
             </div>
-          </motion.button>
+          </button>
         </div>
 
         {/* Logo + Nav */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-10">
-          <motion.a href="/#home" className="flex items-center" whileHover={{ scale: 1.05 }}>
+          <a href="/#home" className="flex items-center hover:scale-105 transition-transform">
             <div className="relative w-28 h-8 flex items-center justify-start">
               <img src={cfg.logo_url || '/logo.png'} alt="Logo" className="w-full h-full object-contain object-left" />
             </div>
-          </motion.a>
+          </a>
           <div className="flex flex-wrap items-center justify-center gap-6">
             {navLinks.map(link => (
               <Link key={link.href} href={link.href} className="text-[11px] font-medium tracking-[0.12em] uppercase text-gray-600 hover:text-white transition-colors relative group">

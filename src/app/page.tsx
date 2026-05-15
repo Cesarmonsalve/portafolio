@@ -2,16 +2,17 @@
 import dynamic from 'next/dynamic';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
-import ProjectsGrid from '@/components/ProjectsGrid';
-import About from '@/components/About';
-import Skills from '@/components/Skills';
-import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 import ScrollProgress from '@/components/ScrollProgress';
 import { SiteConfigProvider, useSiteConfig } from '@/lib/SiteConfigContext';
 import type { ReactElement } from 'react';
 
+// Lazy load everything below the fold — they only mount when needed
 const CustomCursor = dynamic(() => import('@/components/CustomCursor'), { ssr: false });
+const ProjectsGrid = dynamic(() => import('@/components/ProjectsGrid'), { ssr: false });
+const About = dynamic(() => import('@/components/About'), { ssr: false });
+const Skills = dynamic(() => import('@/components/Skills'), { ssr: false });
+const Contact = dynamic(() => import('@/components/Contact'), { ssr: false });
 
 /**
  * Inner component that reads config for section ordering, visibility, and global effects.

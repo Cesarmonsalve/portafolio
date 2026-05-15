@@ -20,15 +20,13 @@ export default function Hero() {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_100%_100%,rgba(168,85,247,0.08),transparent_60%)] pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_30%_at_0%_80%,rgba(236,72,153,0.06),transparent_50%)] pointer-events-none" />
 
-      {/* Animated gradient mesh */}
-      <motion.div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[120%] h-[60%] opacity-30 pointer-events-none"
+      {/* Static gradient mesh (no animation = no GPU drain) */}
+      <div
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[120%] h-[60%] opacity-20 pointer-events-none"
         style={{
           background: 'conic-gradient(from 180deg at 50% 50%, rgba(255,0,51,0.15), rgba(168,85,247,0.1), rgba(236,72,153,0.08), rgba(255,0,51,0.15))',
-          filter: 'blur(100px)',
+          filter: 'blur(80px)',
         }}
-        animate={{ rotate: [0, 360] }}
-        transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
       />
 
       {/* Subtle grid */}
@@ -50,9 +48,9 @@ export default function Hero() {
 
         {/* Badge pill */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.8, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2, type: 'spring', stiffness: 100 }}
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
           className="inline-flex items-center gap-2.5 bg-white/[0.03] border border-white/[0.06] px-6 py-2.5 rounded-full mb-10 backdrop-blur-md hover:border-neon-red/30 hover:bg-white/[0.05] transition-all cursor-default"
         >
           <span className="w-2 h-2 rounded-full bg-neon-red animate-pulse" />
@@ -61,9 +59,9 @@ export default function Hero() {
 
         {/* Title */}
         <motion.h1
-          initial={{ opacity: 0, y: 50, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 1.2, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
           className={`mb-6 relative flex flex-col w-full ${cfg.hero_name_align === 'left' ? 'items-start text-left' : cfg.hero_name_align === 'right' ? 'items-end text-right' : 'items-center text-center'}`}
         >
           <span className="block text-gray-500 text-xs md:text-sm font-medium mb-4 tracking-[0.2em] uppercase" style={{ fontFamily: `${cfg.font_body}, sans-serif` }}>
@@ -84,9 +82,9 @@ export default function Hero() {
           <motion.span
             className="block text-lg sm:text-xl md:text-2xl mt-5 gradient-text-animated font-bold"
             style={{ fontFamily: `${cfg.font_display}, sans-serif` }}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9, duration: 0.8 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
           >
             {cfg.hero_subtitle.toUpperCase()}
           </motion.span>
@@ -94,9 +92,9 @@ export default function Hero() {
 
         {/* Description */}
         <motion.p
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
           className={`text-gray-400 text-sm md:text-base max-w-xl mb-14 leading-relaxed ${cfg.hero_name_align === 'center' ? 'mx-auto' : ''}`}
         >
           {cfg.hero_description}
@@ -104,9 +102,9 @@ export default function Hero() {
 
         {/* CTA Buttons */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 1.1 }}
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <a href="#work" className="group relative overflow-hidden flex items-center justify-center gap-3 bg-neon-red px-10 py-4 rounded-2xl font-display font-bold text-[12px] tracking-[0.1em] transition-all hover:scale-105 hover:shadow-[0_0_50px_rgba(255,0,51,0.4)] elastic-press" data-cursor-hover>
@@ -119,10 +117,10 @@ export default function Hero() {
         </motion.div>
 
         {/* Stats */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 1.5 }}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.6 }}
           className="flex items-center justify-center gap-10 md:gap-16 mt-20 pt-8 border-t border-white/[0.04]">
           {cfg.hero_stats.map((stat, i) => (
-            <motion.div key={stat.label} className="text-center" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.6 + i * 0.15 }}>
+            <motion.div key={stat.label} className="text-center" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 + i * 0.1 }}>
               <div className="text-3xl md:text-4xl font-bold gradient-text-animated" style={{ fontFamily: `${cfg.font_display}, sans-serif` }}>{stat.value}</div>
               <div className="text-[10px] font-medium tracking-[0.12em] uppercase text-gray-500 mt-2">{stat.label}</div>
             </motion.div>
@@ -131,14 +129,14 @@ export default function Hero() {
       </div>
 
       {/* Scroll indicator */}
-      <motion.div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }}>
+      <motion.div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
         <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
           <ArrowDown size={16} className="text-gray-500" />
         </motion.div>
       </motion.div>
 
       {/* Marquee — reads from config */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 2, duration: 1 }}
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8, duration: 0.5 }}
         className="absolute bottom-0 w-full overflow-hidden border-t border-white/[0.04] bg-black/50 backdrop-blur-xl py-4 z-20">
         <div className="animate-marquee cursor-default select-none">
           {[0, 1].map(rep => (

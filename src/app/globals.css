@@ -357,12 +357,13 @@ body {
   background-clip: text;
   color: transparent;
   animation: morphing-gradient 6s ease infinite;
-  text-shadow: 0 0 20px rgba(var(--theme-primary-rgb, 255, 0, 51), 0.3);
-  transition: text-shadow 0.3s ease, transform 0.3s ease;
+  filter: drop-shadow(0 0 15px rgba(255, 0, 51, 0.4));
+  transition: filter 0.3s ease, transform 0.3s ease;
+  display: inline-block;
 }
 
 .morphing-gradient-text:hover {
-  text-shadow: 0 0 40px rgba(var(--theme-secondary-rgb, 168, 85, 247), 0.6);
+  filter: drop-shadow(0 0 25px rgba(168, 85, 247, 0.7));
   transform: scale(1.02);
 }
 

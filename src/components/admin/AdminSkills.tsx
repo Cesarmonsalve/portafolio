@@ -1,10 +1,17 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit2, Trash2, Save, X, Loader2, Wrench, ArrowUp, ArrowDown } from 'lucide-react';
+import { Plus, Edit2, Trash2, Save, X, Loader2, Wrench, ArrowUp, ArrowDown, GripVertical } from 'lucide-react';
 import { notifyConfigUpdate, saveConfigData } from '@/lib/SiteConfigContext';
 import { loadFromDB } from '@/lib/loadFromDB';
 import { toast } from '@/components/ui/Toast';
+import {
+  DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent
+} from '@dnd-kit/core';
+import {
+  arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface Skill {
   id: string; name: string; level: number; icon: string;
@@ -15,6 +22,34 @@ interface Props { onUnreadChange?: (n: number) => void; }
 
 const CATS = ['Design', 'Motion', '3D', 'Tools', 'Other'];
 const ICONS = ['🎨','🎬','✏️','🖥️','📐','🎯','🔥','💎','⚡','🎮','📸','🎵'];
+
+function SortableSkillItem({ skill, onEdit, onDelete }: { skill: Skill, onEdit: () => void, onDelete: () => void }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: skill.id });
+  const style = { transform: CSS.Transform.toString(transform), transition, zIndex: isDragging ? 10 : 1 };
+
+  return (
+    <motion.div ref={setNodeRef} style={style} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+      className={`glass-premium border border-zinc-800/50 rounded-xl p-3 flex items-center gap-4 group hover:border-zinc-700 transition ${isDragging ? 'shadow-2xl ring-2 ring-purple-500 scale-[1.02]' : ''}`}>
+      <div {...attributes} {...listeners} className="p-2 -ml-2 text-zinc-600 hover:text-white cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition">
+        <GripVertical size={20} />
+      </div>
+      <span className="w-10 h-10 bg-zinc-800 rounded-lg flex items-center justify-center text-xl flex-shrink-0">{skill.icon}</span>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-bold text-white truncate mb-1">{skill.name}</p>
+        <div className="flex items-center gap-2">
+          <div className="flex-1 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-purple-600 to-violet-500" style={{ width: `${skill.level}%` }} />
+          </div>
+          <span className="text-[10px] font-bold text-zinc-500 w-8">{skill.level}%</span>
+        </div>
+      </div>
+      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition flex-shrink-0">
+        <button onClick={onEdit} className="p-1.5 rounded-lg text-zinc-500 hover:text-blue-400 hover:bg-blue-900/20 transition"><Edit2 size={14} /></button>
+        <button onClick={onDelete} className="p-1.5 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-red-900/20 transition"><Trash2 size={14} /></button>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function AdminSkills(_p: Props) {
   const [skills, setSkills] = useState<Skill[]>([]);
@@ -54,20 +89,26 @@ export default function AdminSkills(_p: Props) {
     }
   };
 
-  const moveUp = (sk: Skill) => {
-    const idx = skills.findIndex(s => s.id === sk.id);
-    if (idx <= 0) return;
-    const newArr = [...skills];
-    [newArr[idx - 1], newArr[idx]] = [newArr[idx], newArr[idx - 1]];
-    persist(newArr);
-  };
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
 
-  const moveDown = (sk: Skill) => {
-    const idx = skills.findIndex(s => s.id === sk.id);
-    if (idx === -1 || idx === skills.length - 1) return;
-    const newArr = [...skills];
-    [newArr[idx + 1], newArr[idx]] = [newArr[idx], newArr[idx + 1]];
-    persist(newArr);
+  const handleDragEnd = (event: DragEndEvent, catItems: Skill[]) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = catItems.findIndex((i) => i.id === active.id);
+      const newIndex = catItems.findIndex((i) => i.id === over.id);
+      const newCatArr = arrayMove(catItems, oldIndex, newIndex);
+      
+      // Update positions
+      const updatedCatArr = newCatArr.map((item, idx) => ({ ...item, position: idx }));
+      
+      // Merge with main items array
+      const nonCatItems = skills.filter(i => i.category !== (catItems[0]?.category || ''));
+      persist([...nonCatItems, ...updatedCatArr]);
+      toast('Orden actualizado', 'success');
+    }
   };
 
   const grouped = CATS.reduce((a, c) => {
@@ -97,30 +138,15 @@ export default function AdminSkills(_p: Props) {
         Object.entries(grouped).map(([cat, items]) => (
           <div key={cat}>
             <h3 className="text-sm font-bold text-zinc-400 uppercase tracking-widest mb-3">{cat}</h3>
-            <div className="space-y-2">
-              {items.map((sk, i) => (
-                <motion.div key={sk.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-                  className="glass-premium border border-zinc-800/50 rounded-xl p-4 flex items-center gap-4 group hover:border-zinc-700 transition">
-                  <div className="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition mr-1">
-                    <button onClick={() => moveUp(sk)} className="text-zinc-500 hover:text-white p-0.5"><ArrowUp size={12} /></button>
-                    <button onClick={() => moveDown(sk)} className="text-zinc-500 hover:text-white p-0.5"><ArrowDown size={12} /></button>
-                  </div>
-                  <span className="text-xl">{sk.icon}</span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-white">{sk.name}</p>
-                    <div className="mt-1.5 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-                      <motion.div initial={{ width: 0 }} animate={{ width: `${sk.level}%` }} transition={{ duration: 0.8 }}
-                        className="h-full rounded-full bg-gradient-to-r from-purple-600 to-violet-400" />
-                    </div>
-                  </div>
-                  <span className="text-sm font-mono text-zinc-500">{sk.level}%</span>
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition">
-                    <button onClick={() => openEdit(sk)} className="p-1.5 rounded-lg text-zinc-500 hover:text-blue-400 hover:bg-blue-900/20 transition"><Edit2 size={14} /></button>
-                    <button onClick={() => del(sk.id)} className="p-1.5 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-red-900/20 transition"><Trash2 size={14} /></button>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, items)}>
+              <SortableContext items={items.map(i => i.id)} strategy={verticalListSortingStrategy}>
+                <div className="space-y-2">
+                  {items.map((skill) => (
+                    <SortableSkillItem key={skill.id} skill={skill} onEdit={() => openEdit(skill)} onDelete={() => del(skill.id)} />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
           </div>
         ))
       )}

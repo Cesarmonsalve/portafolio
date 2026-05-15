@@ -5,7 +5,18 @@ import {
   FolderKanban, MessageSquare, Wrench, Eye, TrendingUp,
   Clock, Activity, ArrowUpRight, BarChart3, Plus, Settings, ExternalLink
 } from 'lucide-react';
+import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useSiteConfig } from '@/lib/SiteConfigContext';
+
+const mockChartData = [
+  { name: 'Lun', visitas: 120 },
+  { name: 'Mar', visitas: 210 },
+  { name: 'Mié', visitas: 180 },
+  { name: 'Jue', visitas: 340 },
+  { name: 'Vie', visitas: 280 },
+  { name: 'Sáb', visitas: 410 },
+  { name: 'Dom', visitas: 520 },
+];
 
 interface Props { 
   onUnreadChange?: (n: number) => void;
@@ -163,35 +174,38 @@ export default function AdminDashboard({ onUnreadChange, setActiveTab }: Props) 
             </div>
           </motion.div>
 
-          {/* System Status */}
+          {/* Analytics Chart */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
             className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"
           >
-            <h3 className="font-bold text-white flex items-center gap-2 mb-4">
-              <Activity size={16} className="text-green-400" />
-              Estado del Sistema
-            </h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-zinc-500">Base de Datos</span>
-                <span className="text-zinc-300">LocalStorage</span>
-              </div>
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-zinc-500">Persistencia</span>
-                <span className="text-green-500 font-bold">Activa</span>
-              </div>
-              <div className="pt-2">
-                <div className="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
-                  <motion.div 
-                    initial={{ width: 0 }} 
-                    animate={{ width: '100%' }} 
-                    className="h-full bg-green-500" 
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold text-white flex items-center gap-2">
+                <BarChart3 size={16} className="text-green-400" />
+                Tráfico Estimado
+              </h3>
+              <span className="text-xs text-green-400 font-bold bg-green-400/10 px-2 py-1 rounded-md">+24%</span>
+            </div>
+            
+            <div className="h-[120px] w-full mt-2">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={mockChartData} margin={{ top: 5, right: 0, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorVisitas" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#4ade80" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#4ade80" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', fontSize: '12px', color: '#fff' }}
+                    itemStyle={{ color: '#4ade80', fontWeight: 'bold' }}
+                    cursor={{ stroke: '#27272a', strokeWidth: 1 }}
                   />
-                </div>
-              </div>
+                  <Area type="monotone" dataKey="visitas" stroke="#4ade80" strokeWidth={3} fillOpacity={1} fill="url(#colorVisitas)" />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
           </motion.div>
         </div>

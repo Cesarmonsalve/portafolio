@@ -1,16 +1,53 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit2, Trash2, Save, X, Loader2, Store, ShoppingBag, Link as LinkIcon, ArrowUp, ArrowDown } from 'lucide-react';
+import { Plus, Edit2, Trash2, Save, X, Loader2, Store, ShoppingBag, Link as LinkIcon, ArrowUp, ArrowDown, GripVertical } from 'lucide-react';
 import { notifyConfigUpdate, saveConfigData } from '@/lib/SiteConfigContext';
 import type { StoreItem } from '@/lib/config';
 import { loadFromDB } from '@/lib/loadFromDB';
 import { toast } from '@/components/ui/Toast';
+import {
+  DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent
+} from '@dnd-kit/core';
+import {
+  arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface Props { onUnreadChange?: (n: number) => void; }
 
 const CATS = ['Templates', 'Presets', 'Assets', 'Plugins', 'Otros'];
 const EMOJIS = ['🎨','⚡','🖼️','🎮','📱','🎬','🔥','💎','🎵','📦'];
+
+function SortableStoreItem({ item, onEdit, onDelete }: { item: StoreItem, onEdit: () => void, onDelete: () => void }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id });
+  const style = { transform: CSS.Transform.toString(transform), transition, zIndex: isDragging ? 10 : 1 };
+
+  return (
+    <motion.div ref={setNodeRef} style={style} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+      className={`glass-premium border border-zinc-800/50 rounded-xl p-4 flex items-center gap-4 group hover:border-zinc-700 transition ${isDragging ? 'shadow-2xl ring-2 ring-teal-500 scale-[1.02]' : ''}`}>
+      <div {...attributes} {...listeners} className="p-2 -ml-2 text-zinc-600 hover:text-white cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition">
+        <GripVertical size={20} />
+      </div>
+      <span className="w-12 h-12 bg-zinc-800 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">{item.emoji}</span>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-1">
+          <p className="text-sm font-bold text-white truncate">{item.title}</p>
+          {item.badge && <span className="bg-neon-red/20 text-neon-red px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wide flex-shrink-0">{item.badge}</span>}
+        </div>
+        <p className="text-xs text-zinc-400 truncate">{item.description}</p>
+        <div className="flex gap-2 mt-2">
+          <span className="text-[10px] font-mono text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded">{item.price}</span>
+          <span className="text-[10px] text-zinc-500 flex items-center gap-1"><LinkIcon size={10} /> {item.downloadLinks.length} Links</span>
+        </div>
+      </div>
+      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition flex-shrink-0">
+        <button onClick={onEdit} className="p-1.5 rounded-lg text-zinc-500 hover:text-blue-400 hover:bg-blue-900/20 transition"><Edit2 size={14} /></button>
+        <button onClick={onDelete} className="p-1.5 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-red-900/20 transition"><Trash2 size={14} /></button>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function AdminStore(_p: Props) {
   const [items, setItems] = useState<StoreItem[]>([]);
@@ -69,22 +106,26 @@ export default function AdminStore(_p: Props) {
     }
   };
 
-  const moveUp = (item: StoreItem) => {
-    const idx = items.findIndex(i => i.id === item.id);
-    if (idx <= 0) return;
-    const newArr = [...items];
-    [newArr[idx - 1], newArr[idx]] = [newArr[idx], newArr[idx - 1]];
-    persist(newArr);
-    toast('Orden actualizado', 'success');
-  };
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
 
-  const moveDown = (item: StoreItem) => {
-    const idx = items.findIndex(i => i.id === item.id);
-    if (idx === -1 || idx === items.length - 1) return;
-    const newArr = [...items];
-    [newArr[idx + 1], newArr[idx]] = [newArr[idx], newArr[idx + 1]];
-    persist(newArr);
-    toast('Orden actualizado', 'success');
+  const handleDragEnd = (event: DragEndEvent, catItems: StoreItem[]) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = catItems.findIndex((i) => i.id === active.id);
+      const newIndex = catItems.findIndex((i) => i.id === over.id);
+      const newCatArr = arrayMove(catItems, oldIndex, newIndex);
+      
+      // Update positions
+      const updatedCatArr = newCatArr.map((item, idx) => ({ ...item, position: idx }));
+      
+      // Merge with main items array
+      const nonCatItems = items.filter(i => i.category !== (catItems[0]?.category || ''));
+      persist([...nonCatItems, ...updatedCatArr]);
+      toast('Orden actualizado', 'success');
+    }
   };
 
   const grouped = CATS.reduce((a, c) => {
@@ -120,33 +161,15 @@ export default function AdminStore(_p: Props) {
         Object.entries(grouped).map(([cat, catItems]) => (
           <div key={cat}>
             <h3 className="text-sm font-bold text-zinc-400 uppercase tracking-widest mb-3">{cat}</h3>
-            <div className="space-y-2">
-              {catItems.map((item, i) => (
-                <motion.div key={item.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-                  className="glass-premium border border-zinc-800/50 rounded-xl p-4 flex items-center gap-4 group hover:border-zinc-700 transition">
-                  <div className="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition">
-                    <button onClick={() => moveUp(item)} className="text-zinc-500 hover:text-white p-0.5"><ArrowUp size={12} /></button>
-                    <button onClick={() => moveDown(item)} className="text-zinc-500 hover:text-white p-0.5"><ArrowDown size={12} /></button>
-                  </div>
-                  <span className="w-12 h-12 bg-zinc-800 rounded-xl flex items-center justify-center text-2xl">{item.emoji}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <p className="text-sm font-bold text-white truncate">{item.title}</p>
-                      {item.badge && <span className="bg-neon-red/20 text-neon-red px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wide">{item.badge}</span>}
-                    </div>
-                    <p className="text-xs text-zinc-400 truncate">{item.description}</p>
-                    <div className="flex gap-2 mt-2">
-                      <span className="text-[10px] font-mono text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded">{item.price}</span>
-                      <span className="text-[10px] text-zinc-500 flex items-center gap-1"><LinkIcon size={10} /> {item.downloadLinks.length} Links</span>
-                    </div>
-                  </div>
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition">
-                    <button onClick={() => openEdit(item)} className="p-1.5 rounded-lg text-zinc-500 hover:text-blue-400 hover:bg-blue-900/20 transition"><Edit2 size={14} /></button>
-                    <button onClick={() => del(item.id)} className="p-1.5 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-red-900/20 transition"><Trash2 size={14} /></button>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, catItems)}>
+              <SortableContext items={catItems.map(i => i.id)} strategy={verticalListSortingStrategy}>
+                <div className="space-y-2">
+                  {catItems.map((item) => (
+                    <SortableStoreItem key={item.id} item={item} onEdit={() => openEdit(item)} onDelete={() => del(item.id)} />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
           </div>
         ))
       )}

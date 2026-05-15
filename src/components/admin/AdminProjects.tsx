@@ -3,12 +3,19 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Plus, Edit2, Trash2, Save, X, Image as ImageIcon,
-  Star, Tag, Loader2, Search, Grid3X3, List, Eye
+  Star, Tag, Loader2, Search, Grid3X3, List, Eye, GripVertical
 } from 'lucide-react';
 import { initialProjects } from '@/data/projects';
 import { notifyConfigUpdate, saveConfigData } from '@/lib/SiteConfigContext';
 import { loadFromDB } from '@/lib/loadFromDB';
 import { toast } from '@/components/ui/Toast';
+import {
+  DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent
+} from '@dnd-kit/core';
+import {
+  arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface Project {
   id: string; title: string; category: string; description: string;
@@ -27,6 +34,48 @@ const emptyProject: Project = {
   display_mode: 'default', created_at: new Date().toISOString(),
   hidden: false,
 };
+
+function SortableProjectItem({ p, search, onToggleVisibility, onEdit, onDelete }: { p: Project, search: string, onToggleVisibility: () => void, onEdit: () => void, onDelete: () => void }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: p.id });
+  const style = { transform: CSS.Transform.toString(transform), transition, zIndex: isDragging ? 10 : 1 };
+
+  return (
+    <motion.div
+      ref={setNodeRef} style={style}
+      initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+      className={`glass-premium rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 group transition ${p.hidden ? 'opacity-50' : ''} ${isDragging ? 'shadow-2xl ring-2 ring-red-500 scale-[1.02]' : ''}`}
+    >
+      <div {...attributes} {...listeners} className="p-2 -ml-2 text-zinc-600 hover:text-white cursor-grab active:cursor-grabbing">
+        <GripVertical size={20} />
+      </div>
+
+      <div className="w-full sm:w-20 h-20 rounded-xl bg-zinc-800 overflow-hidden flex-shrink-0">
+        {p.image ? <img src={p.image} alt={p.title} className="w-full h-full object-cover pointer-events-none" /> : <div className="w-full h-full flex items-center justify-center"><ImageIcon size={20} className="text-zinc-600" /></div>}
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-1">
+          <h3 className="font-bold text-white truncate">{p.title}</h3>
+          {p.featured && <Star size={14} className="text-yellow-400 fill-yellow-400 flex-shrink-0" />}
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-xs px-2 py-0.5 rounded-full bg-red-900/30 text-red-400 border border-red-800/30">{p.category}</span>
+          {p.client && <span className="text-xs text-zinc-500">• {p.client}</span>}
+        </div>
+        <div className="flex gap-1.5 mt-2 flex-wrap">
+          {p.tags.slice(0, 3).map(t => <span key={t} className="text-xs px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400">{t}</span>)}
+          {p.tags.length > 3 && <span className="text-xs text-zinc-600">+{p.tags.length - 3}</span>}
+        </div>
+      </div>
+
+      <div className="flex gap-2 flex-shrink-0">
+        <button onClick={onToggleVisibility} className={`p-2 rounded-lg bg-white/5 transition ${p.hidden ? 'text-zinc-500 hover:text-white' : 'text-green-400 hover:text-green-300'}`} title={p.hidden ? "Publicar" : "Ocultar"}><Eye size={16} /></button>
+        <button onClick={onEdit} className="p-2 rounded-lg bg-white/5 text-zinc-400 hover:text-blue-400 transition"><Edit2 size={16} /></button>
+        <button onClick={onDelete} className="p-2 rounded-lg bg-white/5 text-zinc-400 hover:text-red-400 transition"><Trash2 size={16} /></button>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function AdminProjects(_props: Props) {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -87,20 +136,20 @@ export default function AdminProjects(_props: Props) {
     toast('Proyecto eliminado', 'info');
   };
 
-  const moveUp = (index: number) => {
-    if (index === 0) return;
-    const newArr = [...projects];
-    [newArr[index - 1], newArr[index]] = [newArr[index], newArr[index - 1]];
-    save(newArr);
-    toast('Orden actualizado', 'success');
-  };
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
 
-  const moveDown = (index: number) => {
-    if (index === projects.length - 1) return;
-    const newArr = [...projects];
-    [newArr[index + 1], newArr[index]] = [newArr[index], newArr[index + 1]];
-    save(newArr);
-    toast('Orden actualizado', 'success');
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = projects.findIndex((p) => p.id === active.id);
+      const newIndex = projects.findIndex((p) => p.id === over.id);
+      const newArr = arrayMove(projects, oldIndex, newIndex);
+      save(newArr);
+      toast('Orden actualizado', 'success');
+    }
   };
 
   const addTag = () => {
@@ -153,94 +202,29 @@ export default function AdminProjects(_props: Props) {
       </div>
 
       {/* Projects List */}
-      <div className="space-y-3">
-        {filtered.map((p, i) => (
-          <motion.div
-            key={p.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.05 }}
-            className={`glass-premium rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 group transition ${p.hidden ? 'opacity-50' : ''}`}
-          >
-            {/* Image */}
-            <div className="w-full sm:w-20 h-20 rounded-xl bg-zinc-800 overflow-hidden flex-shrink-0">
-              {p.image ? (
-                <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <ImageIcon size={20} className="text-zinc-600" />
-                </div>
-              )}
-            </div>
-
-            {/* Info */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-bold text-white truncate">{p.title}</h3>
-                {p.featured && <Star size={14} className="text-yellow-400 fill-yellow-400 flex-shrink-0" />}
-              </div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs px-2 py-0.5 rounded-full bg-red-900/30 text-red-400 border border-red-800/30">
-                  {p.category}
-                </span>
-                {p.client && (
-                  <span className="text-xs text-zinc-500">• {p.client}</span>
-                )}
-              </div>
-              <div className="flex gap-1.5 mt-2 flex-wrap">
-                {p.tags.slice(0, 3).map(t => (
-                  <span key={t} className="text-xs px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400">
-                    {t}
-                  </span>
-                ))}
-                {p.tags.length > 3 && (
-                  <span className="text-xs text-zinc-600">+{p.tags.length - 3}</span>
-                )}
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex gap-2 flex-shrink-0">
-              {search === '' && (
-                <>
-                  <button onClick={() => moveUp(i)} className="p-2 rounded-lg bg-white/5 text-zinc-400 hover:text-white transition">
-                    ↑
-                  </button>
-                  <button onClick={() => moveDown(i)} className="p-2 rounded-lg bg-white/5 text-zinc-400 hover:text-white transition">
-                    ↓
-                  </button>
-                </>
-              )}
-              <button
-                onClick={() => {
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={filtered.map(p => p.id)} strategy={verticalListSortingStrategy}>
+          <div className="space-y-3">
+            {filtered.map((p, i) => (
+              <SortableProjectItem
+                key={p.id}
+                p={p}
+                search={search}
+                onToggleVisibility={() => {
                   const updated = projects.map(proj => proj.id === p.id ? { ...proj, hidden: !proj.hidden } : proj);
                   save(updated);
                   toast(p.hidden ? 'Proyecto público' : 'Proyecto oculto', 'info');
                 }}
-                className={`p-2 rounded-lg bg-white/5 transition ${p.hidden ? 'text-zinc-500 hover:text-white' : 'text-green-400 hover:text-green-300'}`}
-                title={p.hidden ? "Publicar" : "Ocultar"}
-              >
-                <Eye size={16} />
-              </button>
-              <button
-                onClick={() => openEdit(p)}
-                className="p-2 rounded-lg bg-white/5 text-zinc-400 hover:text-blue-400 transition"
-              >
-                <Edit2 size={16} />
-              </button>
-              <button
-                onClick={() => handleDelete(p.id)}
-                className="p-2 rounded-lg bg-white/5 text-zinc-400 hover:text-red-400 transition"
-              >
-                <Trash2 size={16} />
-              </button>
-            </div>
-          </motion.div>
-        ))}
-        {filtered.length === 0 && (
-          <p className="text-center text-zinc-600 py-12">No se encontraron proyectos</p>
-        )}
-      </div>
+                onEdit={() => openEdit(p)}
+                onDelete={() => handleDelete(p.id)}
+              />
+            ))}
+            {filtered.length === 0 && (
+              <p className="text-center text-zinc-600 py-12">No se encontraron proyectos</p>
+            )}
+          </div>
+        </SortableContext>
+      </DndContext>
 
       {/* EDIT / NEW MODAL */}
       <AnimatePresence>

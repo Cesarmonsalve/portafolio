@@ -5,6 +5,7 @@ import ThemeApplier from '@/components/ThemeApplier';
 import CommandPalette from '@/components/CommandPalette';
 import ToastContainer from '@/components/ui/Toast';
 import SmoothScroll from '@/components/SmoothScroll';
+import { SiteConfigProvider } from '@/lib/SiteConfigContext';
 import './globals.css';
 
 const outfit = Outfit({ 
@@ -54,14 +55,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <meta name="theme-color" content={cfg.theme_primary || '#060606'} />
       </head>
       <body className="bg-bg antialiased">
-        <SmoothScroll>
-          <ThemeApplier />
-          <CommandPalette />
-          <ToastContainer />
-          <div className="scanlines hidden md:block" />
-          <div className="grain-overlay hidden md:block" />
-          {children}
-        </SmoothScroll>
+        <SiteConfigProvider>
+          <SmoothScroll>
+            <ThemeApplier />
+            <CommandPalette />
+            <ToastContainer />
+            <div className="scanlines hidden md:block" />
+            <div className="grain-overlay hidden md:block" />
+            {children}
+          </SmoothScroll>
+        </SiteConfigProvider>
       </body>
     </html>
   );

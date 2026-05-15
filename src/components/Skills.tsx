@@ -51,12 +51,25 @@ const skillIconMap: Record<string, SkillIconData> = {
   'davinci':         { icon: SiIcons.SiDavinciresolve, color: '#E12E2E' },
   'resolve':         { icon: SiIcons.SiDavinciresolve, color: '#E12E2E' },
 };
+// Brand color map for Si icons selected in admin
+const SI_BRAND_COLORS: Record<string, string> = {
+  SiAdobephotoshop: '#31A8FF', SiAdobeaftereffects: '#9999FF', SiAdobeillustrator: '#FF9A00',
+  SiAdobepremierepro: '#9999FF', SiAdobelightroom: '#31A8FF', SiAdobeindesign: '#FF3366',
+  SiAdobeaudition: '#9999FF', SiAdobexd: '#FF61F6', SiBlender: '#F5792A', SiCinema4d: '#011A6A',
+  SiAutodesk: '#0696D7', SiUnrealengine: '#FFFFFF', SiUnity: '#FFFFFF', SiHoudini: '#FF4713',
+  SiFigma: '#F24E1E', SiSketch: '#F7B500', SiCanva: '#00C4CC', SiInvision: '#FF3366',
+  SiAffinitydesigner: '#1B72BE', SiAffinityphoto: '#7E4DD2', SiDavinciresolve: '#E12E2E',
+  SiObsstudio: '#302E31', SiCapcut: '#FFFFFF', SiGimp: '#5C5543', SiCoreldraw: '#000000',
+  SiYoutube: '#FF0000', SiInstagram: '#E4405F', SiBehance: '#1769FF', SiDribbble: '#EA4C89',
+  SiReact: '#61DAFB', SiVite: '#646CFF', SiSpotify: '#1DB954', SiDiscord: '#5865F2',
+  SiWhatsapp: '#25D366', SiTelegram: '#26A5E4',
+};
 
 function getSkillIcon(name: string, iconStr?: string): SkillIconData | null {
   // 1. If we have a specific icon string from DB/Admin starting with 'Si'
   if (iconStr && iconStr.startsWith('Si')) {
     const Icon = (SiIcons as any)[iconStr];
-    if (Icon) return { icon: Icon, color: '#FFFFFF' };
+    if (Icon) return { icon: Icon, color: SI_BRAND_COLORS[iconStr] || '#FFFFFF' };
   }
   
   // 2. Fallback to hardcoded map based on name

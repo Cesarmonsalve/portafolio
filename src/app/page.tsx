@@ -4,7 +4,7 @@ import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import Footer from '@/components/Footer';
 import ScrollProgress from '@/components/ScrollProgress';
-import { SiteConfigProvider, useSiteConfig } from '@/lib/SiteConfigContext';
+import { useSiteConfig } from '@/lib/SiteConfigContext';
 import type { ReactElement } from 'react';
 
 // Lazy load everything below the fold — they only mount when needed
@@ -14,10 +14,7 @@ const About = dynamic(() => import('@/components/About'), { ssr: false });
 const Skills = dynamic(() => import('@/components/Skills'), { ssr: false });
 const Contact = dynamic(() => import('@/components/Contact'), { ssr: false });
 
-/**
- * Inner component that reads config for section ordering, visibility, and global effects.
- */
-function HomeContent() {
+export default function Home() {
   const { cfg } = useSiteConfig();
 
   // Section registry
@@ -48,13 +45,5 @@ function HomeContent() {
       ))}
       <Footer />
     </main>
-  );
-}
-
-export default function Home() {
-  return (
-    <SiteConfigProvider>
-      <HomeContent />
-    </SiteConfigProvider>
   );
 }

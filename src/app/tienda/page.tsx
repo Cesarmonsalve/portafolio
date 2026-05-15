@@ -7,7 +7,7 @@ import {
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionWrapper from '@/components/SectionWrapper';
-import { SiteConfigProvider, useSiteConfig } from '@/lib/SiteConfigContext';
+import { useSiteConfig } from '@/lib/SiteConfigContext';
 import type { StoreItem } from '@/lib/config';
 
 // ═══════════════════════════════════════════
@@ -257,7 +257,7 @@ function StoreCard({ item, index }: { item: StoreItem; index: number }) {
 // ═══════════════════════════════════════════
 // MAIN STORE PAGE
 // ═══════════════════════════════════════════
-function TiendaContent() {
+export default function TiendaPage() {
   const { cfg, storeItems } = useSiteConfig();
   const [activeCategory, setActiveCategory] = useState('Todos');
   const [searchQuery, setSearchQuery] = useState('');
@@ -487,13 +487,5 @@ function TiendaContent() {
 
       <Footer />
     </main>
-  );
-}
-
-export default function TiendaPage() {
-  return (
-    <SiteConfigProvider>
-      <TiendaContent />
-    </SiteConfigProvider>
   );
 }

@@ -23,60 +23,64 @@ interface Props { onUnreadChange?: (n: number) => void; }
 
 const CATS = ['Design', 'Motion', '3D', 'Tools', 'Other'];
 
-// Professional Icon Library (Si = Simple Icons)
-const ICON_LIBRARY = [
-  { id: 'SiAdobephotoshop', label: 'Photoshop' },
-  { id: 'SiAdobelaftereffects', label: 'After Effects' },
-  { id: 'SiAdobeillustrator', label: 'Illustrator' },
-  { id: 'SiAdobepremierepro', label: 'Premiere Pro' },
-  { id: 'SiAdobelightroom', label: 'Lightroom' },
-  { id: 'SiAdobeindesign', label: 'InDesign' },
-  { id: 'SiAdobeanimate', label: 'Animate' },
-  { id: 'SiAdobeaudition', label: 'Audition' },
-  { id: 'SiAdobexd', label: 'Adobe XD' },
-  { id: 'SiBlender', label: 'Blender' },
-  { id: 'SiCinema4D', label: 'Cinema 4D' },
-  { id: 'SiAutodesk', label: 'Autodesk' },
-  { id: 'SiUnrealengine', label: 'Unreal Engine' },
-  { id: 'SiUnity', label: 'Unity' },
-  { id: 'SiHoudini', label: 'Houdini' },
-  { id: 'SiFigma', label: 'Figma' },
-  { id: 'SiSketch', label: 'Sketch' },
-  { id: 'SiCanva', label: 'Canva' },
-  { id: 'SiInvision', label: 'InVision' },
-  { id: 'SiAffinitydesigner', label: 'Affinity Designer' },
-  { id: 'SiAffinityphoto', label: 'Affinity Photo' },
-  { id: 'SiAffinitypublisher', label: 'Affinity Publisher' },
-  { id: 'SiDavinciresolve', label: 'DaVinci Resolve' },
-  { id: 'SiObsstudio', label: 'OBS' },
-  { id: 'SiCapcut', label: 'CapCut' },
-  { id: 'SiGimp', label: 'GIMP' },
-  { id: 'SiInkscape', label: 'Inkscape' },
-  { id: 'SiCoreldraw', label: 'CorelDRAW' },
-  { id: 'SiAutodeskmaya', label: 'Maya' },
-  { id: 'SiZbrush', label: 'ZBrush' },
-  { id: 'SiNuke', label: 'Nuke' },
-  { id: 'SiVray', label: 'V-Ray' },
-  { id: 'SiVimeo', label: 'Vimeo' },
-  { id: 'SiYoutube', label: 'YouTube' },
-  { id: 'SiInstagram', label: 'Instagram' },
-  { id: 'SiTiktok', label: 'TikTok' },
-  { id: 'SiBehance', label: 'Behance' },
-  { id: 'SiDribbble', label: 'Dribbble' },
-  { id: 'SiJavascript', label: 'JavaScript' },
-  { id: 'SiTypescript', label: 'TypeScript' },
-  { id: 'SiReact', label: 'React' },
-  { id: 'SiNextdotjs', label: 'Next.js' },
-  { id: 'SiTailwindcss', label: 'Tailwind CSS' },
-  { id: 'SiThreedotjs', label: 'Three.js' },
-  { id: 'SiVite', label: 'Vite' },
-  { id: 'SiGithub', label: 'GitHub' },
-  { id: 'SiDiscord', label: 'Discord' },
-  { id: 'SiSlack', label: 'Slack' },
-  { id: 'SiSpotify', label: 'Spotify' },
-  { id: 'SiApple', label: 'Apple' },
-  { id: 'SiWindows', label: 'Windows' },
-  { id: 'SiAndroid', label: 'Android' },
+// Professional Icon Library (Si = Simple Icons) with brand colors
+const ICON_LIBRARY: { id: string; label: string; color: string }[] = [
+  { id: 'SiAdobephotoshop', label: 'Photoshop', color: '#31A8FF' },
+  { id: 'SiAdobeaftereffects', label: 'After Effects', color: '#9999FF' },
+  { id: 'SiAdobeillustrator', label: 'Illustrator', color: '#FF9A00' },
+  { id: 'SiAdobepremierepro', label: 'Premiere Pro', color: '#9999FF' },
+  { id: 'SiAdobelightroom', label: 'Lightroom', color: '#31A8FF' },
+  { id: 'SiAdobeindesign', label: 'InDesign', color: '#FF3366' },
+  { id: 'SiAdobeaudition', label: 'Audition', color: '#9999FF' },
+  { id: 'SiAdobexd', label: 'Adobe XD', color: '#FF61F6' },
+  { id: 'SiBlender', label: 'Blender', color: '#F5792A' },
+  { id: 'SiCinema4d', label: 'Cinema 4D', color: '#011A6A' },
+  { id: 'SiAutodesk', label: 'Autodesk', color: '#0696D7' },
+  { id: 'SiUnrealengine', label: 'Unreal Engine', color: '#FFFFFF' },
+  { id: 'SiUnity', label: 'Unity', color: '#FFFFFF' },
+  { id: 'SiHoudini', label: 'Houdini', color: '#FF4713' },
+  { id: 'SiFigma', label: 'Figma', color: '#F24E1E' },
+  { id: 'SiSketch', label: 'Sketch', color: '#F7B500' },
+  { id: 'SiCanva', label: 'Canva', color: '#00C4CC' },
+  { id: 'SiInvision', label: 'InVision', color: '#FF3366' },
+  { id: 'SiAffinitydesigner', label: 'Affinity Designer', color: '#1B72BE' },
+  { id: 'SiAffinityphoto', label: 'Affinity Photo', color: '#7E4DD2' },
+  { id: 'SiAffinitypublisher', label: 'Affinity Publisher', color: '#C9514D' },
+  { id: 'SiDavinciresolve', label: 'DaVinci Resolve', color: '#E12E2E' },
+  { id: 'SiObsstudio', label: 'OBS', color: '#302E31' },
+  { id: 'SiCapcut', label: 'CapCut', color: '#FFFFFF' },
+  { id: 'SiGimp', label: 'GIMP', color: '#5C5543' },
+  { id: 'SiInkscape', label: 'Inkscape', color: '#000000' },
+  { id: 'SiCoreldraw', label: 'CorelDRAW', color: '#000000' },
+  { id: 'SiVimeo', label: 'Vimeo', color: '#1AB7EA' },
+  { id: 'SiYoutube', label: 'YouTube', color: '#FF0000' },
+  { id: 'SiInstagram', label: 'Instagram', color: '#E4405F' },
+  { id: 'SiTiktok', label: 'TikTok', color: '#000000' },
+  { id: 'SiBehance', label: 'Behance', color: '#1769FF' },
+  { id: 'SiDribbble', label: 'Dribbble', color: '#EA4C89' },
+  { id: 'SiJavascript', label: 'JavaScript', color: '#F7DF1E' },
+  { id: 'SiTypescript', label: 'TypeScript', color: '#3178C6' },
+  { id: 'SiReact', label: 'React', color: '#61DAFB' },
+  { id: 'SiNextdotjs', label: 'Next.js', color: '#FFFFFF' },
+  { id: 'SiTailwindcss', label: 'Tailwind CSS', color: '#06B6D4' },
+  { id: 'SiThreedotjs', label: 'Three.js', color: '#FFFFFF' },
+  { id: 'SiVite', label: 'Vite', color: '#646CFF' },
+  { id: 'SiGithub', label: 'GitHub', color: '#FFFFFF' },
+  { id: 'SiDiscord', label: 'Discord', color: '#5865F2' },
+  { id: 'SiSlack', label: 'Slack', color: '#4A154B' },
+  { id: 'SiSpotify', label: 'Spotify', color: '#1DB954' },
+  { id: 'SiApple', label: 'Apple', color: '#FFFFFF' },
+  { id: 'SiWindows', label: 'Windows', color: '#0078D4' },
+  { id: 'SiAndroid', label: 'Android', color: '#3DDC84' },
+  { id: 'SiWordpress', label: 'WordPress', color: '#21759B' },
+  { id: 'SiShopify', label: 'Shopify', color: '#7AB55C' },
+  { id: 'SiNotion', label: 'Notion', color: '#FFFFFF' },
+  { id: 'SiLinkedin', label: 'LinkedIn', color: '#0A66C2' },
+  { id: 'SiTwitter', label: 'Twitter', color: '#1DA1F2' },
+  { id: 'SiFacebook', label: 'Facebook', color: '#1877F2' },
+  { id: 'SiPinterest', label: 'Pinterest', color: '#BD081C' },
+  { id: 'SiWhatsapp', label: 'WhatsApp', color: '#25D366' },
+  { id: 'SiTelegram', label: 'Telegram', color: '#26A5E4' },
 ];
 
 const EMOJIS = ['🎨','🎬','✏️','🖥️','📐','🎯','🔥','💎','⚡','🎮','📸','🎵'];
@@ -92,14 +96,11 @@ function SortableSkillItem({ skill, onEdit, onDelete }: { skill: Skill, onEdit: 
         <GripVertical size={20} />
       </div>
       <span className="w-10 h-10 bg-zinc-800 rounded-lg flex items-center justify-center text-xl flex-shrink-0">
-        {skill.icon.startsWith('Si') ? (
-          (() => {
+        {skill.icon.startsWith('Si') ? (() => {
             const Icon = (SiIcons as any)[skill.icon];
-            return Icon ? <Icon size={20} className="text-white" /> : <span>{skill.icon}</span>;
-          })()
-        ) : (
-          skill.icon
-        )}
+            const brandColor = ICON_LIBRARY.find(i => i.id === skill.icon)?.color || '#fff';
+            return Icon ? <Icon size={20} style={{ color: brandColor }} /> : <span>{skill.icon}</span>;
+          })() : skill.icon}
       </span>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-bold text-white truncate mb-1">{skill.name}</p>
@@ -263,7 +264,7 @@ export default function AdminSkills(_p: Props) {
                         <button key={ic.id} onClick={() => setEditing({ ...editing, icon: ic.id })}
                           title={ic.label}
                           className={`w-full aspect-square rounded-lg flex items-center justify-center transition ${editing.icon === ic.id ? 'bg-purple-600 ring-2 ring-purple-400 text-white' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white'}`}>
-                          {Icon ? <Icon size={18} /> : ic.label.charAt(0)}
+                          {Icon ? <Icon size={18} style={{ color: editing.icon === ic.id ? '#fff' : ic.color }} /> : ic.label.charAt(0)}
                         </button>
                       );
                     })}
@@ -283,12 +284,11 @@ export default function AdminSkills(_p: Props) {
                   {/* Selected Preview */}
                   <div className="mt-3 flex items-center gap-3 p-3 bg-zinc-800/30 rounded-xl border border-zinc-700/30">
                     <div className="w-10 h-10 bg-zinc-800 rounded-lg flex items-center justify-center text-xl">
-                      {editing.icon.startsWith('Si') ? (
-                        (() => {
+                      {editing.icon.startsWith('Si') ? (() => {
                           const Icon = (SiIcons as any)[editing.icon];
-                          return Icon ? <Icon size={24} className="text-purple-400" /> : <span>{editing.icon}</span>;
-                        })()
-                      ) : editing.icon}
+                          const brandColor = ICON_LIBRARY.find(i => i.id === editing.icon)?.color || '#a78bfa';
+                          return Icon ? <Icon size={24} style={{ color: brandColor }} /> : <span>{editing.icon}</span>;
+                        })() : editing.icon}
                     </div>
                     <div>
                       <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest">Seleccionado</p>

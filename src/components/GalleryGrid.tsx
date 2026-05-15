@@ -150,7 +150,9 @@ function VideoCard({ project, index, onPlay }: { project: Project; index: number
 }
 
 export default function GalleryGrid() {
-  const { projects } = useSiteConfig();
+  const { projects: allProjects } = useSiteConfig();
+  // Filter out hidden projects for public display
+  const projects = allProjects.filter(p => !(p as any).hidden);
   const [activeCategory, setActiveCategory] = useState('Todos');
   const [mediaFilter, setMediaFilter] = useState<MediaFilter>('all');
   const [selectedVideo, setSelectedVideo] = useState<Project | null>(null);

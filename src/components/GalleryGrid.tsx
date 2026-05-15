@@ -150,8 +150,7 @@ function VideoCard({ project, index, onPlay }: { project: Project; index: number
 }
 
 export default function GalleryGrid() {
-  const { projects: contextProjects } = useSiteConfig();
-  const projects = contextProjects.length > 0 ? contextProjects : initialProjects;
+  const { projects } = useSiteConfig();
   const [activeCategory, setActiveCategory] = useState('Todos');
   const [mediaFilter, setMediaFilter] = useState<MediaFilter>('all');
   const [selectedVideo, setSelectedVideo] = useState<Project | null>(null);

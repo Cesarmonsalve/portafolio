@@ -104,12 +104,18 @@ export function SiteConfigProvider({ children }: { children: ReactNode }) {
     try {
       const dbProjects = serverData['cm_projects'];
       const raw = localStorage.getItem('cm_projects');
-      if (dbProjects?.length > 0) setProjects(dbProjects);
-      else if (raw) {
+      if (dbProjects && Array.isArray(dbProjects)) {
+        // If DB has projects, use them. Even if empty, it means the user deleted them all.
+        setProjects(dbProjects.length > 0 ? dbProjects : initialProjects);
+      } else if (raw) {
         const parsed = JSON.parse(raw);
-        if (parsed.length > 0) setProjects(parsed);
+        if (Array.isArray(parsed)) {
+          setProjects(parsed.length > 0 ? parsed : initialProjects);
+        }
       }
-    } catch { /* use defaults */ }
+    } catch (e) {
+      console.warn('Error loading projects:', e);
+    }
 
     // Skills
     try {

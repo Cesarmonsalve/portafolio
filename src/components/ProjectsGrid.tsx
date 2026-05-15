@@ -17,8 +17,7 @@ const isVideoProject = (project: Project): boolean => {
 };
 
 export default function ProjectsGrid() {
-  const { projects: contextProjects, cfg } = useSiteConfig();
-  const projects = contextProjects.length > 0 ? contextProjects : initialProjects;
+  const { projects, cfg } = useSiteConfig();
   const hCls = HEADING_SIZE_MAP[cfg.heading_size] || HEADING_SIZE_MAP.md;
   const visual = cfg.section_projects || DEFAULT_SECTION_VISUAL;
 

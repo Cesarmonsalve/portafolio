@@ -1,8 +1,5 @@
 'use client';
-import {
-  SiCinema4D, SiBlender, SiFigma, SiSketch, SiCanva, SiInvision,
-  SiUnity, SiUnrealengine, SiAutodesk, SiHoudini, SiGimp, SiInkscape, SiCoreldraw, SiDavinciresolve
-} from 'react-icons/si';
+import * as SiIcons from 'react-icons/si';
 import type { IconType } from 'react-icons';
 import LottieRenderer from './LottieRenderer';
 import SectionWrapper from './SectionWrapper';
@@ -32,30 +29,37 @@ const skillIconMap: Record<string, SkillIconData> = {
   'lightroom':       { custom: <AdobeIcon letters="Lr" color="#31A8FF" />, color: '#31A8FF' },
   'lr':              { custom: <AdobeIcon letters="Lr" color="#31A8FF" />, color: '#31A8FF' },
   'indesign':        { custom: <AdobeIcon letters="Id" color="#FF3366" />, color: '#FF3366' },
-  'cinema 4d':       { icon: SiCinema4D,      color: '#011A6A' },
-  'cinema4d':        { icon: SiCinema4D,      color: '#011A6A' },
-  'c4d':             { icon: SiCinema4D,      color: '#011A6A' },
-  'blender':         { icon: SiBlender,       color: '#F5792A' },
-  'unreal engine':   { icon: SiUnrealengine,  color: '#FFFFFF' },
-  'unreal':          { icon: SiUnrealengine,  color: '#FFFFFF' },
-  'unity':           { icon: SiUnity,         color: '#FFFFFF' },
-  'autodesk':        { icon: SiAutodesk,      color: '#0696D7' },
-  'maya':            { icon: SiAutodesk,      color: '#0696D7' },
-  'houdini':         { icon: SiHoudini,       color: '#FF4713' },
-  'figma':           { icon: SiFigma,         color: '#F24E1E' },
-  'sketch':          { icon: SiSketch,        color: '#F7B500' },
-  'canva':           { icon: SiCanva,         color: '#00C4CC' },
-  'invision':        { icon: SiInvision,      color: '#FF3366' },
-  'gimp':            { icon: SiGimp,          color: '#5C5543' },
-  'inkscape':        { icon: SiInkscape,      color: '#000000' },
-  'corel':           { icon: SiCoreldraw,     color: '#000000' },
-  'coreldraw':       { icon: SiCoreldraw,     color: '#000000' },
-  'davinci resolve': { icon: SiDavinciresolve, color: '#E12E2E' },
-  'davinci':         { icon: SiDavinciresolve, color: '#E12E2E' },
-  'resolve':         { icon: SiDavinciresolve, color: '#E12E2E' },
+  'cinema 4d':       { icon: SiIcons.SiCinema4D,      color: '#011A6A' },
+  'cinema4d':        { icon: SiIcons.SiCinema4D,      color: '#011A6A' },
+  'c4d':             { icon: SiIcons.SiCinema4D,      color: '#011A6A' },
+  'blender':         { icon: SiIcons.SiBlender,       color: '#F5792A' },
+  'unreal engine':   { icon: SiIcons.SiUnrealengine,  color: '#FFFFFF' },
+  'unreal':          { icon: SiIcons.SiUnrealengine,  color: '#FFFFFF' },
+  'unity':           { icon: SiIcons.SiUnity,         color: '#FFFFFF' },
+  'autodesk':        { icon: SiIcons.SiAutodesk,      color: '#0696D7' },
+  'maya':            { icon: SiIcons.SiAutodesk,      color: '#0696D7' },
+  'houdini':         { icon: SiIcons.SiHoudini,       color: '#FF4713' },
+  'figma':           { icon: SiIcons.SiFigma,         color: '#F24E1E' },
+  'sketch':          { icon: SiIcons.SiSketch,        color: '#F7B500' },
+  'canva':           { icon: SiIcons.SiCanva,         color: '#00C4CC' },
+  'invision':        { icon: SiIcons.SiInvision,      color: '#FF3366' },
+  'gimp':            { icon: SiIcons.SiGimp,          color: '#5C5543' },
+  'inkscape':        { icon: SiIcons.SiInkscape,      color: '#000000' },
+  'corel':           { icon: SiIcons.SiCoreldraw,     color: '#000000' },
+  'coreldraw':       { icon: SiIcons.SiCoreldraw,     color: '#000000' },
+  'davinci resolve': { icon: SiIcons.SiDavinciresolve, color: '#E12E2E' },
+  'davinci':         { icon: SiIcons.SiDavinciresolve, color: '#E12E2E' },
+  'resolve':         { icon: SiIcons.SiDavinciresolve, color: '#E12E2E' },
 };
 
-function getSkillIcon(name: string): SkillIconData | null {
+function getSkillIcon(name: string, iconStr?: string): SkillIconData | null {
+  // 1. If we have a specific icon string from DB/Admin starting with 'Si'
+  if (iconStr && iconStr.startsWith('Si')) {
+    const Icon = (SiIcons as any)[iconStr];
+    if (Icon) return { icon: Icon, color: '#FFFFFF' };
+  }
+  
+  // 2. Fallback to hardcoded map based on name
   return skillIconMap[name.toLowerCase().trim()] || null;
 }
 
@@ -98,7 +102,7 @@ export default function Skills() {
         {/* Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
           {skills.map((skill, index) => {
-            const brandIcon = getSkillIcon(skill.name);
+            const brandIcon = getSkillIcon(skill.name, skill.icon);
             const Icon = brandIcon?.icon;
             return (
               <div key={skill.id}

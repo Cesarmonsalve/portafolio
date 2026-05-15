@@ -871,3 +871,89 @@ body {
   80% { transform: translate(3%, -3%); }
   90% { transform: translate(-1%, 2%); }
 }
+
+/* ═══════════════════════════════════════════
+   STORE — PREMIUM CARD STYLES
+   ═══════════════════════════════════════════ */
+
+.store-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.store-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, transparent 40%, rgba(255,0,51,0.3), transparent 60%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.5s;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.store-card:hover::before {
+  opacity: 1;
+}
+
+.store-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(255,0,51,0.06);
+}
+
+/* Shimmer sweep effect */
+.store-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255,255,255,0.03) 45%,
+    rgba(255,255,255,0.05) 50%,
+    rgba(255,255,255,0.03) 55%,
+    transparent 60%
+  );
+  background-size: 200% 100%;
+  animation: storeShimmer 6s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes storeShimmer {
+  0%, 100% { background-position: 200% 0; }
+  50% { background-position: -200% 0; }
+}
+
+/* Category header mesh gradient */
+.store-header-mesh {
+  position: relative;
+  overflow: hidden;
+}
+
+.store-header-mesh::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 20%, var(--cat-color, rgba(255,0,51,0.1)) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* CTA banner animated gradient */
+@keyframes ctaGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.cta-gradient {
+  background: linear-gradient(135deg, #0a0a0a, #1a0510, #0a0a1a, #0a0a0a);
+  background-size: 300% 300%;
+  animation: ctaGradient 8s ease infinite;
+}

@@ -4,6 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@property --border-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0turn;
+}
+
 /* ═══════════════════════════════════════════
    DESIGN SYSTEM — CM DESIGN PORTFOLIO
    Typography: Syne (display) + Inter (body)
@@ -226,21 +232,85 @@ body {
 }
 
 /* ═══════════════════════════════════════════
-   GLASSMORPHISM
+   GLASSMORPHISM 3.0 (2026 UI)
    ═══════════════════════════════════════════ */
 
 .glass {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(20px) saturate(140%) brightness(1.1);
+  -webkit-backdrop-filter: blur(20px) saturate(140%) brightness(1.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 20px rgba(255,255,255,0.01), 0 8px 32px rgba(0,0,0,0.2);
+}
+
+.glass-premium {
+  background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+  backdrop-filter: blur(30px) saturate(150%) brightness(1.15);
+  -webkit-backdrop-filter: blur(30px) saturate(150%) brightness(1.15);
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  box-shadow: inset 0 0 2px rgba(255,255,255,0.1), inset 0 1px 0 rgba(255,255,255,0.2), 0 10px 40px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+.glass-premium::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  padding: 1px;
 }
 
 .glass-strong {
-  background: rgba(10, 10, 10, 0.8);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(40px) saturate(120%);
+  -webkit-backdrop-filter: blur(40px) saturate(120%);
   border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ═══════════════════════════════════════════
+   MOVING BORDER BUTTON (CSS Houdini)
+   ═══════════════════════════════════════════ */
+
+.moving-border-btn {
+  position: relative;
+  background: var(--bg-secondary);
+  border-radius: 1rem; /* 16px */
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+  z-index: 1;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.moving-border-btn::before {
+  content: '';
+  position: absolute;
+  inset: -2px; /* Border thickness */
+  z-index: -1;
+  border-radius: calc(1rem + 2px);
+  background: conic-gradient(
+    from var(--border-angle),
+    transparent 20%,
+    var(--theme-primary, #ff0033) 80%,
+    transparent 100%
+  );
+  animation: border-rotate 4s linear infinite;
+}
+
+.moving-border-btn:hover {
+  transform: scale(1.02) translateY(-2px);
+  box-shadow: 0 10px 40px -10px rgba(var(--theme-primary-rgb, 255,0,51), 0.3);
+}
+
+@keyframes border-rotate {
+  to { --border-angle: 1turn; }
 }
 
 /* ═══════════════════════════════════════════

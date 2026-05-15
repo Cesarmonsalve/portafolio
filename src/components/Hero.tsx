@@ -5,6 +5,7 @@ import Particles from './Particles';
 import GlitchText from './GlitchText';
 import LottieRenderer from './LottieRenderer';
 import SectionWrapper from './SectionWrapper';
+import MagneticButton from './ui/MagneticButton';
 import { useSiteConfig } from '@/lib/SiteConfigContext';
 import { DEFAULT_SECTION_VISUAL } from '@/lib/config';
 
@@ -94,16 +95,20 @@ export default function Hero() {
 
         {/* CTA Buttons */}
         <div
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 opacity-0 animate-slide-up"
+          className="flex flex-col sm:flex-row items-center justify-center gap-6 opacity-0 animate-slide-up"
           style={{ animationDelay: '0.6s' }}
         >
-          <a href="#work" className="group relative overflow-hidden flex items-center justify-center gap-3 bg-neon-red px-10 py-4 rounded-2xl font-display font-bold text-[12px] tracking-[0.1em] transition-all hover:scale-105 hover:shadow-[0_0_50px_rgba(255,0,51,0.4)] elastic-press" data-cursor-hover>
-            <span className="relative z-10 text-white flex items-center gap-2">VER TRABAJOS <span className="group-hover:translate-y-1 transition-transform">↓</span></span>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700" />
-          </a>
-          <a href="#contact" className="group flex items-center justify-center gap-2 bg-white/[0.03] border border-white/[0.08] backdrop-blur-md hover:border-neon-red/40 hover:bg-neon-red/[0.06] px-10 py-4 rounded-2xl font-display font-bold text-[12px] text-gray-300 hover:text-white tracking-[0.1em] transition-all hover:scale-105 elastic-press" data-cursor-hover>
-            CONTACTAR
-          </a>
+          <MagneticButton strength={0.3} className="group rounded-2xl">
+            <a href="#work" className="moving-border-btn flex items-center justify-center gap-3 px-10 py-4 font-display font-bold text-[12px] tracking-[0.1em] text-white">
+              VER TRABAJOS <span className="group-hover:translate-y-1 transition-transform">↓</span>
+            </a>
+          </MagneticButton>
+
+          <MagneticButton strength={0.15} className="group rounded-2xl">
+            <a href="#contact" className="glass-premium flex items-center justify-center gap-2 px-10 py-4 font-display font-bold text-[12px] text-gray-300 hover:text-white tracking-[0.1em] transition-all rounded-2xl">
+              CONTACTAR
+            </a>
+          </MagneticButton>
         </div>
 
         {/* Stats */}

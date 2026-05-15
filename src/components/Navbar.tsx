@@ -66,8 +66,8 @@ export default function Navbar() {
               href="/galeria"
               className={`group flex items-center gap-2 px-5 py-2 rounded-xl text-[11px] font-bold tracking-wide transition-all duration-300 elastic-press ${
                 isGaleria
-                  ? 'bg-white/10 text-white border border-white/20'
-                  : 'bg-white/[0.04] border border-white/[0.08] text-gray-300 hover:border-white/20 hover:bg-white/[0.08] hover:text-white'
+                  ? 'glass-premium text-white'
+                  : 'glass text-gray-300 hover:border-white/20 hover:text-white'
               }`}
               data-cursor-hover
             >
@@ -80,8 +80,8 @@ export default function Navbar() {
               href="/tienda"
               className={`group flex items-center gap-2 px-5 py-2 rounded-xl text-[11px] font-bold tracking-wide transition-all duration-300 elastic-press ${
                 isTienda
-                  ? 'bg-neon-red text-white shadow-[0_0_20px_rgba(255,0,51,0.35)]'
-                  : 'bg-white/[0.04] border border-white/[0.08] text-gray-300 hover:border-neon-red/40 hover:bg-neon-red/[0.08] hover:text-white hover:shadow-[0_0_15px_rgba(255,0,51,0.15)]'
+                  ? 'moving-border-btn text-white shadow-[0_0_20px_rgba(255,0,51,0.35)]'
+                  : 'glass text-gray-300 hover:border-neon-red/40 hover:text-white hover:shadow-[0_0_15px_rgba(255,0,51,0.15)]'
               }`}
               data-cursor-hover
             >

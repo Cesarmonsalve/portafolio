@@ -1,54 +1,33 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 
-interface Particle {
-  id: number;
-  x: number;
-  y: number;
-  size: number;
-  speedX: number;
-  speedY: number;
-  opacity: number;
-  color: string;
-}
+/**
+ * Particles — CSS-only animation (no React re-renders).
+ * Uses pure CSS animations instead of setInterval + setState for zero JS overhead.
+ */
+export default function Particles({ count = 20 }: { count?: number }) {
+  const containerRef = useRef<HTMLDivElement>(null);
 
-export default function Particles({ count = 30 }: { count?: number }) {
-  const [particles, setParticles] = useState<Particle[]>([]);
-
-  useEffect(() => {
+  // Generate particle configs once
+  const particles = useMemo(() => {
     const colors = ['#ff0033', '#a855f7', '#ec4899', '#f59e0b'];
-    const newParticles = Array.from({ length: count }, (_, i) => ({
-      id: i,
+    return Array.from({ length: Math.min(count, 20) }, (_, i) => ({
       x: Math.random() * 100,
       y: Math.random() * 100,
-      size: Math.random() * 3 + 1,
-      speedX: (Math.random() - 0.5) * 0.3,
-      speedY: (Math.random() - 0.5) * 0.3,
-      opacity: Math.random() * 0.5 + 0.1,
-      color: colors[Math.floor(Math.random() * colors.length)],
+      size: Math.random() * 2.5 + 0.5,
+      opacity: Math.random() * 0.4 + 0.05,
+      color: colors[i % colors.length],
+      duration: 15 + Math.random() * 25,
+      delay: Math.random() * -20,
     }));
-    setParticles(newParticles);
-
-    const interval = setInterval(() => {
-      setParticles((prev) =>
-        prev.map((p) => ({
-          ...p,
-          x: ((p.x + p.speedX) + 100) % 100,
-          y: ((p.y + p.speedY) + 100) % 100,
-          opacity: Math.random() * 0.5 + 0.1,
-        }))
-      );
-    }, 50);
-
-    return () => clearInterval(interval);
   }, [count]);
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {particles.map((p) => (
+    <div ref={containerRef} className="absolute inset-0 overflow-hidden pointer-events-none">
+      {particles.map((p, i) => (
         <div
-          key={p.id}
-          className="absolute rounded-full"
+          key={i}
+          className="absolute rounded-full animate-float"
           style={{
             left: `${p.x}%`,
             top: `${p.y}%`,
@@ -56,8 +35,10 @@ export default function Particles({ count = 30 }: { count?: number }) {
             height: `${p.size}px`,
             backgroundColor: p.color,
             opacity: p.opacity,
-            boxShadow: `0 0 ${p.size * 3}px ${p.color}`,
-            transition: 'left 0.05s linear, top 0.05s linear',
+            boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
+            animationDuration: `${p.duration}s`,
+            animationDelay: `${p.delay}s`,
+            willChange: 'transform',
           }}
         />
       ))}

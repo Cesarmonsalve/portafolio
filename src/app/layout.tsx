@@ -39,8 +39,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="bg-bg antialiased">
         <ThemeApplier />
-        <div className="scanlines" />
-        <div className="grain-overlay" />
+        <div className="scanlines hidden md:block" />
+        <div className="grain-overlay hidden md:block" />
         {children}
       </body>
     </html>

@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, FolderKanban, MessageSquare, Wrench,
-  Settings, LogOut, Menu, X, ChevronRight, Eye, EyeOff,
-  Lock, Zap, Bell, User, Palette, ShoppingBag
+  Settings, LogOut, Menu, X, Eye, EyeOff,
+  Lock, Zap, Bell, Palette, ShoppingBag, ChevronLeft
 } from 'lucide-react';
 
 // Secciones del admin
@@ -35,6 +35,7 @@ export default function AdminPage() {
   const [error, setError] = useState('');
   const [section, setSection] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
   const [unread, setUnread] = useState(0);
 
   useEffect(() => {
@@ -48,6 +49,12 @@ export default function AdminPage() {
       setUnread(msgs.filter((m: { read: boolean }) => !m.read).length);
     }
   }, [auth, section]);
+
+  // Auto-collapse sidebar on mobile
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)');
+    if (mq.matches) { setSidebarOpen(false); setCollapsed(false); }
+  }, []);
 
   const login = () => {
     if (pass === ADMIN_PASS) {
@@ -141,9 +148,11 @@ export default function AdminPage() {
     settings:   AdminSettings,
   }[section] || AdminDashboard;
 
+  const sidebarW = collapsed ? 'w-[68px]' : 'w-[260px]';
+
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex text-white">
-      {/* SIDEBAR */}
+      {/* ═══ UNIFIED SIDEBAR ═══ */}
       <AnimatePresence>
         {sidebarOpen && (
           <motion.aside
@@ -151,93 +160,80 @@ export default function AdminPage() {
             animate={{ x: 0 }}
             exit={{ x: -300 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed md:relative z-40 top-0 left-0 h-full flex"
+            className={`fixed md:relative z-40 top-0 left-0 h-full ${sidebarW} bg-[#111113] border-r border-white/[0.06] flex flex-col transition-all duration-300 shadow-2xl md:shadow-none`}
           >
-            {/* LEFT RAIL (Icons) */}
-            <div className="w-[68px] bg-[#1a1a1c] border-r border-white/5 flex flex-col items-center py-4 gap-4 flex-shrink-0 z-10">
-              {/* Logo */}
-              <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center shadow-lg mb-2">
-                <Zap size={20} className="text-white" />
+            {/* Header */}
+            <div className="h-[64px] flex items-center px-4 border-b border-white/[0.04] flex-shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center shadow-md flex-shrink-0">
+                <Zap size={18} className="text-white" />
               </div>
-
-              {/* Icons List */}
-              <div className="flex flex-col gap-2 w-full px-3">
-                {NAV_ITEMS.map(item => {
-                  const active = section === item.id;
-                  const Icon = item.icon;
-                  return (
-                    <button
-                      key={`icon-${item.id}`}
-                      onClick={() => setSection(item.id)}
-                      className={`w-11 h-11 mx-auto flex items-center justify-center rounded-xl transition-colors relative ${
-                        active 
-                          ? 'bg-blue-600 text-white shadow-md' 
-                          : 'text-zinc-400 hover:text-white hover:bg-white/5'
-                      }`}
-                      title={item.label}
-                    >
-                      <Icon size={20} />
-                      {item.id === 'messages' && unread > 0 && (
-                        <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-[#1a1a1c]" />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Bottom Icons */}
-              <div className="mt-auto flex flex-col gap-2 w-full px-3">
-                <a
-                  href="/"
-                  target="_blank"
-                  className="w-11 h-11 mx-auto flex items-center justify-center rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 transition-colors"
-                  title="Ver sitio"
-                >
-                  <Eye size={20} />
-                </a>
-                <button
-                  onClick={logout}
-                  className="w-11 h-11 mx-auto flex items-center justify-center rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 transition-colors"
-                  title="Cerrar sesión"
-                >
-                  <LogOut size={20} />
-                </button>
-              </div>
+              {!collapsed && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="ml-3 min-w-0">
+                  <h2 className="text-sm font-bold text-white truncate">CM Admin</h2>
+                  <p className="text-[10px] text-zinc-500 truncate">Panel de Control</p>
+                </motion.div>
+              )}
+              {/* Collapse toggle — desktop only */}
+              <button
+                onClick={() => setCollapsed(!collapsed)}
+                className="hidden md:flex ml-auto p-1.5 rounded-lg text-zinc-500 hover:text-white hover:bg-white/5 transition flex-shrink-0"
+              >
+                <ChevronLeft size={16} className={`transition-transform duration-200 ${collapsed ? 'rotate-180' : ''}`} />
+              </button>
             </div>
 
-            {/* RIGHT RAIL (Text) */}
-            <div className="w-[240px] bg-[#1e1e20] border-r border-white/5 flex flex-col flex-shrink-0 shadow-2xl md:shadow-none">
-              {/* Header */}
-              <div className="h-[72px] flex items-center px-6">
-                <h2 className="text-white font-bold text-lg tracking-wide">
-                  Panel Admin
-                </h2>
-              </div>
+            {/* Nav Items */}
+            <nav className="flex-1 py-3 px-2 space-y-0.5 overflow-y-auto">
+              {NAV_ITEMS.map(item => {
+                const active = section === item.id;
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => { setSection(item.id); if (window.innerWidth < 768) setSidebarOpen(false); }}
+                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 group relative ${
+                      active
+                        ? 'bg-blue-600 text-white shadow-md shadow-blue-900/30'
+                        : 'text-zinc-400 hover:text-white hover:bg-white/[0.04]'
+                    }`}
+                    title={collapsed ? item.label : undefined}
+                  >
+                    <Icon size={18} className="flex-shrink-0" />
+                    {!collapsed && (
+                      <>
+                        <span className="truncate">{item.label}</span>
+                        {item.id === 'messages' && unread > 0 && (
+                          <span className="ml-auto bg-red-500 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold min-w-[20px] text-center">
+                            {unread}
+                          </span>
+                        )}
+                      </>
+                    )}
+                    {collapsed && item.id === 'messages' && unread > 0 && (
+                      <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
+                    )}
+                  </button>
+                );
+              })}
+            </nav>
 
-              {/* Menu Items */}
-              <div className="flex-1 px-4 py-2 space-y-1 overflow-y-auto">
-                {NAV_ITEMS.map(item => {
-                  const active = section === item.id;
-                  return (
-                    <button
-                      key={`text-${item.id}`}
-                      onClick={() => setSection(item.id)}
-                      className={`w-full flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                        active
-                          ? 'bg-blue-600 text-white shadow-sm'
-                          : 'text-zinc-400 hover:text-white hover:bg-white/5'
-                      }`}
-                    >
-                      {item.label}
-                      {item.id === 'messages' && unread > 0 && (
-                        <span className="ml-auto bg-red-500 text-white text-xs rounded-full px-2 py-0.5 font-bold">
-                          {unread}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
+            {/* Bottom actions */}
+            <div className="p-2 border-t border-white/[0.04] space-y-0.5">
+              <a
+                href="/"
+                target="_blank"
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-zinc-400 hover:text-white hover:bg-white/[0.04] transition`}
+              >
+                <Eye size={18} className="flex-shrink-0" />
+                {!collapsed && <span>Ver Sitio</span>}
+              </a>
+              <button
+                onClick={logout}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-zinc-400 hover:text-red-400 hover:bg-red-500/[0.06] transition`}
+              >
+                <LogOut size={18} className="flex-shrink-0" />
+                {!collapsed && <span>Cerrar Sesión</span>}
+              </button>
             </div>
           </motion.aside>
         )}
@@ -251,10 +247,10 @@ export default function AdminPage() {
         />
       )}
 
-      {/* MAIN CONTENT */}
+      {/* ═══ MAIN CONTENT ═══ */}
       <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
         {/* Topbar */}
-        <header className="bg-zinc-900/80 backdrop-blur-sm border-b border-zinc-800 px-5 py-3 flex items-center gap-3 sticky top-0 z-20">
+        <header className="bg-[#0a0a0a]/80 backdrop-blur-sm border-b border-zinc-800/50 px-5 py-3 flex items-center gap-3 sticky top-0 z-20">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition"
@@ -263,7 +259,7 @@ export default function AdminPage() {
           </button>
 
           <div className="flex-1">
-            <h2 className="font-bold text-sm capitalize text-white">
+            <h2 className="font-bold text-sm text-white">
               {NAV_ITEMS.find(n => n.id === section)?.label || 'Dashboard'}
             </h2>
           </div>
@@ -271,7 +267,7 @@ export default function AdminPage() {
           <a
             href="/"
             target="_blank"
-            className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-white transition px-3 py-1.5 rounded-lg hover:bg-zinc-800"
+            className="hidden sm:flex items-center gap-1.5 text-xs text-zinc-400 hover:text-white transition px-3 py-1.5 rounded-lg hover:bg-zinc-800"
           >
             <Eye size={14} />
             Ver sitio

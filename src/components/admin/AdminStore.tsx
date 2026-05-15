@@ -1,10 +1,11 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit2, Trash2, Save, X, Loader2, Store, ShoppingBag, Link as LinkIcon } from 'lucide-react';
+import { Plus, Edit2, Trash2, Save, X, Loader2, Store, ShoppingBag, Link as LinkIcon, ArrowUp, ArrowDown } from 'lucide-react';
 import { notifyConfigUpdate, saveConfigData } from '@/lib/SiteConfigContext';
 import type { StoreItem } from '@/lib/config';
 import { loadFromDB } from '@/lib/loadFromDB';
+import { toast } from '@/components/ui/Toast';
 
 interface Props { onUnreadChange?: (n: number) => void; }
 
@@ -57,10 +58,34 @@ export default function AdminStore(_p: Props) {
       const idx = items.findIndex(i => i.id === editing.id);
       persist(idx >= 0 ? items.map(i => i.id === editing.id ? editing : i) : [...items, editing]);
       setShowForm(false); setEditing(null); setSaving(false);
+      toast('Recurso guardado', 'success');
     }, 300);
   };
 
-  const del = (id: string) => { if (confirm('¿Eliminar recurso?')) persist(items.filter(i => i.id !== id)); };
+  const del = (id: string) => { 
+    if (confirm('¿Eliminar recurso?')) {
+      persist(items.filter(i => i.id !== id)); 
+      toast('Recurso eliminado', 'info');
+    }
+  };
+
+  const moveUp = (item: StoreItem) => {
+    const idx = items.findIndex(i => i.id === item.id);
+    if (idx <= 0) return;
+    const newArr = [...items];
+    [newArr[idx - 1], newArr[idx]] = [newArr[idx], newArr[idx - 1]];
+    persist(newArr);
+    toast('Orden actualizado', 'success');
+  };
+
+  const moveDown = (item: StoreItem) => {
+    const idx = items.findIndex(i => i.id === item.id);
+    if (idx === -1 || idx === items.length - 1) return;
+    const newArr = [...items];
+    [newArr[idx + 1], newArr[idx]] = [newArr[idx], newArr[idx + 1]];
+    persist(newArr);
+    toast('Orden actualizado', 'success');
+  };
 
   const grouped = CATS.reduce((a, c) => {
     const catItems = items.filter(i => i.category === c).sort((x, y) => (x.position || 0) - (y.position || 0));
@@ -98,7 +123,11 @@ export default function AdminStore(_p: Props) {
             <div className="space-y-2">
               {catItems.map((item, i) => (
                 <motion.div key={item.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-                  className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex items-center gap-4 group hover:border-zinc-700 transition">
+                  className="glass-premium border border-zinc-800/50 rounded-xl p-4 flex items-center gap-4 group hover:border-zinc-700 transition">
+                  <div className="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition">
+                    <button onClick={() => moveUp(item)} className="text-zinc-500 hover:text-white p-0.5"><ArrowUp size={12} /></button>
+                    <button onClick={() => moveDown(item)} className="text-zinc-500 hover:text-white p-0.5"><ArrowDown size={12} /></button>
+                  </div>
                   <span className="w-12 h-12 bg-zinc-800 rounded-xl flex items-center justify-center text-2xl">{item.emoji}</span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">

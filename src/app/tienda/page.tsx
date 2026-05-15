@@ -1,6 +1,5 @@
 'use client';
-import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
+import { useState, useRef } from 'react';
 import {
   ShoppingBag, Download, ExternalLink, ArrowRight, Package, Search,
   Sparkles, X, MessageCircle, Zap, Star, ArrowUpRight
@@ -44,13 +43,11 @@ function StoreCard({ item, index }: { item: StoreItem; index: number }) {
   };
 
   return (
-    <motion.div
+    <div
       ref={cardRef}
-      initial={{ opacity: 0, y: 40, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ delay: index * 0.08, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       onMouseMove={handleMouseMove}
-      className="store-card card-spotlight rounded-2xl bg-white/[0.02] border border-white/[0.06] group"
+      className="store-card card-spotlight rounded-2xl bg-white/[0.02] border border-white/[0.06] group opacity-0 animate-slide-up"
+      style={{ animationDelay: `${index * 0.08}s` }}
     >
       {/* Shimmer sweep */}
       <div className="store-shimmer rounded-2xl" />
@@ -97,11 +94,9 @@ function StoreCard({ item, index }: { item: StoreItem; index: number }) {
                 ))}
               </div>
             </div>
-            <div className="flex items-start justify-between mb-3 relative z-10">
-              <motion.div
-                whileHover={{ scale: 1.15, rotate: [0, -5, 5, 0] }}
-                transition={{ duration: 0.4 }}
-                className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl border"
+          <div className="flex items-start justify-between mb-3 relative z-10">
+              <div
+                className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl border hover:scale-110 transition-transform"
                 style={{
                   background: catColor.bg,
                   borderColor: catColor.border,
@@ -109,7 +104,7 @@ function StoreCard({ item, index }: { item: StoreItem; index: number }) {
                 }}
               >
                 {item.emoji}
-              </motion.div>
+              </div>
               <span
                 className="px-3 py-1.5 rounded-full text-[9px] font-semibold tracking-[0.12em] uppercase border backdrop-blur-sm"
                 style={{ background: catColor.bg, color: catColor.text, borderColor: catColor.border }}
@@ -122,19 +117,17 @@ function StoreCard({ item, index }: { item: StoreItem; index: number }) {
 
         {/* Badge — always on top right, never overlapping category */}
         {item.badge && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: index * 0.08 + 0.3 }}
-            className="absolute top-3 right-3 z-30 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider text-white border shadow-lg"
+          <div
+            className="absolute top-3 right-3 z-30 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider text-white border shadow-lg animate-fade-in"
             style={{
               background: 'rgba(255,0,51,0.85)',
               borderColor: 'rgba(255,255,255,0.15)',
               boxShadow: '0 4px 16px rgba(255,0,51,0.3)',
+              animationDelay: `${index * 0.08 + 0.3}s`,
             }}
           >
             {item.badge}
-          </motion.div>
+          </div>
         )}
       </div>
 
@@ -191,10 +184,9 @@ function StoreCard({ item, index }: { item: StoreItem; index: number }) {
         {isFree ? (
           /* ── FREE: Show download button + expandable links ── */
           <>
-            <motion.button
-              whileTap={{ scale: 0.97 }}
+            <button
               onClick={() => setExpanded(!expanded)}
-              className="w-full flex items-center justify-center gap-2.5 backdrop-blur-sm border px-4 py-3.5 rounded-xl text-[11px] font-bold tracking-wider transition-all duration-300"
+              className="w-full flex items-center justify-center gap-2.5 backdrop-blur-sm border px-4 py-3.5 rounded-xl text-[11px] font-bold tracking-wider transition-all duration-300 active:scale-[0.97]"
               style={{
                 background: expanded ? catColor.bg : 'rgba(255,255,255,0.03)',
                 borderColor: expanded ? catColor.border : 'rgba(255,255,255,0.06)',
@@ -203,63 +195,62 @@ function StoreCard({ item, index }: { item: StoreItem; index: number }) {
             >
               <Download size={13} />
               {expanded ? 'OCULTAR LINKS' : 'VER DESCARGAS'}
-              <motion.div animate={{ rotate: expanded ? 90 : 0 }} transition={{ duration: 0.2 }}>
+              <span className={`transition-transform duration-200 ${expanded ? 'rotate-90' : ''}`}>
                 <ArrowRight size={12} />
-              </motion.div>
-            </motion.button>
+              </span>
+            </button>
 
-            <AnimatePresence>
-              {expanded && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                  className="overflow-hidden"
-                >
-                  <div className="pt-3 space-y-2">
-                    {item.downloadLinks.map((link, idx) => (
-                      <motion.a
-                        key={link.platform}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: idx * 0.08 }}
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-between gap-3 w-full bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.15] hover:bg-white/[0.04] px-4 py-3 rounded-xl transition-all duration-300 group/link"
-                      >
-                        <span className="text-[11px] font-bold tracking-wide flex items-center gap-2.5 text-gray-300">
-                          <span
-                            className="w-2.5 h-2.5 rounded-full"
-                            style={{ background: link.color }}
-                          />
-                          {link.platform}
-                        </span>
-                        <ExternalLink size={12} className="text-gray-600 group-hover/link:text-white transition-colors" />
-                      </motion.a>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {expanded && (
+              <div className="animate-slide-up pt-3 space-y-2">
+                {item.downloadLinks.map((link, idx) => (
+                  <a
+                    key={link.platform}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between gap-3 w-full bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.15] hover:bg-white/[0.04] px-4 py-3 rounded-xl transition-all duration-300 group/link opacity-0 animate-fade-in"
+                    style={{ animationDelay: `${idx * 0.08}s` }}
+                  >
+                    <span className="text-[11px] font-bold tracking-wide flex items-center gap-2.5 text-gray-300">
+                      <span
+                        className="w-2.5 h-2.5 rounded-full"
+                        style={{ background: link.color }}
+                      />
+                      {link.platform}
+                    </span>
+                    <ExternalLink size={12} className="text-gray-600 group-hover/link:text-white transition-colors" />
+                  </a>
+                ))}
+              </div>
+            )}
           </>
         ) : (
           /* ── PAID: Only show buy button, no download links ── */
-          <motion.a
-            whileTap={{ scale: 0.97 }}
-            href={item.paymentUrl || '#'}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-neon-red to-pink-600 hover:from-red-500 hover:to-pink-500 shadow-lg shadow-neon-red/20 px-4 py-3.5 rounded-xl text-[11px] font-bold text-white tracking-wider transition-all duration-300"
-          >
-            <ShoppingBag size={13} />
-            COMPRAR AHORA
-            <ArrowUpRight size={12} />
-          </motion.a>
+          item.paymentUrl && item.paymentUrl.trim() !== '' ? (
+            <a
+              href={item.paymentUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-neon-red to-pink-600 hover:from-red-500 hover:to-pink-500 shadow-lg shadow-neon-red/20 px-4 py-3.5 rounded-xl text-[11px] font-bold text-white tracking-wider transition-all duration-300"
+            >
+              <ShoppingBag size={13} />
+              COMPRAR AHORA
+              <ArrowUpRight size={12} />
+            </a>
+          ) : (
+            <div className="w-full flex flex-col items-center gap-2">
+              <div
+                className="w-full flex items-center justify-center gap-2.5 bg-white/[0.04] border border-white/[0.08] px-4 py-3.5 rounded-xl text-[11px] font-bold text-gray-500 tracking-wider cursor-not-allowed"
+              >
+                <ShoppingBag size={13} />
+                PRÓXIMAMENTE
+              </div>
+              <span className="text-[10px] text-gray-600">Contacta para más info</span>
+            </div>
+          )
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -298,45 +289,36 @@ function TiendaContent() {
         <section className="relative pt-32 pb-16 px-6 z-10">
           <div className="max-w-5xl mx-auto text-center">
             {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-2.5 bg-neon-red/[0.06] border border-neon-red/20 px-6 py-2.5 rounded-full mb-8"
+            <div
+              className="inline-flex items-center gap-2.5 bg-neon-red/[0.06] border border-neon-red/20 px-6 py-2.5 rounded-full mb-8 opacity-0 animate-fade-in"
             >
               <ShoppingBag size={14} className="text-neon-red" />
               <span className="text-[10px] font-semibold tracking-[0.14em] uppercase text-neon-red">
                 {cfg.store_label || 'Tienda'}
               </span>
               <span className="w-1.5 h-1.5 rounded-full bg-neon-red/60 animate-pulse" />
-            </motion.div>
+            </div>
 
             {/* Title */}
-            <motion.h1
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 }}
-              className="text-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6"
-              style={{ fontFamily: `${cfg.font_display}, sans-serif` }}
+            <h1
+              className="text-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6 opacity-0 animate-slide-up"
+              style={{ fontFamily: `${cfg.font_display}, sans-serif`, animationDelay: '0.15s' }}
             >
               {cfg.store_heading}
-            </motion.h1>
+            </h1>
 
             {/* Description */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-gray-400 text-sm sm:text-base max-w-lg mx-auto mb-12 leading-relaxed"
+            <p
+              className="text-gray-400 text-sm sm:text-base max-w-lg mx-auto mb-12 leading-relaxed opacity-0 animate-slide-up"
+              style={{ animationDelay: '0.3s' }}
             >
               {cfg.store_desc}
-            </motion.p>
+            </p>
 
             {/* Search bar with glow */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="max-w-lg mx-auto relative"
+            <div
+              className="max-w-lg mx-auto relative opacity-0 animate-slide-up"
+              style={{ animationDelay: '0.4s' }}
             >
               <div
                 className="absolute -inset-0.5 rounded-2xl transition-opacity duration-500 blur-md"
@@ -346,13 +328,11 @@ function TiendaContent() {
                 }}
               />
               <div className="relative">
-                <motion.div
-                  animate={{ rotate: searchFocused ? 90 : 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="absolute left-4 top-1/2 -translate-y-1/2"
+                <div
+                  className={`absolute left-4 top-1/2 -translate-y-1/2 transition-transform duration-300 ${searchFocused ? 'rotate-90' : ''}`}
                 >
                   <Search size={16} className={`transition-colors duration-300 ${searchFocused ? 'text-neon-red' : 'text-gray-500'}`} />
-                </motion.div>
+                </div>
                 <input
                   type="text"
                   value={searchQuery}
@@ -363,26 +343,19 @@ function TiendaContent() {
                   className="w-full bg-white/[0.03] border border-white/[0.08] rounded-2xl pl-12 pr-20 py-4 text-sm text-white focus:border-neon-red/40 focus:outline-none transition-all placeholder:text-gray-600 backdrop-blur-sm"
                 />
                 {/* Results counter */}
-                <AnimatePresence>
-                  {searchQuery && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.8 }}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2"
+                {searchQuery && (
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 animate-fade-in">
+                    <span className="text-[10px] text-gray-500 font-mono">{filtered.length}</span>
+                    <button
+                      onClick={() => setSearchQuery('')}
+                      className="p-1 rounded-lg hover:bg-white/10 text-gray-500 hover:text-white transition"
                     >
-                      <span className="text-[10px] text-gray-500 font-mono">{filtered.length}</span>
-                      <button
-                        onClick={() => setSearchQuery('')}
-                        className="p-1 rounded-lg hover:bg-white/10 text-gray-500 hover:text-white transition"
-                      >
-                        <X size={14} />
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                      <X size={14} />
+                    </button>
+                  </div>
+                )}
               </div>
-            </motion.div>
+            </div>
           </div>
         </section>
 
@@ -390,23 +363,20 @@ function TiendaContent() {
         <section className="px-6 pb-12 relative z-10">
           <div className="max-w-5xl mx-auto">
             {/* Category filters with pill indicator */}
-            <motion.div
+            <div
               ref={filterRef}
-              className="flex flex-wrap items-center justify-center gap-2 mb-12"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
+              className="flex flex-wrap items-center justify-center gap-2 mb-12 opacity-0 animate-fade-in"
+              style={{ animationDelay: '0.5s' }}
             >
               {CATEGORIES.map((cat) => {
                 const isActive = activeCategory === cat;
                 const color = cat === 'Todos' ? null : getCatColor(cat);
                 const count = catCounts[cat];
                 return (
-                  <motion.button
+                  <button
                     key={cat}
-                    whileTap={{ scale: 0.95 }}
                     onClick={() => setActiveCategory(cat)}
-                    className={`relative px-5 py-2.5 rounded-xl text-[11px] font-semibold tracking-wide transition-all duration-300 flex items-center gap-2 ${
+                    className={`relative px-5 py-2.5 rounded-xl text-[11px] font-semibold tracking-wide transition-all duration-300 flex items-center gap-2 active:scale-95 ${
                       isActive
                         ? 'text-white shadow-lg'
                         : 'bg-white/[0.03] text-gray-400 hover:text-white hover:bg-white/[0.06] border border-white/[0.04]'
@@ -428,34 +398,24 @@ function TiendaContent() {
                         {count}
                       </span>
                     )}
-                  </motion.button>
+                  </button>
                 );
               })}
-            </motion.div>
+            </div>
 
             {/* Grid */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeCategory + searchQuery}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-              >
-                {filtered.map((item, i) => (
-                  <StoreCard key={item.id} item={item} index={i} />
-                ))}
-              </motion.div>
-            </AnimatePresence>
+            <div
+              key={activeCategory + searchQuery}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              {filtered.map((item, i) => (
+                <StoreCard key={item.id} item={item} index={i} />
+              ))}
+            </div>
 
             {/* Empty state */}
             {filtered.length === 0 && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="text-center py-24"
-              >
+              <div className="text-center py-24 animate-fade-in">
                 <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center">
                   <Package size={32} className="text-gray-600" />
                 </div>
@@ -473,18 +433,14 @@ function TiendaContent() {
                     <X size={14} /> Limpiar búsqueda
                   </button>
                 )}
-              </motion.div>
+              </div>
             )}
 
             {/* Results counter */}
             {filtered.length > 0 && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-center mt-10 text-[10px] text-gray-600 uppercase tracking-[0.2em] font-medium"
-              >
+              <p className="text-center mt-10 text-[10px] text-gray-600 uppercase tracking-[0.2em] font-medium animate-fade-in">
                 {filtered.length} {filtered.length === 1 ? 'recurso disponible' : 'recursos disponibles'}
-              </motion.p>
+              </p>
             )}
           </div>
         </section>
@@ -492,12 +448,8 @@ function TiendaContent() {
         {/* ═══ CTA BANNER ═══ */}
         <section className="px-6 pb-24 relative z-10">
           <div className="max-w-4xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="cta-gradient rounded-3xl border border-white/[0.06] p-10 md:p-14 relative overflow-hidden"
+            <div
+              className="cta-gradient rounded-3xl border border-white/[0.06] p-10 md:p-14 relative overflow-hidden opacity-0 animate-slide-up"
             >
               {/* Decorative elements */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-neon-red/5 rounded-full blur-[100px] pointer-events-none" />
@@ -528,7 +480,7 @@ function TiendaContent() {
                   <span className="text-[10px] text-gray-600 text-center tracking-wide">Respuesta en menos de 24h</span>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </section>
       </SectionWrapper>

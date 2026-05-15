@@ -410,6 +410,7 @@ export default function AdminSettings(_p: Props) {
                 <Field getFieldValue={getFieldValue} update={update} label="Contact Heading" field="contact_heading" placeholder="¿Tienes una idea en mente?" />
                 <Field getFieldValue={getFieldValue} update={update} label="Contact Descripción" field="contact_desc" multi placeholder="Estoy disponible para..." />
                 <Field getFieldValue={getFieldValue} update={update} label="Email de contacto" field="contact_email" placeholder="tu@email.com" />
+                <Field getFieldValue={getFieldValue} update={update} label="WhatsApp (Link o Número)" field="contact_whatsapp" placeholder="https://wa.me/..." />
                 <div className="border-t border-zinc-800 pt-4 mt-4" />
                 <Field getFieldValue={getFieldValue} update={update} label="Footer marca" field="footer_brand" placeholder="CM Design Studio" />
                 <Field getFieldValue={getFieldValue} update={update} label="Footer subtítulo" field="footer_brand_sub" placeholder="Diseño & Movimiento" />

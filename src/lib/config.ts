@@ -206,6 +206,7 @@ export interface SiteConfig {
   logo_url: string;
   favicon_url: string;
   contact_email: string;
+  contact_whatsapp: string;
 
   // ── Payments ──
   payment_methods: {
@@ -314,6 +315,7 @@ export const DEFAULT_CONFIG: SiteConfig = {
   logo_url: '/logo.png',
   favicon_url: '/favicon.ico',
   contact_email: 'cm@design.com',
+  contact_whatsapp: 'https://wa.me/1234567890',
 
   payment_methods: {
     paypal: '',

@@ -56,11 +56,11 @@ function StoreCard({ item, index }: { item: StoreItem; index: number }) {
       <div className="relative overflow-hidden rounded-t-2xl">
         {item.image ? (
           /* Cover image */
-          <div className="relative h-44 overflow-hidden">
+          <div className="relative aspect-square overflow-hidden bg-[#0a0a0a]">
             <img
               src={item.image}
               alt={item.title}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
             />
             {/* Gradient overlay for readability */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />

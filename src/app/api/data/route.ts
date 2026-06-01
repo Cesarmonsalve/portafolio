@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
+import { cookies } from 'next/headers';
+import { ADMIN_COOKIE, verifyAdminSession } from '@/lib/adminAuth';
 
 export async function GET(req: Request) {
   try {
@@ -22,6 +24,10 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
+    const token = cookies().get(ADMIN_COOKIE)?.value;
+    if (!verifyAdminSession(token)) {
+      return NextResponse.json({ success: false, error: 'No autorizado' }, { status: 401 });
+    }
     if (!sql) return NextResponse.json({ error: 'DB no configurada' }, { status: 500 });
     
     const body = await req.json();

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, FolderKanban, MessageSquare, Wrench,
   Settings, LogOut, Menu, X, Eye, EyeOff,
-  Lock, Zap, Bell, Palette, ShoppingBag, ChevronLeft,
+  Lock, Zap, Bell, Palette, ShoppingBag, ChevronLeft, ShieldCheck,
 } from 'lucide-react';
 
 // Secciones del admin
@@ -15,6 +15,7 @@ import AdminSkills from '@/components/admin/AdminSkills';
 import AdminSettings from '@/components/admin/AdminSettings';
 import AdminAppearance from '@/components/admin/AdminAppearance';
 import AdminStore from '@/components/admin/AdminStore';
+import AdminBackup from '@/components/admin/AdminBackup';
 
 const NAV_ITEMS = [
   { id: 'dashboard',  label: 'Dashboard',   icon: LayoutDashboard, code: '01' },
@@ -24,23 +25,35 @@ const NAV_ITEMS = [
   { id: 'skills',     label: 'Arsenal',     icon: Wrench,          code: '05' },
   { id: 'appearance', label: 'Apariencia',  icon: Palette,         code: '06' },
   { id: 'settings',   label: 'Config',      icon: Settings,        code: '07' },
+  { id: 'backup',     label: 'Respaldo',   icon: ShieldCheck,    code: '08' },
 ];
-
-const ADMIN_PASS = process.env.NEXT_PUBLIC_ADMIN_PASS || 'cm2026';
 
 export default function AdminPage() {
   const [auth, setAuth] = useState(false);
   const [pass, setPass] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState('');
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [loggingIn, setLoggingIn] = useState(false);
   const [section, setSection] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [collapsed, setCollapsed] = useState(false);
   const [unread, setUnread] = useState(0);
 
   useEffect(() => {
-    const saved = sessionStorage.getItem('cm_admin_auth');
-    if (saved === 'ok') setAuth(true);
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch('/api/auth', { cache: 'no-store' });
+        const json = await res.json();
+        if (mounted) setAuth(Boolean(json.authenticated));
+      } catch {
+        if (mounted) setAuth(false);
+      } finally {
+        if (mounted) setCheckingAuth(false);
+      }
+    })();
+    return () => { mounted = false; };
   }, []);
 
   useEffect(() => {
@@ -56,21 +69,42 @@ export default function AdminPage() {
     if (mq.matches) { setSidebarOpen(false); setCollapsed(false); }
   }, []);
 
-  const login = () => {
-    if (pass === ADMIN_PASS) {
-      sessionStorage.setItem('cm_admin_auth', 'ok');
+  const login = async () => {
+    setLoggingIn(true);
+    setError('');
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pass }),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        setError(json.error || 'No fue posible iniciar sesión');
+        return;
+      }
       setAuth(true);
-      setError('');
-    } else {
-      setError('Contraseña incorrecta');
+      setPass('');
+    } catch {
+      setError('No fue posible conectar con el servidor');
+    } finally {
+      setLoggingIn(false);
     }
   };
 
-  const logout = () => {
-    sessionStorage.removeItem('cm_admin_auth');
+  const logout = async () => {
+    await fetch('/api/auth', { method: 'DELETE' }).catch(() => null);
     setAuth(false);
     setPass('');
   };
+
+  if (checkingAuth) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-bg">
+        <div className="h-8 w-8 animate-spin border-2 border-neon-red border-t-transparent" />
+      </div>
+    );
+  }
 
   // ─── LOGIN SCREEN ────────────────────────────────────────────
   if (!auth) {
@@ -104,7 +138,7 @@ export default function AdminPage() {
                 type={showPass ? 'text' : 'password'}
                 value={pass}
                 onChange={(e) => { setPass(e.target.value); setError(''); }}
-                onKeyDown={(e) => e.key === 'Enter' && login()}
+                onKeyDown={(e) => e.key === 'Enter' && !loggingIn && login()}
                 placeholder="••••••••"
                 autoFocus
                 className="admin-input !pl-9 !pr-10 !py-3"
@@ -124,7 +158,7 @@ export default function AdminPage() {
               </motion.p>
             )}
 
-            <button onClick={login} className="acid-button w-full !py-3">Entrar al panel</button>
+            <button onClick={login} disabled={loggingIn} className="acid-button w-full !py-3 disabled:cursor-not-allowed disabled:opacity-60">{loggingIn ? 'Validando...' : 'Entrar al panel'}</button>
           </div>
 
           <p className="mt-6 text-center text-[10px] font-black uppercase tracking-[.2em] text-gray-600">CM Design © {new Date().getFullYear()}</p>
@@ -142,6 +176,7 @@ export default function AdminPage() {
     skills:     AdminSkills,
     appearance: AdminAppearance,
     settings:   AdminSettings,
+    backup:     AdminBackup,
   }[section] || AdminDashboard;
 
   const sidebarW = collapsed ? 'w-[68px]' : 'w-[252px]';

@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Plus, Edit2, Trash2, Save, X, Image as ImageIcon,
-  Star, Tag, Loader2, Search, Grid3X3, List, Eye, GripVertical
+  Star, Tag, Loader2, Search, Grid3X3, List, Eye, GripVertical, UploadCloud
 } from 'lucide-react';
 import { initialProjects } from '@/data/projects';
 import { notifyConfigUpdate, saveConfigData } from '@/lib/SiteConfigContext';
@@ -84,6 +84,7 @@ export default function AdminProjects(_props: Props) {
   const [search, setSearch] = useState('');
   const [tagInput, setTagInput] = useState('');
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const loadData = useCallback(async () => {
     const dbProjects = await loadFromDB<Project[]>('cm_projects', initialProjects as Project[]);
@@ -171,6 +172,30 @@ export default function AdminProjects(_props: Props) {
   const updateField = (field: string, value: unknown) => {
     if (!editing) return;
     setEditing({ ...editing, [field]: value });
+  };
+
+  const uploadMedia = async (file: File, field: 'image' | 'video') => {
+    if (!editing) return;
+    setUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+      const json = await res.json();
+
+      if (!res.ok || !json.success) {
+        toast(json.error || 'No fue posible subir el archivo', 'error');
+        return;
+      }
+
+      setEditing({ ...editing, [field]: json.url });
+      toast('Archivo subido correctamente', 'success');
+    } catch {
+      toast('Error de conexión subiendo archivo', 'error');
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -307,8 +332,22 @@ export default function AdminProjects(_props: Props) {
                       value={editing.image}
                       onChange={e => updateField('image', e.target.value)}
                       className="w-full bg-surface border border-white/[0.1] angle-frame-sm px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-red/60 transition"
-                      placeholder="/imagen.jpg o URL"
+                      placeholder="/imagen.webp o URL"
                     />
+                    <label className="mt-2 inline-flex cursor-pointer items-center gap-2 border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-[10px] font-black uppercase tracking-[.12em] text-gray-400 transition hover:border-neon-red/50 hover:text-neon-red angle-frame-sm">
+                      <UploadCloud size={14} /> {uploading ? 'Subiendo...' : 'Subir imagen'}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        disabled={uploading}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) uploadMedia(file, 'image');
+                          e.currentTarget.value = '';
+                        }}
+                      />
+                    </label>
                   </div>
                   <div>
                     <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1 block">URL Video</label>
@@ -318,6 +357,20 @@ export default function AdminProjects(_props: Props) {
                       className="w-full bg-surface border border-white/[0.1] angle-frame-sm px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-red/60 transition"
                       placeholder="YouTube / Drive URL"
                     />
+                    <label className="mt-2 inline-flex cursor-pointer items-center gap-2 border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-[10px] font-black uppercase tracking-[.12em] text-gray-400 transition hover:border-neon-red/50 hover:text-neon-red angle-frame-sm">
+                      <UploadCloud size={14} /> {uploading ? 'Subiendo...' : 'Subir video'}
+                      <input
+                        type="file"
+                        accept="video/*"
+                        className="hidden"
+                        disabled={uploading}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) uploadMedia(file, 'video');
+                          e.currentTarget.value = '';
+                        }}
+                      />
+                    </label>
                   </div>
                 </div>
 

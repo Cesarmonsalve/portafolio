@@ -1,88 +1,56 @@
 'use client';
-import { ArrowRight } from 'lucide-react';
-import LottieRenderer from './LottieRenderer';
+import { ArrowUpRight, Crosshair, Layers3, Sparkles } from 'lucide-react';
 import SectionWrapper from './SectionWrapper';
+import LottieRenderer from './LottieRenderer';
 import { useSiteConfig } from '@/lib/SiteConfigContext';
-import { HEADING_SIZE_MAP, DEFAULT_SECTION_VISUAL } from '@/lib/config';
+import { DEFAULT_SECTION_VISUAL, HEADING_SIZE_MAP } from '@/lib/config';
+
+const specialtyIcons = [Layers3, Sparkles, Crosshair];
 
 export default function About() {
   const { cfg } = useSiteConfig();
-  const hCls = HEADING_SIZE_MAP[cfg.heading_size] || HEADING_SIZE_MAP.md;
   const visual = cfg.section_about || DEFAULT_SECTION_VISUAL;
+  const hCls = HEADING_SIZE_MAP[cfg.heading_size] || HEADING_SIZE_MAP.md;
 
   return (
-    <SectionWrapper id="about" visual={visual} className="py-24 md:py-32 px-6" fallbackBg="#0a0a0a">
-      {/* Lottie decoration */}
-      {cfg.lottie_about?.enabled && cfg.lottie_about?.source && (
-        <div className="lottie-section" style={{ opacity: cfg.lottie_about.opacity || 0.2 }}>
-          <LottieRenderer source={cfg.lottie_about.source} speed={cfg.lottie_about.speed} />
+    <SectionWrapper id="about" visual={visual} fallbackBg="#10151D" className="section-shell px-5 py-24 md:px-8 md:py-32">
+      <div className="arena-grid absolute inset-0 opacity-25" />
+      {cfg.lottie_about?.enabled && cfg.lottie_about.source && <div className="lottie-section opacity-20"><LottieRenderer source={cfg.lottie_about.source} speed={cfg.lottie_about.speed} /></div>}
+      <div className="relative z-10 mx-auto grid max-w-7xl gap-12 lg:grid-cols-[.82fr_1.18fr] lg:items-center">
+        <div className="relative mx-auto w-full max-w-[460px]">
+          <div className="absolute -inset-5 translate-x-5 translate-y-5 border border-neon-red/25 angle-frame" />
+          <div className="acid-panel angle-frame relative overflow-hidden p-3">
+            <div className="relative aspect-[4/5] overflow-hidden angle-frame-sm bg-[#0B0E13]">
+              {cfg.about_photo ? <img src={cfg.about_photo} alt="Perfil profesional" className="h-full w-full object-cover grayscale transition duration-700 hover:grayscale-0" /> : <div className="arena-grid flex h-full items-center justify-center"><span className="text-[9rem] font-black tracking-[-.12em] text-white/[0.055]">CM</span></div>}
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/75 to-transparent p-6 pt-20">
+                <div className="acid-kicker">{cfg.about_job_title}</div>
+                <div className="mt-2 text-2xl font-black uppercase tracking-[-.04em] text-white">{cfg.hero_name}</div>
+              </div>
+            </div>
+          </div>
+          <div className="absolute -bottom-5 -left-5 border border-neon-red/30 bg-[#0B0E13] px-4 py-3 angle-frame-sm">
+            <div className="text-[9px] font-black uppercase tracking-[.18em] text-gray-500">Creative profile</div>
+            <div className="mt-1 text-xs font-black uppercase tracking-[.12em] text-neon-red">Impact first</div>
+          </div>
         </div>
-      )}
 
-      <div className="max-w-6xl mx-auto relative z-10">
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-
-          {/* Left — Photo */}
-          <div className="lg:col-span-5 animate-slide-left">
-            <div className="relative group">
-              <div className="absolute -inset-3 border border-white/[0.04] rounded-3xl translate-x-2 translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-700" />
-              <div className="relative aspect-[3/4] rounded-2xl overflow-hidden border border-white/[0.06] bg-surface shadow-2xl">
-                {cfg.about_photo ? (
-                  <img src={cfg.about_photo} alt="Profile" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-surface via-black to-black">
-                    <span className="text-8xl font-bold text-white/[0.04]" style={{ fontFamily: `${cfg.font_display}, sans-serif` }}>CM</span>
-                  </div>
-                )}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/70 to-transparent p-5 pt-14">
-                  <span className="text-[9px] font-bold tracking-[0.2em] text-neon-red uppercase block mb-1">{cfg.about_job_title}</span>
-                  <span className="text-white font-bold text-lg uppercase tracking-tight" style={{ fontFamily: `${cfg.font_display}, sans-serif` }}>{cfg.hero_name}</span>
-                </div>
-              </div>
-            </div>
+        <div>
+          <div className="mb-4 flex items-center gap-3"><span className="h-px w-12 bg-neon-red" /><span className="acid-kicker">{cfg.about_label}</span></div>
+          {cfg.about_heading_type === 'image' && cfg.about_heading_image ? <img src={cfg.about_heading_image} alt={cfg.about_heading} className="mb-7 max-h-48 max-w-full object-contain object-left" style={{ width: `${cfg.about_heading_scale || 100}%` }} /> : <h2 className={`heading-slashed max-w-3xl font-black uppercase leading-[.95] tracking-[-.045em] text-white ${hCls}`} style={{ fontFamily: `${cfg.font_display}, sans-serif` }}>{cfg.about_heading}</h2>}
+          <div className="mt-7 space-y-4 border-l-2 border-neon-red/60 pl-5">
+            <p className="text-base leading-7 text-gray-200 md:text-lg">{cfg.about_bio}</p>
+            <p className="text-sm leading-7 text-gray-500 md:text-base">{cfg.about_bio_extended}</p>
           </div>
-
-          {/* Right — Text */}
-          <div className="lg:col-span-7 pt-2 lg:pt-8 animate-slide-right" style={{ animationDelay: '0.15s' }}>
-            <div className="flex items-center gap-3 mb-5">
-              <span className="w-10 h-[1px] bg-neon-red" />
-              <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-neon-red">{cfg.about_label}</span>
-            </div>
-
-            {cfg.about_heading_type === 'image' && cfg.about_heading_image ? (
-              <div className={`mb-8 flex w-full ${cfg.about_heading_align === 'center' ? 'justify-center' : cfg.about_heading_align === 'right' ? 'justify-end' : 'justify-start'}`}>
-                <img src={cfg.about_heading_image} alt={cfg.about_heading} className="object-contain" style={{ width: `${cfg.about_heading_scale || 100}%`, maxWidth: '100%', maxHeight: '200px' }} />
-              </div>
-            ) : (
-              <h2 className={`font-black leading-tight mb-8 morphing-gradient-text inline-block ${hCls} ${cfg.about_heading_align === 'center' ? 'text-center' : cfg.about_heading_align === 'right' ? 'text-right' : 'text-left'}`} style={{ fontFamily: `${cfg.font_display}, sans-serif`, transform: `scale(${(cfg.about_heading_scale || 100) / 100})`, transformOrigin: cfg.about_heading_align === 'center' ? 'center' : cfg.about_heading_align === 'right' ? 'right' : 'left' }}>
-                {cfg.about_heading}
-              </h2>
-            )}
-
-            <div className="space-y-5 mb-10">
-              <p className="text-gray-300 text-base md:text-lg leading-relaxed font-light">{cfg.about_bio}</p>
-              <p className="text-gray-500 text-sm md:text-base leading-relaxed">{cfg.about_bio_extended}</p>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-10 py-8 border-y border-white/[0.05]">
-              {(cfg.about_stats || []).map((stat, i) => (
-                <div key={i} className="opacity-0 animate-slide-up" style={{ animationDelay: `${0.2 + i * 0.1}s` }}>
-                  <div className="text-2xl font-bold text-white mb-1" style={{ fontFamily: `${cfg.font_display}, sans-serif` }}>{stat.value}</div>
-                  <div className="text-[10px] text-gray-600 uppercase tracking-widest font-bold">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-
-            <div className="hover:translate-x-1 transition-transform">
-              <a href="#contact" className="inline-flex items-center gap-3 group">
-                <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-white group-hover:text-neon-red transition-colors">Hablemos de tu proyecto</span>
-                <div className="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center group-hover:border-neon-red group-hover:bg-neon-red transition-all duration-300">
-                  <ArrowRight size={14} />
-                </div>
-              </a>
-            </div>
+          <div className="mt-9 grid grid-cols-3 border-y border-white/[0.09]">
+            {(cfg.about_stats || []).map((stat, index) => <div key={`${stat.label}-${index}`} className="border-r border-white/[0.09] px-3 py-5 last:border-r-0 md:px-5"><div className="text-xl font-black text-white md:text-3xl">{stat.value}</div><div className="mt-1 text-[9px] font-black uppercase tracking-[.14em] text-gray-500">{stat.label}</div></div>)}
           </div>
+          <div className="mt-8 grid gap-3 md:grid-cols-3">
+            {(cfg.about_specialties || []).map((item, index) => {
+              const Icon = specialtyIcons[index % specialtyIcons.length];
+              return <div key={`${item.title}-${index}`} className="acid-panel angle-frame-sm p-4"><Icon size={16} className="mb-4 text-neon-red" /><div className="text-xs font-black uppercase tracking-[.08em] text-white">{item.title}</div><div className="mt-2 text-[11px] leading-5 text-gray-500">{item.desc}</div></div>;
+            })}
+          </div>
+          <a href="#contact" className="ghost-button mt-8">Hablemos de tu proyecto <ArrowUpRight size={15} /></a>
         </div>
       </div>
     </SectionWrapper>

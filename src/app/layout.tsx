@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { Outfit, Inter } from 'next/font/google';
 import { getFullConfig } from '@/lib/config';
 import ThemeApplier from '@/components/ThemeApplier';
 import CommandPalette from '@/components/CommandPalette';
@@ -7,18 +6,6 @@ import ToastContainer from '@/components/ui/Toast';
 import SmoothScroll from '@/components/SmoothScroll';
 import { SiteConfigProvider } from '@/lib/SiteConfigContext';
 import './globals.css';
-
-const outfit = Outfit({ 
-  subsets: ['latin'], 
-  variable: '--font-outfit',
-  display: 'swap' 
-});
-
-const inter = Inter({ 
-  subsets: ['latin'], 
-  variable: '--font-inter',
-  display: 'swap' 
-});
 
 export const metadata: Metadata = {
   title: 'CM Design — Motion Graphics & Visual Design',
@@ -46,13 +33,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const cfg = await getFullConfig();
 
   return (
-    <html lang="es" className={`${outfit.variable} ${inter.variable}`} style={{
-      '--theme-primary': hexToRgb(cfg.theme_primary || '#ff0033'),
-      '--theme-secondary': hexToRgb(cfg.theme_secondary || '#a855f7'),
-      '--theme-accent': hexToRgb(cfg.theme_accent || '#ec4899'),
+    <html lang="es" style={{
+      '--theme-primary': hexToRgb(cfg.theme_primary || '#CBFE1C'),
+      '--theme-secondary': hexToRgb(cfg.theme_secondary || '#8B5CF6'),
+      '--theme-accent': hexToRgb(cfg.theme_accent || '#00E5FF'),
     } as React.CSSProperties}>
       <head>
-        <meta name="theme-color" content={cfg.theme_primary || '#060606'} />
+        <meta name="theme-color" content="#0B0E13" />
       </head>
       <body className="bg-bg antialiased">
         <SiteConfigProvider>

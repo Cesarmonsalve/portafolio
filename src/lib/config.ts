@@ -89,7 +89,7 @@ export interface SectionBackground {
 
 export const DEFAULT_SECTION_BG: SectionBackground = {
   type: 'color',
-  color: '#060606',
+  color: '#0B0E13',
   gradient: '',
   imageUrl: '',
   videoUrl: '',
@@ -123,7 +123,7 @@ export const DEFAULT_SECTION_FX: SectionEffects = {
   grain: false,
   grainOpacity: 3,
   floatingOrbs: false,
-  orbColors: ['#ff0033', '#a855f7', '#ec4899'],
+  orbColors: ['#CBFE1C', '#8B5CF6', '#00E5FF'],
 };
 
 // ═══════════════════════════════════════════
@@ -326,27 +326,27 @@ export const DEFAULT_CONFIG: SiteConfig = {
     whatsapp: '',
   },
 
-  theme_primary: '#ff0033',
-  theme_secondary: '#a855f7',
-  theme_accent: '#ec4899',
+  theme_primary: '#CBFE1C',
+  theme_secondary: '#8B5CF6',
+  theme_accent: '#00E5FF',
   heading_size: 'md',
   font_display: 'Syne',
   font_body: 'Inter',
 
   marquee_items: ['Motion Graphics', 'Visual Design', 'Branding', 'Flyer Design', 'After Effects', '3D Animation', 'Cinema 4D', 'Video Editing'],
-  marquee_style: 'lasso',
+  marquee_style: 'cyberpunk',
 
   show_cursor: true,
   show_scroll_progress: true,
   show_scanlines: false,
   show_grain: true,
 
-  section_hero:     { visible: true, position: 0, background: { ...DEFAULT_SECTION_BG },                                               effects: { ...DEFAULT_SECTION_FX, particles: true, particleCount: 40 } },
+  section_hero:     { visible: true, position: 0, background: { ...DEFAULT_SECTION_BG },                                               effects: { ...DEFAULT_SECTION_FX, particles: true, particleCount: 28, floatingOrbs: true } },
   section_projects: { visible: true, position: 1, background: { ...DEFAULT_SECTION_BG },                                               effects: { ...DEFAULT_SECTION_FX } },
-  section_about:    { visible: true, position: 2, background: { ...DEFAULT_SECTION_BG, color: '#0a0a0a' },                              effects: { ...DEFAULT_SECTION_FX } },
+  section_about:    { visible: true, position: 2, background: { ...DEFAULT_SECTION_BG, color: '#10151D' },                              effects: { ...DEFAULT_SECTION_FX } },
   section_skills:   { visible: true, position: 3, background: { ...DEFAULT_SECTION_BG },                                               effects: { ...DEFAULT_SECTION_FX } },
-  section_contact:  { visible: true, position: 4, background: { ...DEFAULT_SECTION_BG, color: '#050505' },                              effects: { ...DEFAULT_SECTION_FX } },
-  section_store:    { visible: true, position: 5, background: { ...DEFAULT_SECTION_BG, color: '#090909' },                              effects: { ...DEFAULT_SECTION_FX, particles: true, particleCount: 30 } },
+  section_contact:  { visible: true, position: 4, background: { ...DEFAULT_SECTION_BG, color: '#090D12' },                              effects: { ...DEFAULT_SECTION_FX } },
+  section_store:    { visible: true, position: 5, background: { ...DEFAULT_SECTION_BG, color: '#0F141B' },                              effects: { ...DEFAULT_SECTION_FX, particles: true, particleCount: 30 } },
 
   lottie_hero:     { ...DEFAULT_LOTTIE },
   lottie_about:    { ...DEFAULT_LOTTIE },

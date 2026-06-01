@@ -66,7 +66,7 @@ export default function AdminDashboard({ onUnreadChange, setActiveTab }: Props) 
   }, [loadLocalStats]);
 
   const cards = [
-    { label: 'Proyectos', value: stats.projects, icon: FolderKanban, color: 'from-red-600 to-pink-600', shadow: 'shadow-red-900/30', tab: 'projects' },
+    { label: 'Proyectos', value: stats.projects, icon: FolderKanban, color: 'from-lime-300 to-lime-500', shadow: 'shadow-lime-900/20', tab: 'projects' },
     { label: 'Mensajes', value: stats.messages, icon: MessageSquare, color: 'from-blue-600 to-cyan-500', shadow: 'shadow-blue-900/30', tab: 'messages' },
     { label: 'Sin leer', value: stats.unread, icon: Eye, color: 'from-amber-500 to-orange-500', shadow: 'shadow-amber-900/30', tab: 'messages' },
     { label: 'Skills', value: stats.skills, icon: Wrench, color: 'from-purple-600 to-violet-500', shadow: 'shadow-purple-900/30', tab: 'skills' },
@@ -158,7 +158,7 @@ export default function AdminDashboard({ onUnreadChange, setActiveTab }: Props) 
             className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"
           >
             <h3 className="font-bold text-white flex items-center gap-2 mb-4">
-              <Plus size={16} className="text-red-400" />
+              <Plus size={16} className="text-neon-red" />
               Acciones Rápidas
             </h3>
             <div className="grid grid-cols-1 gap-2">

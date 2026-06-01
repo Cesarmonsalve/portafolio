@@ -4,8 +4,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        bg: { DEFAULT: '#060606', secondary: '#0c0c0c', tertiary: '#141414' },
-        surface: { DEFAULT: '#111111', hover: '#1a1a1a' },
+        bg: { DEFAULT: '#0B0E13', secondary: '#10151D', tertiary: '#171D27' },
+        surface: { DEFAULT: '#151A22', hover: '#1D2530' },
         neon: {
           red: 'rgb(var(--theme-primary) / <alpha-value>)',
           purple: 'rgb(var(--theme-secondary) / <alpha-value>)',

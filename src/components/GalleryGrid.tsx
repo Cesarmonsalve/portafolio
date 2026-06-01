@@ -71,10 +71,10 @@ function VideoLightbox({ project, onClose }: { project: Project; onClose: () => 
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-        className="relative z-10 w-[92vw] max-w-5xl aspect-video rounded-2xl overflow-hidden shadow-[0_0_100px_rgba(255,0,51,0.12)]"
+        className="relative z-10 w-[92vw] max-w-5xl aspect-video overflow-hidden shadow-[0_0_100px_rgba(203,254,28,0.12)] angle-frame"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="absolute inset-0 rounded-2xl bg-black">
+        <div className="absolute inset-0 bg-black angle-frame-sm">
           {isEmbed ? (
             <iframe src={getEmbedUrl(videoUrl)} className="w-full h-full" allow="autoplay; encrypted-media; fullscreen" allowFullScreen title={project.title} />
           ) : videoUrl ? (
@@ -86,13 +86,13 @@ function VideoLightbox({ project, onClose }: { project: Project; onClose: () => 
           )}
         </div>
 
-        <button onClick={onClose} className="absolute top-4 right-4 z-20 w-10 h-10 bg-black/60 backdrop-blur rounded-full flex items-center justify-center text-white hover:bg-neon-red/80 transition-all group">
+        <button onClick={onClose} className="absolute top-4 right-4 z-20 w-10 h-10 bg-black/60 backdrop-blur angle-frame-sm flex items-center justify-center text-white hover:bg-neon-red/80 transition-all group">
           <X size={18} className="group-hover:rotate-90 transition-transform duration-300" />
         </button>
 
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 pt-16 pointer-events-none">
           <h3 className="text-heading text-lg text-white mb-1">{project.title}</h3>
-          <span className="bg-neon-red/20 border border-neon-red/30 px-2.5 py-0.5 rounded-full text-[10px] font-medium text-neon-red">{project.category}</span>
+          <span className="bg-neon-red/20 border border-neon-red/30 px-2.5 py-0.5 angle-frame-sm text-[10px] font-medium text-neon-red">{project.category}</span>
         </div>
       </motion.div>
     </motion.div>
@@ -111,7 +111,7 @@ function VideoCard({ project, index, onPlay }: { project: Project; index: number
       className="group"
     >
       <div
-        className="relative overflow-hidden rounded-2xl bg-surface border border-white/[0.04] transition-all duration-500 hover:border-neon-red/20 cursor-pointer video-card-glow"
+        className="relative overflow-hidden project-arena-card bg-surface border border-white/[0.08] transition-all duration-500 hover:border-neon-red/20 cursor-pointer video-card-glow"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         onClick={onPlay}
@@ -126,7 +126,7 @@ function VideoCard({ project, index, onPlay }: { project: Project; index: number
           />
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <motion.div animate={{ scale: hovered ? 1.15 : 1, opacity: hovered ? 1 : 0.6 }} className="relative">
-              <div className="relative w-16 h-16 bg-neon-red/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(255,0,51,0.4)] group-hover:shadow-[0_0_50px_rgba(255,0,51,0.6)] transition-shadow duration-500">
+              <div className="relative w-16 h-16 bg-neon-red/90 backdrop-blur-sm angle-frame-sm flex items-center justify-center shadow-[0_0_30px_rgba(203,254,28,0.3)] group-hover:shadow-[0_0_50px_rgba(203,254,28,0.55)] transition-shadow duration-500">
                 <Play size={22} className="text-white ml-1" fill="white" />
               </div>
             </motion.div>
@@ -140,7 +140,7 @@ function VideoCard({ project, index, onPlay }: { project: Project; index: number
           <p className="text-[11px] text-gray-500 line-clamp-1 mb-2">{project.description}</p>
           <div className="flex flex-wrap gap-1.5">
             {project.tags.slice(0, 3).map((tag) => (
-              <span key={tag} className="bg-white/[0.03] px-2 py-0.5 rounded-full text-[10px] text-gray-500">{tag}</span>
+              <span key={tag} className="bg-white/[0.03] px-2 py-0.5 angle-frame-sm text-[10px] text-gray-500">{tag}</span>
             ))}
           </div>
         </div>
@@ -175,15 +175,16 @@ export default function GalleryGrid() {
   ];
 
   return (
-    <div className="min-h-screen bg-bg text-white pb-20 pt-32 px-6">
-      <div className="max-w-7xl mx-auto">
-        <Link href="/#work" className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-12">
+    <div className="relative min-h-screen overflow-hidden bg-bg px-6 pb-20 pt-32 text-white">
+      <div className="arena-grid absolute inset-0 opacity-35" />
+      <div className="relative mx-auto max-w-7xl">
+        <Link href="/#work" className="ghost-button mb-12 !px-4 !py-3">
           <ArrowLeft size={16} />
           <span className="text-xs font-bold uppercase tracking-widest">Volver al inicio</span>
         </Link>
 
         <div className="mb-16">
-          <h1 className="text-display text-4xl md:text-6xl font-bold mb-4">
+          <h1 className="heading-slashed text-display mb-4 text-4xl font-black uppercase leading-[.95] tracking-[-.04em] md:text-6xl">
             Galería de <span className="gradient-text-animated">Trabajos</span>
           </h1>
           <p className="text-gray-400 max-w-2xl">
@@ -193,14 +194,14 @@ export default function GalleryGrid() {
 
         {/* Filters */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12 border-b border-white/[0.05] pb-8">
-          <div className="flex items-center bg-white/[0.02] border border-white/[0.06] rounded-2xl p-1 gap-0.5">
+          <div className="acid-panel angle-frame-sm flex items-center gap-0.5 p-1">
             {MEDIA_FILTERS.map((filter) => {
               const isActive = mediaFilter === filter.id;
               return (
                 <button
                   key={filter.id}
                   onClick={() => { setMediaFilter(filter.id); setActiveCategory('Todos'); }}
-                  className={`relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-medium tracking-wide transition-colors duration-300 ${isActive ? 'text-white bg-white/10' : 'text-gray-500 hover:text-gray-300'}`}
+                  className={`relative flex items-center gap-2 px-5 py-2.5 angle-frame-sm text-[11px] font-black uppercase tracking-wide transition-colors duration-300 ${isActive ? 'bg-neon-red text-[#0B0E13]' : 'text-gray-500 hover:text-neon-red'}`}
                 >
                   <filter.icon size={14} />
                   {filter.label}
@@ -214,7 +215,7 @@ export default function GalleryGrid() {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-1.5 rounded-full text-[11px] font-medium tracking-wide transition-all duration-300 ${activeCategory === cat ? 'bg-neon-red text-white' : 'bg-white/[0.03] text-gray-400 hover:text-gray-200'}`}
+                className={`px-4 py-1.5 angle-frame-sm border px-4 py-1.5 text-[11px] font-black uppercase tracking-wide transition-all duration-300 ${activeCategory === cat ? 'border-neon-red bg-neon-red text-[#0B0E13]' : 'border-white/[0.08] bg-white/[0.03] text-gray-400 hover:border-neon-red/50 hover:text-neon-red'}`}
               >
                 {cat}
               </button>
@@ -243,7 +244,7 @@ export default function GalleryGrid() {
         </AnimatePresence>
 
         {filtered.length === 0 && (
-          <div className="text-center py-20 text-gray-500">No se encontraron proyectos.</div>
+          <div className="acid-panel angle-frame mt-8 py-20 text-center text-gray-500">No se encontraron proyectos.</div>
         )}
       </div>
 

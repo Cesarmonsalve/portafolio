@@ -1,88 +1,50 @@
 'use client';
-import { Mail } from 'lucide-react';
-import {
-  FaInstagram, FaYoutube, FaTiktok, FaWhatsapp,
-  FaBehance, FaXTwitter, FaLinkedin, FaFacebook,
-  FaGithub, FaDribbble, FaTwitch, FaLink, FaDiscord, FaPinterest
-} from 'react-icons/fa6';
-import LottieRenderer from './LottieRenderer';
+import { ArrowUpRight, Mail, MessageCircle, Radio } from 'lucide-react';
+import { FaBehance, FaDiscord, FaDribbble, FaFacebook, FaGithub, FaInstagram, FaLinkedin, FaLink, FaPinterest, FaTiktok, FaTwitch, FaWhatsapp, FaXTwitter, FaYoutube } from 'react-icons/fa6';
 import SectionWrapper from './SectionWrapper';
 import { useSiteConfig } from '@/lib/SiteConfigContext';
-import { HEADING_SIZE_MAP, DEFAULT_SECTION_VISUAL } from '@/lib/config';
+import { DEFAULT_SECTION_VISUAL, HEADING_SIZE_MAP } from '@/lib/config';
 
 const platformIcons: Record<string, React.ElementType> = {
-  instagram: FaInstagram, youtube: FaYoutube, behance: FaBehance,
-  twitter: FaXTwitter, x: FaXTwitter, linkedin: FaLinkedin,
-  facebook: FaFacebook, github: FaGithub, dribbble: FaDribbble,
-  twitch: FaTwitch, whatsapp: FaWhatsapp, tiktok: FaTiktok,
-  discord: FaDiscord, pinterest: FaPinterest, default: FaLink,
-};
-const platformColors: Record<string, string> = {
-  instagram: '#E1306C', youtube: '#FF0000', behance: '#1769FF',
-  twitter: '#1DA1F2', x: '#1DA1F2', linkedin: '#0A66C2',
-  facebook: '#1877F2', github: '#ffffff', dribbble: '#EA4C89',
-  twitch: '#9146FF', whatsapp: '#25D366', tiktok: '#ff0050',
-  discord: '#5865F2', pinterest: '#E60023', default: '#8a8a8a',
+  instagram: FaInstagram, youtube: FaYoutube, behance: FaBehance, twitter: FaXTwitter, x: FaXTwitter,
+  linkedin: FaLinkedin, facebook: FaFacebook, github: FaGithub, dribbble: FaDribbble, twitch: FaTwitch,
+  whatsapp: FaWhatsapp, tiktok: FaTiktok, discord: FaDiscord, pinterest: FaPinterest, default: FaLink,
 };
 
 export default function Contact() {
   const { cfg, socials } = useSiteConfig();
-  const enabledSocials = socials.filter(s => s.enabled);
-  const hCls = HEADING_SIZE_MAP[cfg.heading_size] || HEADING_SIZE_MAP.md;
   const visual = cfg.section_contact || DEFAULT_SECTION_VISUAL;
+  const hCls = HEADING_SIZE_MAP[cfg.heading_size] || HEADING_SIZE_MAP.md;
+  const enabledSocials = socials.filter((social) => social.enabled);
 
   return (
-    <SectionWrapper id="contact" visual={visual} className="py-24 md:py-32 px-6" fallbackBg="#050505">
-      <div className="max-w-4xl mx-auto relative z-10 flex flex-col items-center text-center">
-        {/* Header */}
-        <div className="mb-12 animate-slide-up flex flex-col items-center">
-          <div className="flex items-center gap-3 mb-5">
-            <span className="w-10 h-[1px] bg-neon-red" />
-            <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-neon-red">{cfg.contact_label}</span>
-            <span className="w-10 h-[1px] bg-neon-red" />
-          </div>
-          <h2 className={`font-black leading-tight mb-4 morphing-gradient-text inline-block ${hCls}`} style={{ fontFamily: `${cfg.font_display}, sans-serif` }}>{cfg.contact_heading}</h2>
-        </div>
-
-        <p className="text-gray-400 text-base md:text-lg mb-12 max-w-lg leading-relaxed font-light animate-slide-up" style={{ animationDelay: '0.1s' }}>
-          {cfg.contact_desc}
-        </p>
-
-        {/* Email */}
-        <a href={`mailto:${cfg.contact_email}`}
-          className="group flex w-full max-w-md items-center gap-5 p-5 rounded-3xl bg-white/[0.02] border border-white/[0.06] hover:border-neon-red/30 hover:bg-neon-red/[0.04] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 mb-14 animate-slide-up"
-          style={{ animationDelay: '0.2s' }}>
-          <div className="w-14 h-14 rounded-2xl bg-neon-red/10 border border-neon-red/20 flex items-center justify-center group-hover:bg-neon-red transition-all duration-300 shrink-0">
-            <Mail size={24} className="text-neon-red group-hover:text-white transition-colors" />
-          </div>
-          <div className="text-left flex-1 min-w-0">
-            <div className="text-[10px] text-gray-500 uppercase tracking-widest mb-1 font-bold">Email directo</div>
-            <div className="text-white font-medium text-base group-hover:text-neon-red transition-colors truncate">{cfg.contact_email}</div>
-          </div>
-          <div className="text-gray-700 group-hover:text-neon-red transition-colors shrink-0">→</div>
-        </a>
-
-        {/* Socials */}
-        {enabledSocials.length > 0 && (
-          <div className="w-full animate-slide-up" style={{ animationDelay: '0.3s' }}>
-            <div className="text-[10px] text-gray-600 uppercase tracking-widest font-bold mb-6">O encuéntrame en:</div>
-            <div className="flex flex-wrap justify-center gap-4">
-              {enabledSocials.map((social, i) => {
-                const Icon = platformIcons[social.platform.toLowerCase()] || platformIcons.default;
-                const color = platformColors[social.platform.toLowerCase()] || platformColors.default;
-                return (
-                  <a key={social.id} href={social.url} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center gap-3 px-5 py-4 rounded-2xl bg-white/[0.02] border border-white/[0.05] hover:border-white/[0.12] hover:scale-[1.05] hover:-translate-y-1 transition-all duration-300 group cursor-pointer">
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-white/[0.05] shrink-0 transition-colors" style={{ background: `${color}15` }}>
-                      <Icon size={18} style={{ color }} />
-                    </div>
-                    <span className="text-[12px] font-bold uppercase tracking-wide text-gray-400 group-hover:text-white transition-colors truncate">{social.platform}</span>
-                  </a>
-                );
-              })}
+    <SectionWrapper id="contact" visual={visual} fallbackBg="#090D12" className="section-shell px-5 py-24 md:px-8 md:py-32">
+      <div className="arena-grid absolute inset-0 opacity-30" />
+      <div className="relative z-10 mx-auto max-w-7xl">
+        <div className="acid-panel angle-frame overflow-hidden p-6 md:p-10 lg:p-14">
+          <div className="arena-dots absolute -right-6 -top-6 h-48 w-48 opacity-30" />
+          <div className="absolute -bottom-28 -right-20 h-72 w-72 rounded-full bg-neon-red/[0.07] blur-[90px]" />
+          <div className="relative grid gap-10 lg:grid-cols-[1.1fr_.9fr] lg:items-center">
+            <div>
+              <div className="mb-4 flex items-center gap-3"><span className="h-px w-12 bg-neon-red" /><span className="acid-kicker">{cfg.contact_label}</span></div>
+              <h2 className={`heading-slashed max-w-3xl font-black uppercase leading-[.95] tracking-[-.045em] text-white ${hCls}`} style={{ fontFamily: `${cfg.font_display}, sans-serif` }}>{cfg.contact_heading}</h2>
+              <p className="mt-6 max-w-xl border-l-2 border-neon-red/60 pl-5 text-sm leading-7 text-gray-400 md:text-base">{cfg.contact_desc}</p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <a href={`mailto:${cfg.contact_email}`} className="acid-button"><Mail size={15} /> Enviar email <ArrowUpRight size={15} /></a>
+                <a href={cfg.contact_whatsapp || '#'} target="_blank" rel="noopener noreferrer" className="ghost-button"><MessageCircle size={15} /> WhatsApp</a>
+              </div>
+            </div>
+            <div className="border border-white/[0.09] bg-[#0B0E13]/75 p-5 angle-frame-sm md:p-7">
+              <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
+                <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[.16em] text-white"><Radio size={15} className="text-neon-red" /> Canal directo</div>
+                <span className="h-2 w-2 animate-pulse rounded-full bg-neon-red shadow-[0_0_14px_rgba(203,254,28,.6)]" />
+              </div>
+              <a href={`mailto:${cfg.contact_email}`} className="mt-5 block break-all text-base font-black text-neon-red transition hover:text-white md:text-lg">{cfg.contact_email}</a>
+              <p className="mt-2 text-xs leading-5 text-gray-500">Comparte tu idea, formato, fecha y objetivo. La propuesta visual partirá de esas coordenadas.</p>
+              {enabledSocials.length > 0 && <div className="mt-6 flex flex-wrap gap-2 border-t border-white/[0.08] pt-5">{enabledSocials.map((social) => { const Icon = platformIcons[social.platform.toLowerCase()] || platformIcons.default; return <a key={social.id} href={social.url} target="_blank" rel="noopener noreferrer" title={social.platform} className="flex h-10 w-10 items-center justify-center border border-white/[0.09] bg-white/[0.025] text-gray-400 transition hover:border-neon-red/60 hover:bg-neon-red hover:text-[#0B0E13] angle-frame-sm"><Icon size={16} /></a>; })}</div>}
             </div>
           </div>
-        )}
+        </div>
       </div>
     </SectionWrapper>
   );

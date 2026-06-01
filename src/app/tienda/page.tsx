@@ -46,11 +46,11 @@ function StoreCard({ item, index }: { item: StoreItem; index: number }) {
     <div
       ref={cardRef}
       onMouseMove={handleMouseMove}
-      className="store-card card-spotlight rounded-2xl bg-white/[0.02] border border-white/[0.06] group opacity-0 animate-slide-up"
+      className="store-card card-spotlight angle-frame bg-white/[0.025] border border-white/[0.08] group opacity-0 animate-slide-up"
       style={{ animationDelay: `${index * 0.08}s` }}
     >
       {/* Shimmer sweep */}
-      <div className="store-shimmer rounded-2xl" />
+      <div className="store-shimmer" />
 
       {/* ═══ COVER IMAGE / HEADER ═══ */}
       <div className="relative overflow-hidden rounded-t-2xl">
@@ -285,12 +285,13 @@ export default function TiendaPage() {
       <Navbar />
 
       <SectionWrapper visual={cfg.section_store}>
+        <div className="arena-grid absolute inset-0 opacity-35" />
         {/* ═══ HERO ═══ */}
         <section className="relative pt-32 pb-16 px-6 z-10">
           <div className="max-w-5xl mx-auto text-center">
             {/* Badge */}
             <div
-              className="inline-flex items-center gap-2.5 bg-neon-red/[0.06] border border-neon-red/20 px-6 py-2.5 rounded-full mb-8 opacity-0 animate-fade-in"
+              className="angle-frame-sm inline-flex items-center gap-2.5 border border-neon-red/25 bg-neon-red/[0.06] px-6 py-2.5 mb-8 opacity-0 animate-fade-in"
             >
               <ShoppingBag size={14} className="text-neon-red" />
               <span className="text-[10px] font-semibold tracking-[0.14em] uppercase text-neon-red">
@@ -301,7 +302,7 @@ export default function TiendaPage() {
 
             {/* Title */}
             <h1
-              className="text-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6 opacity-0 animate-slide-up"
+              className="heading-slashed text-display text-4xl font-black uppercase leading-[.94] tracking-[-.045em] sm:text-5xl md:text-6xl lg:text-7xl mb-6 opacity-0 animate-slide-up"
               style={{ fontFamily: `${cfg.font_display}, sans-serif`, animationDelay: '0.15s' }}
             >
               {cfg.store_heading}
@@ -323,7 +324,7 @@ export default function TiendaPage() {
               <div
                 className="absolute -inset-0.5 rounded-2xl transition-opacity duration-500 blur-md"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(255,0,51,0.2), rgba(168,85,247,0.2))',
+                  background: 'linear-gradient(135deg, rgba(203,254,28,0.22), rgba(139,92,246,0.2))',
                   opacity: searchFocused ? 1 : 0,
                 }}
               />
@@ -340,7 +341,7 @@ export default function TiendaPage() {
                   onFocus={() => setSearchFocused(true)}
                   onBlur={() => setSearchFocused(false)}
                   placeholder="Buscar recursos, templates, presets..."
-                  className="w-full bg-white/[0.03] border border-white/[0.08] rounded-2xl pl-12 pr-20 py-4 text-sm text-white focus:border-neon-red/40 focus:outline-none transition-all placeholder:text-gray-600 backdrop-blur-sm"
+                  className="angle-frame-sm w-full border border-white/[0.1] bg-white/[0.035] py-4 pl-12 pr-20 text-sm text-white placeholder:text-gray-600 backdrop-blur-sm transition-all focus:border-neon-red/50 focus:outline-none"
                 />
                 {/* Results counter */}
                 {searchQuery && (
@@ -383,10 +384,10 @@ export default function TiendaPage() {
                     }`}
                     style={isActive ? {
                       background: cat === 'Todos'
-                        ? 'linear-gradient(135deg, rgba(255,0,51,0.9), rgba(236,72,153,0.9))'
+                        ? 'linear-gradient(135deg, rgba(203,254,28,0.98), rgba(181,230,17,0.92))'
                         : color?.bg.replace('0.08', '0.9'),
                       boxShadow: cat === 'Todos'
-                        ? '0 4px 20px rgba(255,0,51,0.3)'
+                        ? '0 4px 20px rgba(203,254,28,0.24)'
                         : `0 4px 20px ${color?.glow}`,
                     } : undefined}
                   >
@@ -449,7 +450,7 @@ export default function TiendaPage() {
         <section className="px-6 pb-24 relative z-10">
           <div className="max-w-4xl mx-auto">
             <div
-              className="cta-gradient rounded-3xl border border-white/[0.06] p-10 md:p-14 relative overflow-hidden opacity-0 animate-slide-up"
+              className="cta-gradient acid-panel angle-frame border border-neon-red/15 p-10 md:p-14 relative overflow-hidden opacity-0 animate-slide-up"
             >
               {/* Decorative elements */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-neon-red/5 rounded-full blur-[100px] pointer-events-none" />
@@ -470,8 +471,8 @@ export default function TiendaPage() {
                 </div>
                 <div className="flex flex-col gap-3">
                   <a
-                    href="/#contacto"
-                    className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl bg-gradient-to-r from-neon-red to-pink-600 hover:from-red-500 hover:to-pink-500 text-white text-sm font-bold tracking-wide shadow-lg shadow-neon-red/20 transition-all duration-300 elastic-press"
+                    href="/#contact"
+                    className="acid-button !px-8 !py-4"
                   >
                     <MessageCircle size={16} />
                     Contáctame

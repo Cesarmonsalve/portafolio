@@ -75,7 +75,7 @@ export default function AdminPage() {
   // ─── LOGIN SCREEN ────────────────────────────────────────────
   if (!auth) {
     return (
-      <div className="min-h-screen bg-[#060606] flex items-center justify-center p-4">
+      <div className="relative min-h-screen overflow-hidden bg-[#0B0E13] flex items-center justify-center p-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -83,15 +83,15 @@ export default function AdminPage() {
         >
           {/* Logo */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600 mb-4 shadow-lg shadow-blue-900/40">
-              <Zap size={28} className="text-white" />
+            <div className="inline-flex items-center justify-center w-16 h-16 angle-frame-sm bg-neon-red mb-4 shadow-lg shadow-neon-red/20">
+              <Zap size={28} className="text-[#0B0E13]" />
             </div>
             <h1 className="text-2xl font-black text-white tracking-tight">CM Design</h1>
             <p className="text-zinc-500 text-sm mt-1">Panel de Administración</p>
           </div>
 
           {/* Card */}
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl">
+          <div className="acid-panel angle-frame p-6 shadow-2xl">
             <label className="block text-zinc-400 text-xs font-semibold mb-2 uppercase tracking-widest">
               Contraseña
             </label>
@@ -103,7 +103,7 @@ export default function AdminPage() {
                 onChange={e => { setPass(e.target.value); setError(''); }}
                 onKeyDown={e => e.key === 'Enter' && login()}
                 placeholder="••••••••"
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-xl pl-9 pr-10 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 transition"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-xl pl-9 pr-10 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-neon-red focus:ring-1 focus:ring-neon-red/30 transition"
               />
               <button
                 onClick={() => setShowPass(!showPass)}
@@ -125,7 +125,7 @@ export default function AdminPage() {
 
             <button
               onClick={login}
-              className="w-full py-3 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-500 transition shadow-lg shadow-blue-900/30 active:scale-95"
+              className="acid-button w-full !py-3"
             >
               Entrar al Admin
             </button>
@@ -151,7 +151,7 @@ export default function AdminPage() {
   const sidebarW = collapsed ? 'w-[68px]' : 'w-[260px]';
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex text-white">
+    <div className="min-h-screen bg-[#0B0E13] flex text-white">
       {/* ═══ UNIFIED SIDEBAR ═══ */}
       <AnimatePresence>
         {sidebarOpen && (
@@ -160,12 +160,12 @@ export default function AdminPage() {
             animate={{ x: 0 }}
             exit={{ x: -300 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className={`fixed md:relative z-40 top-0 left-0 h-full ${sidebarW} bg-[#111113] border-r border-white/[0.06] flex flex-col transition-all duration-300 shadow-2xl md:shadow-none`}
+            className={`fixed md:relative z-40 top-0 left-0 h-full ${sidebarW} bg-[#10151D] border-r border-neon-red/15 flex flex-col transition-all duration-300 shadow-2xl md:shadow-none`}
           >
             {/* Header */}
             <div className="h-[64px] flex items-center px-4 border-b border-white/[0.04] flex-shrink-0">
-              <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center shadow-md flex-shrink-0">
-                <Zap size={18} className="text-white" />
+              <div className="w-9 h-9 angle-frame-sm bg-neon-red flex items-center justify-center shadow-md flex-shrink-0">
+                <Zap size={18} className="text-[#0B0E13]" />
               </div>
               {!collapsed && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="ml-3 min-w-0">
@@ -193,7 +193,7 @@ export default function AdminPage() {
                     onClick={() => { setSection(item.id); if (window.innerWidth < 768) setSidebarOpen(false); }}
                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 group relative ${
                       active
-                        ? 'bg-blue-600 text-white shadow-md shadow-blue-900/30'
+                        ? 'bg-neon-red text-[#0B0E13] shadow-md shadow-neon-red/20'
                         : 'text-zinc-400 hover:text-white hover:bg-white/[0.04]'
                     }`}
                     title={collapsed ? item.label : undefined}
@@ -250,7 +250,7 @@ export default function AdminPage() {
       {/* ═══ MAIN CONTENT ═══ */}
       <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
         {/* Topbar */}
-        <header className="bg-[#0a0a0a]/80 backdrop-blur-sm border-b border-zinc-800/50 px-5 py-3 flex items-center gap-3 sticky top-0 z-20">
+        <header className="bg-[#0B0E13]/90 backdrop-blur-sm border-b border-neon-red/15 px-5 py-3 flex items-center gap-3 sticky top-0 z-20">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition"

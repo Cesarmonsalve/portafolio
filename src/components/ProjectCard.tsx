@@ -63,7 +63,7 @@ export default function ProjectCard({ project, index, featured }: Props) {
       <div ref={cardRef} className="project-arena-card group h-full" style={{ transition: 'transform .18s ease-out, border-color .38s ease, box-shadow .38s ease' }} onMouseEnter={() => setHovered(true)} onMouseMove={handleMouseMove} onMouseLeave={handleLeave} data-cursor-hover>
         <div className={`relative overflow-hidden ${featured ? 'aspect-[16/9]' : 'aspect-[4/3]'}`}>
           {!imageLoaded && <div className="absolute inset-0 shimmer bg-surface" />}
-          <img src={project.image} alt={project.title} onLoad={() => setImageLoaded(true)} className={`h-full w-full object-cover transition duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'} ${hovered ? 'scale-110 brightness-[.42]' : 'scale-100 brightness-[.8]'}`} />
+          <img src={project.image} alt={`${project.title} — ${project.category} por CM Design`} loading="lazy" decoding="async" onLoad={() => setImageLoaded(true)} className={`h-full w-full object-cover transition duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'} ${hovered ? 'scale-110 brightness-[.42]' : 'scale-100 brightness-[.8]'}`} />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0B0E13] via-[#0B0E13]/30 to-transparent" />
           <div className="absolute left-4 top-4 flex items-center gap-2">
             <span className="angle-frame-sm bg-neon-red px-3 py-1.5 text-[9px] font-black uppercase tracking-[.14em] text-[#0B0E13]">{project.category}</span>

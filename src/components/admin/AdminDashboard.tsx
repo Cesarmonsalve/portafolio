@@ -1,214 +1,265 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import {
-  FolderKanban, MessageSquare, Wrench, Eye, TrendingUp,
-  Clock, Activity, ArrowUpRight, BarChart3, Plus, Settings, ExternalLink
+  FolderKanban, MessageSquare, Wrench, ShoppingBag, Mail,
+  Plus, Settings, ExternalLink, BarChart3, CheckCircle2, Circle,
+  Share2, ArrowUpRight,
 } from 'lucide-react';
-import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { useSiteConfig } from '@/lib/SiteConfigContext';
 
-const mockChartData = [
-  { name: 'Lun', visitas: 120 },
-  { name: 'Mar', visitas: 210 },
-  { name: 'Mié', visitas: 180 },
-  { name: 'Jue', visitas: 340 },
-  { name: 'Vie', visitas: 280 },
-  { name: 'Sáb', visitas: 410 },
-  { name: 'Dom', visitas: 520 },
-];
-
-interface Props { 
+interface Props {
   onUnreadChange?: (n: number) => void;
   setActiveTab?: (tab: string) => void;
 }
 
 export default function AdminDashboard({ onUnreadChange, setActiveTab }: Props) {
-  const { projects, skills, socials } = useSiteConfig();
-  const [stats, setStats] = useState({ projects: 0, messages: 0, unread: 0, skills: 0 });
-  const [recentMessages, setRecentMessages] = useState<any[]>([]);
+  const { projects, skills, socials, storeItems, cfg } = useSiteConfig();
+  const [messages, setMessages] = useState<any[]>([]);
 
-  const loadLocalStats = useCallback(async () => {
-    // Try to load messages from DB first for cross-device sync
-    let messages: any[] = [];
+  const loadMessages = useCallback(async () => {
+    let msgs: any[] = [];
     try {
       const res = await fetch('/api/data');
       if (res.ok) {
         const json = await res.json();
-        if (json.success && json.data && json.data['cm_messages']) {
-          messages = json.data['cm_messages'];
-          localStorage.setItem('cm_messages', JSON.stringify(messages));
+        if (json.success && json.data?.['cm_messages']) {
+          msgs = json.data['cm_messages'];
+          localStorage.setItem('cm_messages', JSON.stringify(msgs));
         }
       }
     } catch { /* fallback */ }
-    
-    if (messages.length === 0) {
-      messages = JSON.parse(localStorage.getItem('cm_messages') || '[]');
-    }
-    
-    const unread = messages.filter((m: any) => !m.read).length;
-    
-    setStats({
-      projects: projects.length,
-      messages: messages.length,
-      unread,
-      skills: skills.length
-    });
-    
-    setRecentMessages(messages.slice(-5).reverse());
-    onUnreadChange?.(unread);
-  }, [projects, skills, onUnreadChange]);
+    if (msgs.length === 0) msgs = JSON.parse(localStorage.getItem('cm_messages') || '[]');
+    setMessages(msgs);
+    onUnreadChange?.(msgs.filter((m: any) => !m.read).length);
+  }, [onUnreadChange]);
 
   useEffect(() => {
-    loadLocalStats();
-    window.addEventListener('cm_config_updated', loadLocalStats);
-    return () => window.removeEventListener('cm_config_updated', loadLocalStats);
-  }, [loadLocalStats]);
+    loadMessages();
+    window.addEventListener('cm_config_updated', loadMessages);
+    return () => window.removeEventListener('cm_config_updated', loadMessages);
+  }, [loadMessages]);
+
+  const unread = messages.filter((m) => !m.read).length;
+  const recentMessages = [...messages].slice(-5).reverse();
+  const enabledSocials = socials.filter((s) => s.enabled).length;
+
+  // Real category distribution from projects
+  const categoryData = useMemo(() => {
+    const counts: Record<string, number> = {};
+    projects.forEach((p) => { counts[p.category] = (counts[p.category] || 0) + 1; });
+    return Object.entries(counts).map(([name, total]) => ({ name, total }));
+  }, [projects]);
 
   const cards = [
-    { label: 'Proyectos', value: stats.projects, icon: FolderKanban, color: 'from-lime-300 to-lime-500', shadow: 'shadow-lime-900/20', tab: 'projects' },
-    { label: 'Mensajes', value: stats.messages, icon: MessageSquare, color: 'from-blue-600 to-cyan-500', shadow: 'shadow-blue-900/30', tab: 'messages' },
-    { label: 'Sin leer', value: stats.unread, icon: Eye, color: 'from-amber-500 to-orange-500', shadow: 'shadow-amber-900/30', tab: 'messages' },
-    { label: 'Skills', value: stats.skills, icon: Wrench, color: 'from-purple-600 to-violet-500', shadow: 'shadow-purple-900/30', tab: 'skills' },
+    { label: 'Proyectos', value: projects.length, icon: FolderKanban, tab: 'projects', accent: '#CBFE1C' },
+    { label: 'Recursos', value: storeItems.length, icon: ShoppingBag, tab: 'store', accent: '#8B5CF6' },
+    { label: 'Skills', value: skills.length, icon: Wrench, tab: 'skills', accent: '#00E5FF' },
+    { label: 'Mensajes', value: messages.length, icon: MessageSquare, tab: 'messages', accent: '#CBFE1C', badge: unread },
   ];
+
+  // Real setup-completeness checklist
+  const checklist = [
+    { done: projects.length > 0, label: 'Al menos un proyecto publicado', tab: 'projects' },
+    { done: !!cfg.about_photo, label: 'Foto de perfil cargada', tab: 'appearance' },
+    { done: enabledSocials > 0, label: 'Redes sociales activas', tab: 'settings' },
+    { done: !!cfg.contact_whatsapp && !cfg.contact_whatsapp.includes('1234567890'), label: 'WhatsApp de contacto real', tab: 'settings' },
+    { done: !!cfg.contact_email && cfg.contact_email !== 'cm@design.com', label: 'Email de contacto personalizado', tab: 'settings' },
+    { done: storeItems.length > 0, label: 'Recursos en la tienda', tab: 'store' },
+  ];
+  const doneCount = checklist.filter((c) => c.done).length;
+  const completeness = Math.round((doneCount / checklist.length) * 100);
+
+  const fade = (delay: number) => ({
+    initial: { opacity: 0, y: 16 },
+    animate: { opacity: 1, y: 0 },
+    transition: { delay, duration: 0.4 },
+  });
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-white">Dashboard</h1>
-          <p className="text-zinc-500 text-sm mt-1">Resumen general de tu portafolio</p>
+          <div className="mb-2 flex items-center gap-3">
+            <span className="h-px w-10 bg-neon-red" />
+            <span className="acid-kicker">Panel // Resumen</span>
+          </div>
+          <h1 className="text-2xl font-black uppercase tracking-tight text-white">Dashboard</h1>
+          <p className="mt-1 text-sm text-gray-500">Estado general de tu portafolio en tiempo real.</p>
         </div>
-        <a href="/" target="_blank" className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs font-semibold hover:bg-white/10 transition">
-          Ver Sitio <ExternalLink size={12} />
+        <a href="/" target="_blank" className="ghost-button !py-2.5 !text-[10px]">
+          Ver sitio <ExternalLink size={13} />
         </a>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Stat Grid */}
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {cards.map((card, i) => {
           const Icon = card.icon;
           return (
             <motion.button
               key={card.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
+              {...fade(i * 0.07)}
               onClick={() => setActiveTab?.(card.tab)}
-              className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 relative overflow-hidden group hover:border-zinc-700 transition text-left w-full"
+              className="admin-card admin-card-tap admin-stat-glow relative overflow-hidden p-5 text-left"
             >
-              <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${card.color} opacity-5 rounded-bl-[3rem] group-hover:opacity-10 transition`} />
-              <div className={`inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br ${card.color} ${card.shadow} shadow-lg mb-3`}>
-                <Icon size={18} className="text-white" />
+              <div className="relative flex items-start justify-between">
+                <span
+                  className="flex h-11 w-11 items-center justify-center border angle-frame-sm"
+                  style={{ borderColor: `${card.accent}33`, background: `${card.accent}12`, color: card.accent }}
+                >
+                  <Icon size={18} />
+                </span>
+                {!!card.badge && card.badge > 0 && (
+                  <span className="border border-neon-red/40 bg-neon-red/10 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-neon-red angle-frame-sm">
+                    {card.badge} sin leer
+                  </span>
+                )}
               </div>
-              <p className="text-3xl font-black text-white">{card.value}</p>
-              <p className="text-zinc-500 text-sm font-medium">{card.label}</p>
+              <p className="relative mt-5 text-4xl font-black text-white">{card.value}</p>
+              <p className="relative mt-0.5 text-[10px] font-black uppercase tracking-[.18em] text-gray-500">{card.label}</p>
             </motion.button>
           );
         })}
       </div>
 
       {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
         {/* Recent Messages */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 lg:col-span-2"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-white flex items-center gap-2">
-              <MessageSquare size={16} className="text-blue-400" />
-              Mensajes Recientes
+        <motion.div {...fade(0.3)} className="admin-card p-5 lg:col-span-2">
+          <div className="mb-5 flex items-center justify-between">
+            <h3 className="flex items-center gap-2 text-xs font-black uppercase tracking-[.14em] text-white">
+              <Mail size={15} className="text-neon-red" /> Mensajes recientes
             </h3>
-            <button onClick={() => setActiveTab?.('messages')} className="text-xs text-blue-400 hover:underline">Ver todos</button>
+            <button onClick={() => setActiveTab?.('messages')} className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-gray-500 transition hover:text-neon-red">
+              Ver todos <ArrowUpRight size={12} />
+            </button>
           </div>
           {recentMessages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-zinc-600">
-              <MessageSquare size={40} className="mb-3 opacity-20" />
-              <p className="text-sm">No hay mensajes aún</p>
+            <div className="flex flex-col items-center justify-center py-12 text-gray-600">
+              <MessageSquare size={36} className="mb-3 opacity-20" />
+              <p className="text-sm">Aún no hay mensajes.</p>
+              <p className="mt-1 text-xs text-gray-700">Los envíos del formulario de contacto aparecerán aquí.</p>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-1.5">
               {recentMessages.map((msg: any) => (
-                <div key={msg.id} className="flex items-start gap-4 p-3 rounded-xl hover:bg-white/[0.02] transition border border-transparent hover:border-white/5">
-                  <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${msg.read ? 'bg-zinc-700' : 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]'}`} />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-white truncate">{msg.name}</p>
-                    <p className="text-xs text-zinc-500 truncate mt-0.5">{msg.message}</p>
-                  </div>
-                  <span className="text-[10px] text-zinc-600 font-mono uppercase">
-                    {new Date(msg.created_at).toLocaleDateString('es', { day: '2-digit', month: 'short' })}
+                <button
+                  key={msg.id}
+                  onClick={() => setActiveTab?.('messages')}
+                  className="flex w-full items-start gap-3 border border-transparent p-3 text-left transition hover:border-white/[0.08] hover:bg-white/[0.02] angle-frame-sm"
+                >
+                  <span className={`mt-1.5 h-2 w-2 flex-shrink-0 rounded-full ${msg.read ? 'bg-white/15' : 'bg-neon-red shadow-[0_0_10px_rgba(203,254,28,.6)]'}`} />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-bold text-white">{msg.name}</span>
+                    <span className="mt-0.5 block truncate text-xs text-gray-500">{msg.message}</span>
                   </span>
-                </div>
+                  <span className="flex-shrink-0 font-mono text-[10px] uppercase text-gray-600">
+                    {msg.created_at ? new Date(msg.created_at).toLocaleDateString('es', { day: '2-digit', month: 'short' }) : ''}
+                  </span>
+                </button>
               ))}
             </div>
           )}
         </motion.div>
 
-        {/* Quick Actions & Site Status */}
-        <div className="space-y-6">
-          {/* Quick Actions */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"
-          >
-            <h3 className="font-bold text-white flex items-center gap-2 mb-4">
-              <Plus size={16} className="text-neon-red" />
-              Acciones Rápidas
-            </h3>
-            <div className="grid grid-cols-1 gap-2">
-              <button onClick={() => setActiveTab?.('projects')} className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition text-sm text-zinc-300">
-                <FolderKanban size={14} /> Nuevo Proyecto
-              </button>
-              <button onClick={() => setActiveTab?.('skills')} className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition text-sm text-zinc-300">
-                <Wrench size={14} /> Editar Skills
-              </button>
-              <button onClick={() => setActiveTab?.('settings')} className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition text-sm text-zinc-300">
-                <Settings size={14} /> Cambiar Tema
-              </button>
-            </div>
-          </motion.div>
+        {/* Quick Actions */}
+        <motion.div {...fade(0.4)} className="admin-card p-5">
+          <h3 className="mb-5 flex items-center gap-2 text-xs font-black uppercase tracking-[.14em] text-white">
+            <Plus size={15} className="text-neon-red" /> Acciones rápidas
+          </h3>
+          <div className="space-y-2">
+            {[
+              { icon: FolderKanban, label: 'Gestionar proyectos', tab: 'projects' },
+              { icon: ShoppingBag, label: 'Editar tienda', tab: 'store' },
+              { icon: Wrench, label: 'Editar arsenal', tab: 'skills' },
+              { icon: Settings, label: 'Tema y configuración', tab: 'settings' },
+            ].map((a) => {
+              const Icon = a.icon;
+              return (
+                <button
+                  key={a.tab}
+                  onClick={() => setActiveTab?.(a.tab)}
+                  className="group flex w-full items-center gap-3 border border-white/[0.08] bg-white/[0.02] p-3 text-sm font-medium text-gray-300 transition hover:border-neon-red/40 hover:text-white angle-frame-sm"
+                >
+                  <Icon size={15} className="text-gray-500 transition group-hover:text-neon-red" />
+                  <span className="flex-1 text-left">{a.label}</span>
+                  <ArrowUpRight size={14} className="text-gray-700 transition group-hover:text-neon-red" />
+                </button>
+              );
+            })}
+          </div>
+        </motion.div>
+      </div>
 
-          {/* Analytics Chart */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-white flex items-center gap-2">
-                <BarChart3 size={16} className="text-green-400" />
-                Tráfico Estimado
-              </h3>
-              <span className="text-xs text-green-400 font-bold bg-green-400/10 px-2 py-1 rounded-md">+24%</span>
-            </div>
-            
-            <div className="h-[120px] w-full mt-2">
+      {/* Bottom Grid */}
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+        {/* Projects by category (REAL data) */}
+        <motion.div {...fade(0.5)} className="admin-card p-5 lg:col-span-2">
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="flex items-center gap-2 text-xs font-black uppercase tracking-[.14em] text-white">
+              <BarChart3 size={15} className="text-neon-red" /> Proyectos por categoría
+            </h3>
+            <span className="admin-chip">{projects.length} totales</span>
+          </div>
+          {categoryData.length === 0 ? (
+            <div className="py-12 text-center text-sm text-gray-600">Sin proyectos para graficar.</div>
+          ) : (
+            <div className="mt-2 h-[180px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={mockChartData} margin={{ top: 5, right: 0, left: 0, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="colorVisitas" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#4ade80" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#4ade80" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <Tooltip
-                    contentStyle={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', fontSize: '12px', color: '#fff' }}
-                    itemStyle={{ color: '#4ade80', fontWeight: 'bold' }}
-                    cursor={{ stroke: '#27272a', strokeWidth: 1 }}
+                <BarChart data={categoryData} margin={{ top: 8, right: 0, left: 0, bottom: 0 }}>
+                  <XAxis
+                    dataKey="name"
+                    tick={{ fill: '#7a828f', fontSize: 10, fontWeight: 700 }}
+                    axisLine={{ stroke: 'rgba(255,255,255,.08)' }}
+                    tickLine={false}
+                    interval={0}
                   />
-                  <Area type="monotone" dataKey="visitas" stroke="#4ade80" strokeWidth={3} fillOpacity={1} fill="url(#colorVisitas)" />
-                </AreaChart>
+                  <Tooltip
+                    cursor={{ fill: 'rgba(203,254,28,.06)' }}
+                    contentStyle={{ background: '#0B0E13', border: '1px solid rgba(203,254,28,.3)', borderRadius: 0, fontSize: 12, color: '#fff' }}
+                    itemStyle={{ color: '#CBFE1C', fontWeight: 800 }}
+                    labelStyle={{ color: '#9aa3b0' }}
+                  />
+                  <Bar dataKey="total" radius={[0, 0, 0, 0]} maxBarSize={48}>
+                    {categoryData.map((_, i) => (
+                      <Cell key={i} fill={i % 2 === 0 ? '#CBFE1C' : '#8B5CF6'} />
+                    ))}
+                  </Bar>
+                </BarChart>
               </ResponsiveContainer>
             </div>
-          </motion.div>
-        </div>
+          )}
+        </motion.div>
+
+        {/* Setup completeness (REAL checklist) */}
+        <motion.div {...fade(0.6)} className="admin-card p-5">
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="flex items-center gap-2 text-xs font-black uppercase tracking-[.14em] text-white">
+              <Share2 size={15} className="text-neon-red" /> Configuración
+            </h3>
+            <span className="text-lg font-black text-neon-red">{completeness}%</span>
+          </div>
+          <div className="mb-4 h-1.5 overflow-hidden bg-white/[0.06]">
+            <div className="h-full bg-neon-red shadow-[0_0_12px_rgba(203,254,28,.4)] transition-all duration-700" style={{ width: `${completeness}%` }} />
+          </div>
+          <div className="space-y-1">
+            {checklist.map((c) => (
+              <button
+                key={c.label}
+                onClick={() => setActiveTab?.(c.tab)}
+                className="flex w-full items-center gap-2.5 py-1.5 text-left text-xs transition hover:text-white"
+              >
+                {c.done
+                  ? <CheckCircle2 size={15} className="flex-shrink-0 text-neon-red" />
+                  : <Circle size={15} className="flex-shrink-0 text-gray-600" />}
+                <span className={c.done ? 'text-gray-400 line-through decoration-white/20' : 'text-gray-300'}>{c.label}</span>
+              </button>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </div>
   );

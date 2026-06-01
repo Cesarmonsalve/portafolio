@@ -17,7 +17,7 @@ export default function Hero() {
       <div className="absolute -right-32 top-16 h-[460px] w-[460px] rounded-full bg-neon-purple/[0.14] blur-[120px]" />
       <div className="absolute -left-40 bottom-16 h-[360px] w-[360px] rounded-full bg-neon-red/[0.09] blur-[110px]" />
       <div className="absolute right-[8%] top-[18%] hidden h-32 w-32 rotate-12 border border-neon-red/20 arena-dots opacity-50 lg:block" />
-      <div className="absolute left-[4%] top-[32%] hidden text-[120px] font-black leading-none text-white/[0.018] [writing-mode:vertical-rl] lg:block">CREATIVE ARENA</div>
+      <div aria-hidden="true" className="absolute left-[4%] top-[32%] hidden text-[120px] font-black leading-none text-white/[0.018] [writing-mode:vertical-rl] lg:block">CREATIVE ARENA</div>
 
       {cfg.lottie_hero?.enabled && cfg.lottie_hero.source && (
         <div className="lottie-hero opacity-30"><LottieRenderer source={cfg.lottie_hero.source} speed={cfg.lottie_hero.speed} /></div>
@@ -92,7 +92,7 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      <div className="absolute bottom-0 z-20 w-full overflow-hidden border-y border-neon-red/15 bg-[#0B0E13]/90 py-3 backdrop-blur">
+      <div aria-hidden="true" className="absolute bottom-0 z-20 w-full overflow-hidden border-y border-neon-red/15 bg-[#0B0E13]/90 py-3 backdrop-blur">
         <div className="animate-marquee flex w-max items-center">
           {[0, 1].map((rep) => marquee.map((item, index) => (
             <div key={`${rep}-${item}-${index}`} className="flex shrink-0 items-center gap-5 px-5">

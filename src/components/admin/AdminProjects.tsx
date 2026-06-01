@@ -43,14 +43,14 @@ function SortableProjectItem({ p, search, onToggleVisibility, onEdit, onDelete }
     <motion.div
       ref={setNodeRef} style={style}
       initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-      className={`glass-premium rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 group transition ${p.hidden ? 'opacity-50' : ''} ${isDragging ? 'shadow-2xl ring-2 ring-red-500 scale-[1.02]' : ''}`}
+      className={`glass-premium angle-frame p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 group transition ${p.hidden ? 'opacity-50' : ''} ${isDragging ? 'shadow-2xl ring-2 ring-red-500 scale-[1.02]' : ''}`}
     >
-      <div {...attributes} {...listeners} className="p-2 -ml-2 text-zinc-600 hover:text-white cursor-grab active:cursor-grabbing">
+      <div {...attributes} {...listeners} className="p-2 -ml-2 text-gray-600 hover:text-white cursor-grab active:cursor-grabbing">
         <GripVertical size={20} />
       </div>
 
-      <div className="w-full sm:w-20 h-20 rounded-xl bg-zinc-800 overflow-hidden flex-shrink-0">
-        {p.image ? <img src={p.image} alt={p.title} className="w-full h-full object-cover pointer-events-none" /> : <div className="w-full h-full flex items-center justify-center"><ImageIcon size={20} className="text-zinc-600" /></div>}
+      <div className="w-full sm:w-20 h-20 angle-frame-sm bg-surface overflow-hidden flex-shrink-0">
+        {p.image ? <img src={p.image} alt={p.title} className="w-full h-full object-cover pointer-events-none" /> : <div className="w-full h-full flex items-center justify-center"><ImageIcon size={20} className="text-gray-600" /></div>}
       </div>
 
       <div className="flex-1 min-w-0">
@@ -60,18 +60,18 @@ function SortableProjectItem({ p, search, onToggleVisibility, onEdit, onDelete }
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-xs px-2 py-0.5 rounded-full bg-red-900/30 text-red-400 border border-red-800/30">{p.category}</span>
-          {p.client && <span className="text-xs text-zinc-500">• {p.client}</span>}
+          {p.client && <span className="text-xs text-gray-500">• {p.client}</span>}
         </div>
         <div className="flex gap-1.5 mt-2 flex-wrap">
-          {p.tags.slice(0, 3).map(t => <span key={t} className="text-xs px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400">{t}</span>)}
-          {p.tags.length > 3 && <span className="text-xs text-zinc-600">+{p.tags.length - 3}</span>}
+          {p.tags.slice(0, 3).map(t => <span key={t} className="text-xs px-1.5 py-0.5 rounded bg-surface text-gray-400">{t}</span>)}
+          {p.tags.length > 3 && <span className="text-xs text-gray-600">+{p.tags.length - 3}</span>}
         </div>
       </div>
 
       <div className="flex gap-2 flex-shrink-0">
-        <button onClick={onToggleVisibility} className={`p-2 rounded-lg bg-white/5 transition ${p.hidden ? 'text-zinc-500 hover:text-white' : 'text-green-400 hover:text-green-300'}`} title={p.hidden ? "Publicar" : "Ocultar"}><Eye size={16} /></button>
-        <button onClick={onEdit} className="p-2 rounded-lg bg-white/5 text-zinc-400 hover:text-blue-400 transition"><Edit2 size={16} /></button>
-        <button onClick={onDelete} className="p-2 rounded-lg bg-white/5 text-zinc-400 hover:text-red-400 transition"><Trash2 size={16} /></button>
+        <button onClick={onToggleVisibility} className={`p-2 angle-frame-sm bg-white/5 transition ${p.hidden ? 'text-gray-500 hover:text-white' : 'text-green-400 hover:text-green-300'}`} title={p.hidden ? "Publicar" : "Ocultar"}><Eye size={16} /></button>
+        <button onClick={onEdit} className="p-2 angle-frame-sm bg-white/5 text-gray-400 hover:text-blue-400 transition"><Edit2 size={16} /></button>
+        <button onClick={onDelete} className="p-2 angle-frame-sm bg-white/5 text-gray-400 hover:text-red-400 transition"><Trash2 size={16} /></button>
       </div>
     </motion.div>
   );
@@ -179,11 +179,11 @@ export default function AdminProjects(_props: Props) {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-black text-white">Proyectos</h1>
-          <p className="text-zinc-500 text-sm">{projects.length} proyectos en total</p>
+          <p className="text-gray-500 text-sm">{projects.length} proyectos en total</p>
         </div>
         <button
           onClick={openNew}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 transition shadow-lg shadow-red-900/20 active:scale-95"
+          className="flex items-center gap-2 px-4 py-2.5 angle-frame-sm font-semibold text-sm text-[#0B0E13] bg-neon-red hover:bg-[#E2FF75] transition shadow-lg shadow-[0_8px_24px_rgba(203,254,28,.18)] active:scale-95"
         >
           <Plus size={16} /> Nuevo Proyecto
         </button>
@@ -191,13 +191,13 @@ export default function AdminProjects(_props: Props) {
 
       {/* Search */}
       <div className="relative">
-        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
         <input
           type="text"
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Buscar proyectos..."
-          className="w-full bg-zinc-900 border border-zinc-800 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-red-500/50 transition"
+          className="w-full bg-bg-secondary border border-white/[0.08] angle-frame-sm pl-10 pr-4 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-neon-red/60 transition"
         />
       </div>
 
@@ -220,7 +220,7 @@ export default function AdminProjects(_props: Props) {
               />
             ))}
             {filtered.length === 0 && (
-              <p className="text-center text-zinc-600 py-12">No se encontraron proyectos</p>
+              <p className="text-center text-gray-600 py-12">No se encontraron proyectos</p>
             )}
           </div>
         </SortableContext>
@@ -239,14 +239,14 @@ export default function AdminProjects(_props: Props) {
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
-              className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-2xl my-8 shadow-2xl"
+              className="bg-bg-secondary border border-white/[0.08] angle-frame w-full max-w-2xl my-8 shadow-2xl"
             >
               {/* Modal Header */}
-              <div className="flex items-center justify-between p-5 border-b border-zinc-800">
+              <div className="flex items-center justify-between p-5 border-b border-white/[0.08]">
                 <h2 className="font-bold text-white text-lg">
                   {projects.find(p => p.id === editing.id) ? 'Editar' : 'Nuevo'} Proyecto
                 </h2>
-                <button onClick={() => setShowForm(false)} className="p-1.5 rounded-lg text-zinc-500 hover:text-white hover:bg-zinc-800 transition">
+                <button onClick={() => setShowForm(false)} className="p-1.5 angle-frame-sm text-gray-500 hover:text-white hover:bg-surface transition">
                   <X size={18} />
                 </button>
               </div>
@@ -255,11 +255,11 @@ export default function AdminProjects(_props: Props) {
               <div className="p-5 space-y-4 max-h-[70vh] overflow-y-auto">
                 {/* Title */}
                 <div>
-                  <label className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1 block">Título</label>
+                  <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1 block">Título</label>
                   <input
                     value={editing.title}
                     onChange={e => updateField('title', e.target.value)}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-red-500/50 transition"
+                    className="w-full bg-surface border border-white/[0.1] angle-frame-sm px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-red/60 transition"
                     placeholder="Nombre del proyecto"
                   />
                 </div>
@@ -267,21 +267,21 @@ export default function AdminProjects(_props: Props) {
                 {/* Category + Client */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1 block">Categoría</label>
+                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1 block">Categoría</label>
                     <select
                       value={editing.category}
                       onChange={e => updateField('category', e.target.value)}
-                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-red-500/50 transition"
+                      className="w-full bg-surface border border-white/[0.1] angle-frame-sm px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-red/60 transition"
                     >
                       {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1 block">Cliente</label>
+                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1 block">Cliente</label>
                     <input
                       value={editing.client || ''}
                       onChange={e => updateField('client', e.target.value)}
-                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-red-500/50 transition"
+                      className="w-full bg-surface border border-white/[0.1] angle-frame-sm px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-red/60 transition"
                       placeholder="Nombre del cliente"
                     />
                   </div>
@@ -289,12 +289,12 @@ export default function AdminProjects(_props: Props) {
 
                 {/* Description */}
                 <div>
-                  <label className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1 block">Descripción</label>
+                  <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1 block">Descripción</label>
                   <textarea
                     value={editing.description}
                     onChange={e => updateField('description', e.target.value)}
                     rows={3}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-red-500/50 transition resize-none"
+                    className="w-full bg-surface border border-white/[0.1] angle-frame-sm px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-red/60 transition resize-none"
                     placeholder="Describe el proyecto..."
                   />
                 </div>
@@ -302,20 +302,20 @@ export default function AdminProjects(_props: Props) {
                 {/* Image + Video */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1 block">URL Imagen</label>
+                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1 block">URL Imagen</label>
                     <input
                       value={editing.image}
                       onChange={e => updateField('image', e.target.value)}
-                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-red-500/50 transition"
+                      className="w-full bg-surface border border-white/[0.1] angle-frame-sm px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-red/60 transition"
                       placeholder="/imagen.jpg o URL"
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1 block">URL Video</label>
+                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1 block">URL Video</label>
                     <input
                       value={editing.video || ''}
                       onChange={e => updateField('video', e.target.value)}
-                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-red-500/50 transition"
+                      className="w-full bg-surface border border-white/[0.1] angle-frame-sm px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-red/60 transition"
                       placeholder="YouTube / Drive URL"
                     />
                   </div>
@@ -323,10 +323,10 @@ export default function AdminProjects(_props: Props) {
 
                 {/* Tags */}
                 <div>
-                  <label className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1 block">Tags</label>
+                  <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1 block">Tags</label>
                   <div className="flex gap-2 mb-2 flex-wrap">
                     {editing.tags.map((t, i) => (
-                      <span key={i} className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-lg bg-red-900/30 text-red-300 border border-red-800/30">
+                      <span key={i} className="inline-flex items-center gap-1 text-xs px-2 py-1 angle-frame-sm bg-red-900/30 text-red-300 border border-red-800/30">
                         {t}
                         <button onClick={() => removeTag(i)} className="hover:text-white"><X size={12} /></button>
                       </span>
@@ -337,10 +337,10 @@ export default function AdminProjects(_props: Props) {
                       value={tagInput}
                       onChange={e => setTagInput(e.target.value)}
                       onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addTag())}
-                      className="flex-1 bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-red-500/50 transition"
+                      className="flex-1 bg-surface border border-white/[0.1] angle-frame-sm px-4 py-2 text-white text-sm focus:outline-none focus:border-neon-red/60 transition"
                       placeholder="Agregar tag..."
                     />
-                    <button onClick={addTag} className="px-3 py-2 rounded-xl bg-zinc-800 text-zinc-400 hover:text-white transition">
+                    <button onClick={addTag} className="px-3 py-2 angle-frame-sm bg-surface text-gray-400 hover:text-white transition">
                       <Plus size={16} />
                     </button>
                   </div>
@@ -350,26 +350,26 @@ export default function AdminProjects(_props: Props) {
                 <div className="flex items-center gap-3 py-2">
                   <button
                     onClick={() => updateField('featured', !editing.featured)}
-                    className={`w-10 h-5 rounded-full transition-colors relative ${editing.featured ? 'bg-red-600' : 'bg-zinc-700'}`}
+                    className={`w-10 h-5 rounded-full transition-colors relative ${editing.featured ? 'bg-red-600' : 'bg-surface-hover'}`}
                   >
                     <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${editing.featured ? 'left-5' : 'left-0.5'}`} />
                   </button>
-                  <span className="text-sm text-zinc-300">Proyecto destacado</span>
+                  <span className="text-sm text-gray-300">Proyecto destacado</span>
                 </div>
               </div>
 
               {/* Modal Footer */}
-              <div className="flex justify-end gap-3 p-5 border-t border-zinc-800">
+              <div className="flex justify-end gap-3 p-5 border-t border-white/[0.08]">
                 <button
                   onClick={() => setShowForm(false)}
-                  className="px-5 py-2.5 rounded-xl text-sm text-zinc-400 hover:text-white hover:bg-zinc-800 transition"
+                  className="px-5 py-2.5 angle-frame-sm text-sm text-gray-400 hover:text-white hover:bg-surface transition"
                 >
                   Cancelar
                 </button>
                 <button
                   onClick={handleSave}
                   disabled={!editing.title.trim() || saving}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 disabled:opacity-50 transition shadow-lg shadow-red-900/20 active:scale-95"
+                  className="flex items-center gap-2 px-5 py-2.5 angle-frame-sm text-sm font-semibold text-[#0B0E13] bg-neon-red hover:bg-[#E2FF75] disabled:opacity-50 transition shadow-lg shadow-[0_8px_24px_rgba(203,254,28,.18)] active:scale-95"
                 >
                   {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
                   Guardar

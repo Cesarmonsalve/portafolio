@@ -42,17 +42,17 @@ const SectionHeader = ({ id, title, icon: Icon, iconColor, count, openSections, 
 }) => (
   <button
     onClick={() => toggleSection(id)}
-    className="w-full flex items-center justify-between p-4 rounded-t-2xl hover:bg-zinc-800/30 transition group"
+    className="w-full flex items-center justify-between p-4 rounded-t-2xl hover:bg-surface/30 transition group"
   >
     <h3 className="font-bold text-white flex items-center gap-2 text-sm">
       <Icon size={16} className={iconColor} />
       {title}
       {count !== undefined && (
-        <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-500 font-mono">{count}</span>
+        <span className="text-xs px-2 py-0.5 rounded-full bg-surface text-gray-500 font-mono">{count}</span>
       )}
     </h3>
     <motion.div animate={{ rotate: openSections[id] ? 180 : 0 }} transition={{ duration: 0.2 }}>
-      <ChevronDown size={16} className="text-zinc-500 group-hover:text-zinc-300 transition" />
+      <ChevronDown size={16} className="text-gray-500 group-hover:text-gray-300 transition" />
     </motion.div>
   </button>
 );
@@ -62,15 +62,15 @@ const Field = ({ label, field, multi, placeholder, getFieldValue, update }: {
   getFieldValue: (f: string) => string; update: (f: string, v: string) => void;
 }) => (
   <div>
-    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1.5 block">{label}</label>
+    <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1.5 block">{label}</label>
     {multi ? (
       <textarea value={getFieldValue(field)} onChange={e => update(field, e.target.value)} rows={3}
         placeholder={placeholder}
-        className="w-full bg-zinc-800/50 border border-zinc-700/50 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition resize-none" />
+        className="w-full bg-surface/50 border border-white/[0.1]/50 angle-frame-sm px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-red/60 focus:ring-1 focus:ring-neon-red/25 transition resize-none" />
     ) : (
       <input value={getFieldValue(field)} onChange={e => update(field, e.target.value)}
         placeholder={placeholder}
-        className="w-full bg-zinc-800/50 border border-zinc-700/50 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition" />
+        className="w-full bg-surface/50 border border-white/[0.1]/50 angle-frame-sm px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-red/60 focus:ring-1 focus:ring-neon-red/25 transition" />
     )}
   </div>
 );
@@ -79,13 +79,13 @@ const ColorField = ({ label, field, getFieldValue, update }: {
   label: string; field: string;
   getFieldValue: (f: string) => string; update: (f: string, v: string) => void;
 }) => (
-  <div className="flex items-center gap-3 bg-zinc-800/30 rounded-xl p-3 border border-zinc-700/30">
+  <div className="flex items-center gap-3 bg-surface/30 angle-frame-sm p-3 border border-white/[0.1]/30">
     <input type="color" value={getFieldValue(field) || '#ff0033'}
       onChange={e => update(field, e.target.value)}
-      className="w-10 h-10 rounded-lg border border-zinc-700 bg-zinc-800 cursor-pointer flex-shrink-0" />
+      className="w-10 h-10 angle-frame-sm border border-white/[0.1] bg-surface cursor-pointer flex-shrink-0" />
     <div className="flex-1 min-w-0">
       <p className="text-sm text-white font-medium">{label}</p>
-      <p className="text-xs text-zinc-500 font-mono">{getFieldValue(field) || '#ff0033'}</p>
+      <p className="text-xs text-gray-500 font-mono">{getFieldValue(field) || '#ff0033'}</p>
     </div>
     <div className="w-6 h-6 rounded-full" style={{ backgroundColor: getFieldValue(field) || '#ff0033' }} />
   </div>
@@ -168,15 +168,15 @@ export default function AdminSettings(_p: Props) {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-black text-white">Configuración</h1>
-          <p className="text-zinc-500 text-sm">Personaliza cada aspecto de tu portafolio</p>
+          <p className="text-gray-500 text-sm">Personaliza cada aspecto de tu portafolio</p>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={handleReset}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm text-zinc-400 hover:text-white bg-zinc-800 hover:bg-zinc-700 transition active:scale-95">
+            className="flex items-center gap-2 px-4 py-2.5 angle-frame-sm text-sm text-gray-400 hover:text-white bg-surface hover:bg-surface-hover transition active:scale-95">
             <RotateCcw size={14} /> Reset
           </button>
           <button onClick={handleSave} disabled={saving}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 disabled:opacity-50 transition shadow-lg shadow-red-900/20 active:scale-95">
+            className="flex items-center gap-2 px-5 py-2.5 angle-frame-sm text-sm font-semibold text-[#0B0E13] bg-neon-red hover:bg-[#E2FF75] disabled:opacity-50 transition shadow-lg shadow-[0_8px_24px_rgba(203,254,28,.18)] active:scale-95">
             {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
             {saved ? '¡Guardado!' : 'Guardar Todo'}
           </button>
@@ -184,7 +184,7 @@ export default function AdminSettings(_p: Props) {
       </div>
 
       {/* ═══ HERO SECTION ═══ */}
-      <motion.div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+      <motion.div className="bg-bg-secondary border border-white/[0.08] angle-frame overflow-hidden">
         <SectionHeader openSections={openSections} toggleSection={toggleSection} id="hero" title="Sección Hero" icon={Type} iconColor="text-red-400" />
         <AnimatePresence>
           {openSections.hero && (
@@ -202,7 +202,7 @@ export default function AdminSettings(_p: Props) {
       </motion.div>
 
       {/* ═══ HERO STATS ═══ */}
-      <motion.div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+      <motion.div className="bg-bg-secondary border border-white/[0.08] angle-frame overflow-hidden">
         <SectionHeader openSections={openSections} toggleSection={toggleSection} id="stats" title="Estadísticas del Hero" icon={Hash} iconColor="text-amber-400" count={cfg.hero_stats.length} />
         <AnimatePresence>
           {openSections.stats && (
@@ -210,21 +210,21 @@ export default function AdminSettings(_p: Props) {
               transition={{ duration: 0.3 }} className="overflow-hidden">
               <div className="px-5 pb-5 space-y-3">
                 {cfg.hero_stats.map((stat, i) => (
-                  <div key={i} className="flex items-center gap-3 bg-zinc-800/30 rounded-xl p-3 border border-zinc-700/30">
-                    <GripVertical size={14} className="text-zinc-600 flex-shrink-0" />
+                  <div key={i} className="flex items-center gap-3 bg-surface/30 angle-frame-sm p-3 border border-white/[0.1]/30">
+                    <GripVertical size={14} className="text-gray-600 flex-shrink-0" />
                     <input value={stat.value} onChange={e => updateStat(i, 'value', e.target.value)}
-                      className="w-20 bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-1.5 text-white text-sm text-center font-bold focus:outline-none focus:border-red-500/50 transition"
+                      className="w-20 bg-surface border border-white/[0.1] angle-frame-sm px-3 py-1.5 text-white text-sm text-center font-bold focus:outline-none focus:border-neon-red/60 transition"
                       placeholder="50+" />
                     <input value={stat.label} onChange={e => updateStat(i, 'label', e.target.value)}
-                      className="flex-1 bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:border-red-500/50 transition"
+                      className="flex-1 bg-surface border border-white/[0.1] angle-frame-sm px-3 py-1.5 text-white text-sm focus:outline-none focus:border-neon-red/60 transition"
                       placeholder="Proyectos" />
-                    <button onClick={() => removeStat(i)} className="p-1.5 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-red-900/20 transition">
+                    <button onClick={() => removeStat(i)} className="p-1.5 angle-frame-sm text-gray-500 hover:text-red-400 hover:bg-red-900/20 transition">
                       <Trash2 size={14} />
                     </button>
                   </div>
                 ))}
                 <button onClick={addStat}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-dashed border-zinc-700 text-zinc-500 hover:text-white hover:border-zinc-500 transition text-sm">
+                  className="w-full flex items-center justify-center gap-2 py-2.5 angle-frame-sm border border-dashed border-white/[0.1] text-gray-500 hover:text-white hover:border-white/20 transition text-sm">
                   <Plus size={14} /> Agregar Estadística
                 </button>
               </div>
@@ -234,7 +234,7 @@ export default function AdminSettings(_p: Props) {
       </motion.div>
 
       {/* ═══ ABOUT SECTION ═══ */}
-      <motion.div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+      <motion.div className="bg-bg-secondary border border-white/[0.08] angle-frame overflow-hidden">
         <SectionHeader openSections={openSections} toggleSection={toggleSection} id="about" title="Sección About" icon={Info} iconColor="text-blue-400" />
         <AnimatePresence>
           {openSections.about && (
@@ -253,16 +253,16 @@ export default function AdminSettings(_p: Props) {
                 <div className="flex gap-4">
                   {cfg.about_photo && (
                     <div className="space-y-1">
-                      <p className="text-[10px] text-zinc-500 uppercase">Perfil</p>
-                      <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-zinc-700">
+                      <p className="text-[10px] text-gray-500 uppercase">Perfil</p>
+                      <div className="relative w-20 h-20 angle-frame-sm overflow-hidden border border-white/[0.1]">
                         <img src={cfg.about_photo} alt="Preview" className="w-full h-full object-cover" />
                       </div>
                     </div>
                   )}
                   {cfg.logo_url && (
                     <div className="space-y-1">
-                      <p className="text-[10px] text-zinc-500 uppercase">Logo</p>
-                      <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-zinc-700 bg-zinc-800 flex items-center justify-center p-2">
+                      <p className="text-[10px] text-gray-500 uppercase">Logo</p>
+                      <div className="relative w-20 h-20 angle-frame-sm overflow-hidden border border-white/[0.1] bg-surface flex items-center justify-center p-2">
                         <img src={cfg.logo_url} alt="Logo" className="max-w-full max-h-full object-contain" />
                       </div>
                     </div>
@@ -275,7 +275,7 @@ export default function AdminSettings(_p: Props) {
       </motion.div>
 
       {/* ═══ ABOUT STATS ═══ */}
-      <motion.div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+      <motion.div className="bg-bg-secondary border border-white/[0.08] angle-frame overflow-hidden">
         <SectionHeader openSections={openSections} toggleSection={toggleSection} id="aboutstats" title="Estadísticas About" icon={Hash} iconColor="text-teal-400" count={(cfg as unknown as Record<string, {value:string;label:string}[]>).about_stats?.length || 0} />
         <AnimatePresence>
           {openSections.aboutstats && (
@@ -283,29 +283,29 @@ export default function AdminSettings(_p: Props) {
               transition={{ duration: 0.3 }} className="overflow-hidden">
               <div className="px-5 pb-5 space-y-3">
                 {((cfg as unknown as Record<string, {value:string;label:string}[]>).about_stats || []).map((stat: {value:string;label:string}, i: number) => (
-                  <div key={i} className="flex items-center gap-3 bg-zinc-800/30 rounded-xl p-3 border border-zinc-700/30">
-                    <GripVertical size={14} className="text-zinc-600 flex-shrink-0" />
+                  <div key={i} className="flex items-center gap-3 bg-surface/30 angle-frame-sm p-3 border border-white/[0.1]/30">
+                    <GripVertical size={14} className="text-gray-600 flex-shrink-0" />
                     <input value={stat.value} onChange={e => {
                       const stats = [...((cfg as unknown as Record<string, {value:string;label:string}[]>).about_stats || [])];
                       stats[i] = { ...stats[i], value: e.target.value };
                       update('about_stats', stats);
-                    }} className="w-20 bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-1.5 text-white text-sm text-center font-bold focus:outline-none focus:border-teal-500/50 transition" placeholder="5+" />
+                    }} className="w-20 bg-surface border border-white/[0.1] angle-frame-sm px-3 py-1.5 text-white text-sm text-center font-bold focus:outline-none focus:border-teal-500/50 transition" placeholder="5+" />
                     <input value={stat.label} onChange={e => {
                       const stats = [...((cfg as unknown as Record<string, {value:string;label:string}[]>).about_stats || [])];
                       stats[i] = { ...stats[i], label: e.target.value };
                       update('about_stats', stats);
-                    }} className="flex-1 bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:border-teal-500/50 transition" placeholder="Años Exp." />
+                    }} className="flex-1 bg-surface border border-white/[0.1] angle-frame-sm px-3 py-1.5 text-white text-sm focus:outline-none focus:border-teal-500/50 transition" placeholder="Años Exp." />
                     <button onClick={() => {
                       const stats = [...((cfg as unknown as Record<string, {value:string;label:string}[]>).about_stats || [])];
                       stats.splice(i, 1);
                       update('about_stats', stats);
-                    }} className="p-1.5 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-red-900/20 transition">
+                    }} className="p-1.5 angle-frame-sm text-gray-500 hover:text-red-400 hover:bg-red-900/20 transition">
                       <Trash2 size={14} />
                     </button>
                   </div>
                 ))}
                 <button onClick={() => update('about_stats', [...((cfg as unknown as Record<string, {value:string;label:string}[]>).about_stats || []), { value: '0', label: 'Nuevo' }])}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-dashed border-zinc-700 text-zinc-500 hover:text-white hover:border-zinc-500 transition text-sm">
+                  className="w-full flex items-center justify-center gap-2 py-2.5 angle-frame-sm border border-dashed border-white/[0.1] text-gray-500 hover:text-white hover:border-white/20 transition text-sm">
                   <Plus size={14} /> Agregar Estadística
                 </button>
               </div>
@@ -315,7 +315,7 @@ export default function AdminSettings(_p: Props) {
       </motion.div>
 
       {/* ═══ SPECIALTIES ═══ */}
-      <motion.div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+      <motion.div className="bg-bg-secondary border border-white/[0.08] angle-frame overflow-hidden">
         <SectionHeader openSections={openSections} toggleSection={toggleSection} id="specialties" title="Especialidades" icon={Award} iconColor="text-violet-400" count={cfg.about_specialties.length} />
         <AnimatePresence>
           {openSections.specialties && (
@@ -323,22 +323,22 @@ export default function AdminSettings(_p: Props) {
               transition={{ duration: 0.3 }} className="overflow-hidden">
               <div className="px-5 pb-5 space-y-3">
                 {cfg.about_specialties.map((spec, i) => (
-                  <div key={i} className="bg-zinc-800/30 rounded-xl p-3 border border-zinc-700/30 space-y-2">
+                  <div key={i} className="bg-surface/30 angle-frame-sm p-3 border border-white/[0.1]/30 space-y-2">
                     <div className="flex items-center gap-2">
                       <input value={spec.title} onChange={e => updateSpecialty(i, 'title', e.target.value)}
-                        className="flex-1 bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-1.5 text-white text-sm font-bold focus:outline-none focus:border-violet-500/50 transition"
+                        className="flex-1 bg-surface border border-white/[0.1] angle-frame-sm px-3 py-1.5 text-white text-sm font-bold focus:outline-none focus:border-violet-500/50 transition"
                         placeholder="Nombre de especialidad" />
-                      <button onClick={() => removeSpecialty(i)} className="p-1.5 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-red-900/20 transition">
+                      <button onClick={() => removeSpecialty(i)} className="p-1.5 angle-frame-sm text-gray-500 hover:text-red-400 hover:bg-red-900/20 transition">
                         <Trash2 size={14} />
                       </button>
                     </div>
                     <input value={spec.desc} onChange={e => updateSpecialty(i, 'desc', e.target.value)}
-                      className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-1.5 text-zinc-300 text-sm focus:outline-none focus:border-violet-500/50 transition"
+                      className="w-full bg-surface border border-white/[0.1] angle-frame-sm px-3 py-1.5 text-gray-300 text-sm focus:outline-none focus:border-violet-500/50 transition"
                       placeholder="Descripción breve" />
                   </div>
                 ))}
                 <button onClick={addSpecialty}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-dashed border-zinc-700 text-zinc-500 hover:text-white hover:border-zinc-500 transition text-sm">
+                  className="w-full flex items-center justify-center gap-2 py-2.5 angle-frame-sm border border-dashed border-white/[0.1] text-gray-500 hover:text-white hover:border-white/20 transition text-sm">
                   <Plus size={14} /> Agregar Especialidad
                 </button>
               </div>
@@ -348,7 +348,7 @@ export default function AdminSettings(_p: Props) {
       </motion.div>
 
       {/* ═══ SKILLS SECTION TEXT ═══ */}
-      <motion.div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+      <motion.div className="bg-bg-secondary border border-white/[0.08] angle-frame overflow-hidden">
         <SectionHeader openSections={openSections} toggleSection={toggleSection} id="skillstext" title="Textos de Skills" icon={Sparkles} iconColor="text-orange-400" />
         <AnimatePresence>
           {openSections.skillstext && (
@@ -365,7 +365,7 @@ export default function AdminSettings(_p: Props) {
       </motion.div>
 
       {/* ═══ PROJECTS SECTION TEXT ═══ */}
-      <motion.div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+      <motion.div className="bg-bg-secondary border border-white/[0.08] angle-frame overflow-hidden">
         <SectionHeader openSections={openSections} toggleSection={toggleSection} id="projectstext" title="Textos de Proyectos" icon={Info} iconColor="text-yellow-400" />
         <AnimatePresence>
           {openSections.projectstext && (
@@ -382,7 +382,7 @@ export default function AdminSettings(_p: Props) {
       </motion.div>
 
       {/* ═══ STORE SECTION TEXT ═══ */}
-      <motion.div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+      <motion.div className="bg-bg-secondary border border-white/[0.08] angle-frame overflow-hidden">
         <SectionHeader openSections={openSections} toggleSection={toggleSection} id="storetext" title="Textos de Tienda" icon={ShoppingBag} iconColor="text-teal-400" />
         <AnimatePresence>
           {openSections.storetext && (
@@ -399,7 +399,7 @@ export default function AdminSettings(_p: Props) {
       </motion.div>
 
       {/* ═══ CONTACT ═══ */}
-      <motion.div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+      <motion.div className="bg-bg-secondary border border-white/[0.08] angle-frame overflow-hidden">
         <SectionHeader openSections={openSections} toggleSection={toggleSection} id="contact" title="Contacto & Footer" icon={Mail} iconColor="text-green-400" />
         <AnimatePresence>
           {openSections.contact && (
@@ -411,7 +411,7 @@ export default function AdminSettings(_p: Props) {
                 <Field getFieldValue={getFieldValue} update={update} label="Contact Descripción" field="contact_desc" multi placeholder="Estoy disponible para..." />
                 <Field getFieldValue={getFieldValue} update={update} label="Email de contacto" field="contact_email" placeholder="tu@email.com" />
                 <Field getFieldValue={getFieldValue} update={update} label="WhatsApp (Link o Número)" field="contact_whatsapp" placeholder="https://wa.me/..." />
-                <div className="border-t border-zinc-800 pt-4 mt-4" />
+                <div className="border-t border-white/[0.08] pt-4 mt-4" />
                 <Field getFieldValue={getFieldValue} update={update} label="Footer marca" field="footer_brand" placeholder="CM Design Studio" />
                 <Field getFieldValue={getFieldValue} update={update} label="Footer subtítulo" field="footer_brand_sub" placeholder="Diseño & Movimiento" />
                 <Field getFieldValue={getFieldValue} update={update} label="Footer texto legal" field="footer_text" placeholder="Diseñado con ❤ por CM" />
@@ -422,7 +422,7 @@ export default function AdminSettings(_p: Props) {
       </motion.div>
 
       {/* ═══ SOCIAL LINKS ═══ */}
-      <motion.div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+      <motion.div className="bg-bg-secondary border border-white/[0.08] angle-frame overflow-hidden">
         <SectionHeader openSections={openSections} toggleSection={toggleSection} id="socials" title="Redes Sociales" icon={Globe} iconColor="text-cyan-400" count={socials.filter(s => s.enabled).length} />
         <AnimatePresence>
           {openSections.socials && (
@@ -430,15 +430,15 @@ export default function AdminSettings(_p: Props) {
               transition={{ duration: 0.3 }} className="overflow-hidden">
               <div className="px-5 pb-5 space-y-3">
                 {socials.length === 0 && (
-                  <p className="text-center text-zinc-600 text-sm py-4">No hay redes sociales. Agrega tus perfiles.</p>
+                  <p className="text-center text-gray-600 text-sm py-4">No hay redes sociales. Agrega tus perfiles.</p>
                 )}
                 {socials.map((social) => {
                   const platform = PLATFORMS.find(p => p.id === social.platform) || PLATFORMS[PLATFORMS.length - 1];
                   const PIcon = platform.icon;
                   return (
-                    <div key={social.id} className="bg-zinc-800/30 rounded-xl p-3 border border-zinc-700/30">
+                    <div key={social.id} className="bg-surface/30 angle-frame-sm p-3 border border-white/[0.1]/30">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                        <div className="w-8 h-8 angle-frame-sm flex items-center justify-center flex-shrink-0"
                           style={{ backgroundColor: platform.color + '22', border: `1px solid ${platform.color}44` }}>
                           <PIcon size={16} style={{ color: platform.color }} />
                         </div>
@@ -446,18 +446,18 @@ export default function AdminSettings(_p: Props) {
                           updateSocial(social.id, 'platform', e.target.value);
                           updateSocial(social.id, 'icon', e.target.value);
                         }}
-                          className="bg-zinc-800 border border-zinc-700 rounded-lg px-2 py-1.5 text-white text-sm focus:outline-none focus:border-cyan-500/50 transition w-32">
+                          className="bg-surface border border-white/[0.1] angle-frame-sm px-2 py-1.5 text-white text-sm focus:outline-none focus:border-cyan-500/50 transition w-32">
                           {PLATFORMS.map(p => <option key={p.id} value={p.id}>{p.label}</option>)}
                         </select>
                         <input value={social.url} onChange={e => updateSocial(social.id, 'url', e.target.value)}
-                          className="flex-1 bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:border-cyan-500/50 transition"
+                          className="flex-1 bg-surface border border-white/[0.1] angle-frame-sm px-3 py-1.5 text-white text-sm focus:outline-none focus:border-cyan-500/50 transition"
                           placeholder="https://..." />
                         <button onClick={() => updateSocial(social.id, 'enabled', !social.enabled)}
-                          className={`p-1.5 rounded-lg transition ${social.enabled ? 'text-green-400 bg-green-900/20' : 'text-zinc-600 bg-zinc-800'}`}>
+                          className={`p-1.5 angle-frame-sm transition ${social.enabled ? 'text-green-400 bg-green-900/20' : 'text-gray-600 bg-surface'}`}>
                           <Eye size={14} />
                         </button>
                         <button onClick={() => deleteSocial(social.id)}
-                          className="p-1.5 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-red-900/20 transition">
+                          className="p-1.5 angle-frame-sm text-gray-500 hover:text-red-400 hover:bg-red-900/20 transition">
                           <Trash2 size={14} />
                         </button>
                       </div>
@@ -465,7 +465,7 @@ export default function AdminSettings(_p: Props) {
                   );
                 })}
                 <button onClick={addSocial}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-dashed border-zinc-700 text-zinc-500 hover:text-white hover:border-zinc-500 transition text-sm">
+                  className="w-full flex items-center justify-center gap-2 py-2.5 angle-frame-sm border border-dashed border-white/[0.1] text-gray-500 hover:text-white hover:border-white/20 transition text-sm">
                   <Plus size={14} /> Agregar Red Social
                 </button>
               </div>
@@ -475,7 +475,7 @@ export default function AdminSettings(_p: Props) {
       </motion.div>
 
       {/* ═══ THEME COLORS ═══ */}
-      <motion.div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+      <motion.div className="bg-bg-secondary border border-white/[0.08] angle-frame overflow-hidden">
         <SectionHeader openSections={openSections} toggleSection={toggleSection} id="theme" title="Colores del Tema" icon={Palette} iconColor="text-pink-400" />
         <AnimatePresence>
           {openSections.theme && (
@@ -487,12 +487,12 @@ export default function AdminSettings(_p: Props) {
                 <ColorField getFieldValue={getFieldValue} update={update} label="Color Acento" field="theme_accent" />
 
                 {/* Theme preview */}
-                <div className="mt-4 bg-zinc-800/30 rounded-xl p-4 border border-zinc-700/30">
-                  <p className="text-xs text-zinc-500 mb-3 uppercase tracking-widest font-semibold">Vista Previa</p>
+                <div className="mt-4 bg-surface/30 angle-frame-sm p-4 border border-white/[0.1]/30">
+                  <p className="text-xs text-gray-500 mb-3 uppercase tracking-widest font-semibold">Vista Previa</p>
                   <div className="flex gap-2 mb-3">
-                    <div className="flex-1 h-8 rounded-lg" style={{ backgroundColor: cfg.theme_primary || '#ff0033' }} />
-                    <div className="flex-1 h-8 rounded-lg" style={{ backgroundColor: cfg.theme_secondary || '#a855f7' }} />
-                    <div className="flex-1 h-8 rounded-lg" style={{ backgroundColor: cfg.theme_accent || '#ec4899' }} />
+                    <div className="flex-1 h-8 angle-frame-sm" style={{ backgroundColor: cfg.theme_primary || '#ff0033' }} />
+                    <div className="flex-1 h-8 angle-frame-sm" style={{ backgroundColor: cfg.theme_secondary || '#a855f7' }} />
+                    <div className="flex-1 h-8 angle-frame-sm" style={{ backgroundColor: cfg.theme_accent || '#ec4899' }} />
                   </div>
                   <div className="h-2 rounded-full overflow-hidden">
                     <div className="h-full w-full" style={{
@@ -501,7 +501,7 @@ export default function AdminSettings(_p: Props) {
                   </div>
                 </div>
 
-                <p className="text-xs text-zinc-600">
+                <p className="text-xs text-gray-600">
                   💡 Los colores se aplican en tiempo real al guardar. El color primario afecta botones, badges y acentos principales.
                 </p>
               </div>

@@ -21,7 +21,7 @@ export default function About() {
           <div className="absolute -inset-5 translate-x-5 translate-y-5 border border-neon-red/25 angle-frame" />
           <div className="acid-panel angle-frame relative overflow-hidden p-3">
             <div className="relative aspect-[4/5] overflow-hidden angle-frame-sm bg-[#0B0E13]">
-              {cfg.about_photo ? <img src={cfg.about_photo} alt="Perfil profesional" className="h-full w-full object-cover grayscale transition duration-700 hover:grayscale-0" /> : <div className="arena-grid flex h-full items-center justify-center"><span className="text-[9rem] font-black tracking-[-.12em] text-white/[0.055]">CM</span></div>}
+              {cfg.about_photo ? <img src={cfg.about_photo} alt="Retrato de CM Design, director creativo y diseñador de motion graphics" loading="lazy" decoding="async" className="h-full w-full object-cover grayscale transition duration-700 hover:grayscale-0" /> : <div className="arena-grid flex h-full items-center justify-center"><span className="text-[9rem] font-black tracking-[-.12em] text-white/[0.055]">CM</span></div>}
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/75 to-transparent p-6 pt-20">
                 <div className="acid-kicker">{cfg.about_job_title}</div>
                 <div className="mt-2 text-2xl font-black uppercase tracking-[-.04em] text-white">{cfg.hero_name}</div>

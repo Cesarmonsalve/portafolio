@@ -25,25 +25,25 @@ function SortableStoreItem({ item, onEdit, onDelete }: { item: StoreItem, onEdit
 
   return (
     <motion.div ref={setNodeRef} style={style} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-      className={`glass-premium border border-zinc-800/50 rounded-xl p-4 flex items-center gap-4 group hover:border-zinc-700 transition ${isDragging ? 'shadow-2xl ring-2 ring-teal-500 scale-[1.02]' : ''}`}>
-      <div {...attributes} {...listeners} className="p-2 -ml-2 text-zinc-600 hover:text-white cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition">
+      className={`glass-premium border border-white/[0.08]/50 angle-frame-sm p-4 flex items-center gap-4 group hover:border-white/[0.1] transition ${isDragging ? 'shadow-2xl ring-2 ring-teal-500 scale-[1.02]' : ''}`}>
+      <div {...attributes} {...listeners} className="p-2 -ml-2 text-gray-600 hover:text-white cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition">
         <GripVertical size={20} />
       </div>
-      <span className="w-12 h-12 bg-zinc-800 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">{item.emoji}</span>
+      <span className="w-12 h-12 bg-surface angle-frame-sm flex items-center justify-center text-2xl flex-shrink-0">{item.emoji}</span>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
           <p className="text-sm font-bold text-white truncate">{item.title}</p>
           {item.badge && <span className="bg-neon-red/20 text-neon-red px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wide flex-shrink-0">{item.badge}</span>}
         </div>
-        <p className="text-xs text-zinc-400 truncate">{item.description}</p>
+        <p className="text-xs text-gray-400 truncate">{item.description}</p>
         <div className="flex gap-2 mt-2">
           <span className="text-[10px] font-mono text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded">{item.price}</span>
-          <span className="text-[10px] text-zinc-500 flex items-center gap-1"><LinkIcon size={10} /> {item.downloadLinks.length} Links</span>
+          <span className="text-[10px] text-gray-500 flex items-center gap-1"><LinkIcon size={10} /> {item.downloadLinks.length} Links</span>
         </div>
       </div>
       <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition flex-shrink-0">
-        <button onClick={onEdit} className="p-1.5 rounded-lg text-zinc-500 hover:text-blue-400 hover:bg-blue-900/20 transition"><Edit2 size={14} /></button>
-        <button onClick={onDelete} className="p-1.5 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-red-900/20 transition"><Trash2 size={14} /></button>
+        <button onClick={onEdit} className="p-1.5 angle-frame-sm text-gray-500 hover:text-blue-400 hover:bg-blue-900/20 transition"><Edit2 size={14} /></button>
+        <button onClick={onDelete} className="p-1.5 angle-frame-sm text-gray-500 hover:text-red-400 hover:bg-red-900/20 transition"><Trash2 size={14} /></button>
       </div>
     </motion.div>
   );
@@ -145,22 +145,22 @@ export default function AdminStore(_p: Props) {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-black text-white">Tienda / Recursos</h1>
-          <p className="text-zinc-500 text-sm">{items.length} elementos</p>
+          <p className="text-gray-500 text-sm">{items.length} elementos</p>
         </div>
-        <button onClick={openNew} className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-teal-600 to-emerald-500 hover:from-teal-500 hover:to-emerald-400 transition shadow-lg shadow-teal-900/20 active:scale-95">
+        <button onClick={openNew} className="flex items-center gap-2 px-4 py-2.5 angle-frame-sm font-semibold text-sm text-white bg-gradient-to-r from-teal-600 to-emerald-500 hover:from-teal-500 hover:to-emerald-400 transition shadow-lg shadow-teal-900/20 active:scale-95">
           <Plus size={16} /> Nuevo Recurso
         </button>
       </div>
 
       {Object.keys(grouped).length === 0 ? (
-        <div className="text-center py-16 bg-zinc-900 border border-zinc-800 rounded-2xl">
-          <Store size={32} className="mx-auto text-zinc-700 mb-3" />
-          <p className="text-zinc-600 text-sm">No hay recursos en la tienda. Empieza a agregar contenido.</p>
+        <div className="text-center py-16 bg-bg-secondary border border-white/[0.08] angle-frame">
+          <Store size={32} className="mx-auto text-gray-700 mb-3" />
+          <p className="text-gray-600 text-sm">No hay recursos en la tienda. Empieza a agregar contenido.</p>
         </div>
       ) : (
         Object.entries(grouped).map(([cat, catItems]) => (
           <div key={cat}>
-            <h3 className="text-sm font-bold text-zinc-400 uppercase tracking-widest mb-3">{cat}</h3>
+            <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-3">{cat}</h3>
             <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, catItems)}>
               <SortableContext items={catItems.map(i => i.id)} strategy={verticalListSortingStrategy}>
                 <div className="space-y-2">
@@ -177,79 +177,79 @@ export default function AdminStore(_p: Props) {
       <AnimatePresence>
         {showForm && editing && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-            <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-2xl shadow-2xl my-8">
-              <div className="flex items-center justify-between p-5 border-b border-zinc-800">
+            <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} className="bg-bg-secondary border border-white/[0.08] angle-frame w-full max-w-2xl shadow-2xl my-8">
+              <div className="flex items-center justify-between p-5 border-b border-white/[0.08]">
                 <h2 className="font-bold text-white flex items-center gap-2"><ShoppingBag size={18} className="text-teal-400" /> {items.find(i => i.id === editing.id) ? 'Editar' : 'Nuevo'} Recurso</h2>
-                <button onClick={() => setShowForm(false)} className="p-1.5 rounded-lg text-zinc-500 hover:text-white hover:bg-zinc-800 transition"><X size={18} /></button>
+                <button onClick={() => setShowForm(false)} className="p-1.5 angle-frame-sm text-gray-500 hover:text-white hover:bg-surface transition"><X size={18} /></button>
               </div>
               <div className="p-5 space-y-5 max-h-[70vh] overflow-y-auto custom-scrollbar">
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1 block">Título</label>
+                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1 block">Título</label>
                     <input value={editing.title} onChange={e => setEditing({ ...editing, title: e.target.value })}
-                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-teal-500/50 transition" placeholder="Pack de Assets..." />
+                      className="w-full bg-surface border border-white/[0.1] angle-frame-sm px-4 py-2.5 text-white text-sm focus:outline-none focus:border-teal-500/50 transition" placeholder="Pack de Assets..." />
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1 block">Categoría</label>
+                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1 block">Categoría</label>
                     <select value={editing.category} onChange={e => setEditing({ ...editing, category: e.target.value })}
-                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-teal-500/50 transition">
+                      className="w-full bg-surface border border-white/[0.1] angle-frame-sm px-4 py-2.5 text-white text-sm focus:outline-none focus:border-teal-500/50 transition">
                       {CATS.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1 block">Descripción</label>
+                  <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1 block">Descripción</label>
                   <textarea value={editing.description} onChange={e => setEditing({ ...editing, description: e.target.value })}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-teal-500/50 transition min-h-[80px]" placeholder="Breve descripción del recurso..." />
+                    className="w-full bg-surface border border-white/[0.1] angle-frame-sm px-4 py-2.5 text-white text-sm focus:outline-none focus:border-teal-500/50 transition min-h-[80px]" placeholder="Breve descripción del recurso..." />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1 block">Precio (Ej: GRATIS o $10.00)</label>
+                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1 block">Precio (Ej: GRATIS o $10.00)</label>
                     <input value={editing.price} onChange={e => setEditing({ ...editing, price: e.target.value })}
-                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-teal-500/50 transition" placeholder="GRATIS" />
+                      className="w-full bg-surface border border-white/[0.1] angle-frame-sm px-4 py-2.5 text-white text-sm focus:outline-none focus:border-teal-500/50 transition" placeholder="GRATIS" />
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1 block">Badge (Opcional: 🔥 Popular)</label>
+                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1 block">Badge (Opcional: 🔥 Popular)</label>
                     <input value={editing.badge || ''} onChange={e => setEditing({ ...editing, badge: e.target.value })}
-                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-teal-500/50 transition" placeholder="⚡ Nuevo" />
+                      className="w-full bg-surface border border-white/[0.1] angle-frame-sm px-4 py-2.5 text-white text-sm focus:outline-none focus:border-teal-500/50 transition" placeholder="⚡ Nuevo" />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1 block">Tags (separados por coma)</label>
+                  <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1 block">Tags (separados por coma)</label>
                   <input value={editing.tags.join(', ')} onChange={e => setEditing({ ...editing, tags: e.target.value.split(',').map(t => t.trim()).filter(Boolean) })}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-teal-500/50 transition" placeholder="PSD, Illustrator, Motion..." />
+                    className="w-full bg-surface border border-white/[0.1] angle-frame-sm px-4 py-2.5 text-white text-sm focus:outline-none focus:border-teal-500/50 transition" placeholder="PSD, Illustrator, Motion..." />
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-2 block">Emoji Icon</label>
+                  <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 block">Emoji Icon</label>
                   <div className="flex gap-2 flex-wrap">
                     {EMOJIS.map(ic => (
                       <button key={ic} onClick={() => setEditing({ ...editing, emoji: ic })}
-                        className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg transition ${editing.emoji === ic ? 'bg-teal-600 ring-2 ring-teal-400' : 'bg-zinc-800 hover:bg-zinc-700'}`}>{ic}</button>
+                        className={`w-10 h-10 angle-frame-sm flex items-center justify-center text-lg transition ${editing.emoji === ic ? 'bg-teal-600 ring-2 ring-teal-400' : 'bg-surface hover:bg-surface-hover'}`}>{ic}</button>
                     ))}
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1 block">Imagen de Portada (URL)</label>
+                  <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1 block">Imagen de Portada (URL)</label>
                   <input value={editing.image || ''} onChange={e => setEditing({ ...editing, image: e.target.value })}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-teal-500/50 transition" placeholder="https://i.imgur.com/ejemplo.jpg" />
+                    className="w-full bg-surface border border-white/[0.1] angle-frame-sm px-4 py-2.5 text-white text-sm focus:outline-none focus:border-teal-500/50 transition" placeholder="https://i.imgur.com/ejemplo.jpg" />
                   {editing.image && (
-                    <div className="mt-2 relative rounded-xl overflow-hidden border border-zinc-700 aspect-square bg-[#0a0a0a]">
+                    <div className="mt-2 relative angle-frame-sm overflow-hidden border border-white/[0.1] aspect-square bg-[#0a0a0a]">
                       <img src={editing.image} alt="Preview" className="w-full h-full object-contain" />
-                      <button onClick={() => setEditing({ ...editing, image: '' })} className="absolute top-2 right-2 p-1 rounded-lg bg-black/70 text-white hover:bg-red-600 transition"><X size={14} /></button>
+                      <button onClick={() => setEditing({ ...editing, image: '' })} className="absolute top-2 right-2 p-1 angle-frame-sm bg-black/70 text-white hover:bg-red-600 transition"><X size={14} /></button>
                     </div>
                   )}
-                  <p className="text-[10px] text-zinc-500 mt-1">Opcional. Si no pones imagen se mostrará el emoji como portada.</p>
+                  <p className="text-[10px] text-gray-500 mt-1">Opcional. Si no pones imagen se mostrará el emoji como portada.</p>
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">Links de Descarga / Compra</label>
+                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Links de Descarga / Compra</label>
                     <button onClick={() => setEditing({...editing, downloadLinks: [...editing.downloadLinks, {platform: 'Mediafire', url: '', color: '#4285F4'}]})} 
                             className="text-xs text-teal-400 hover:text-teal-300 font-bold flex items-center gap-1">
                       <Plus size={12}/> Agregar Link
@@ -257,19 +257,19 @@ export default function AdminStore(_p: Props) {
                   </div>
                   <div className="space-y-2">
                     {editing.downloadLinks.length === 0 && (
-                      <p className="text-xs text-zinc-500 italic bg-zinc-800/50 p-3 rounded-xl border border-dashed border-zinc-700 text-center">No hay links agregados.</p>
+                      <p className="text-xs text-gray-500 italic bg-surface/50 p-3 angle-frame-sm border border-dashed border-white/[0.1] text-center">No hay links agregados.</p>
                     )}
                     {editing.downloadLinks.map((link, idx) => (
-                      <div key={idx} className="flex items-center gap-2 bg-zinc-800 p-2 rounded-xl border border-zinc-700">
+                      <div key={idx} className="flex items-center gap-2 bg-surface p-2 angle-frame-sm border border-white/[0.1]">
                         <input value={link.platform} onChange={e => {
                           const nl = [...editing.downloadLinks]; nl[idx].platform = e.target.value;
                           setEditing({...editing, downloadLinks: nl});
-                        }} className="w-1/3 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:border-teal-500/50" placeholder="Plataforma" />
+                        }} className="w-1/3 bg-bg-secondary border border-white/[0.1] angle-frame-sm px-3 py-1.5 text-white text-sm focus:outline-none focus:border-teal-500/50" placeholder="Plataforma" />
                         
                         <input value={link.url} onChange={e => {
                           const nl = [...editing.downloadLinks]; nl[idx].url = e.target.value;
                           setEditing({...editing, downloadLinks: nl});
-                        }} className="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:border-teal-500/50" placeholder="https://..." />
+                        }} className="flex-1 bg-bg-secondary border border-white/[0.1] angle-frame-sm px-3 py-1.5 text-white text-sm focus:outline-none focus:border-teal-500/50" placeholder="https://..." />
                         
                         <input type="color" value={link.color} onChange={e => {
                           const nl = [...editing.downloadLinks]; nl[idx].color = e.target.value;
@@ -279,28 +279,28 @@ export default function AdminStore(_p: Props) {
                         <button onClick={() => {
                           const nl = [...editing.downloadLinks]; nl.splice(idx, 1);
                           setEditing({...editing, downloadLinks: nl});
-                        }} className="p-1.5 text-zinc-500 hover:text-red-400 transition"><Trash2 size={14}/></button>
+                        }} className="p-1.5 text-gray-500 hover:text-red-400 transition"><Trash2 size={14}/></button>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {editing.price.toUpperCase() !== 'GRATIS' && (
-                  <div className="pt-2 border-t border-zinc-800">
+                  <div className="pt-2 border-t border-white/[0.08]">
                     <label className="text-xs font-semibold text-neon-red uppercase tracking-widest mb-1 block flex items-center gap-2">
                       <LinkIcon size={12} /> Link de Compra Automática (Gumroad, Hotmart, etc.)
                     </label>
                     <input value={editing.paymentUrl || ''} onChange={e => setEditing({ ...editing, paymentUrl: e.target.value })}
-                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-red/50 transition" placeholder="https://gumroad.com/l/..." />
-                    <p className="text-[10px] text-zinc-500 mt-1">Este link se abrirá automáticamente al hacer clic en "COMPRAR AHORA".</p>
+                      className="w-full bg-surface border border-white/[0.1] angle-frame-sm px-4 py-2.5 text-white text-sm focus:outline-none focus:border-neon-red/50 transition" placeholder="https://gumroad.com/l/..." />
+                    <p className="text-[10px] text-gray-500 mt-1">Este link se abrirá automáticamente al hacer clic en "COMPRAR AHORA".</p>
                   </div>
                 )}
 
               </div>
-              <div className="flex justify-end gap-3 p-5 border-t border-zinc-800">
-                <button onClick={() => setShowForm(false)} className="px-5 py-2.5 rounded-xl text-sm text-zinc-400 hover:text-white hover:bg-zinc-800 transition">Cancelar</button>
+              <div className="flex justify-end gap-3 p-5 border-t border-white/[0.08]">
+                <button onClick={() => setShowForm(false)} className="px-5 py-2.5 angle-frame-sm text-sm text-gray-400 hover:text-white hover:bg-surface transition">Cancelar</button>
                 <button onClick={handleSave} disabled={!editing.title.trim() || saving}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-teal-600 to-emerald-500 disabled:opacity-50 transition shadow-lg shadow-teal-900/20 active:scale-95">
+                  className="flex items-center gap-2 px-5 py-2.5 angle-frame-sm text-sm font-semibold text-white bg-gradient-to-r from-teal-600 to-emerald-500 disabled:opacity-50 transition shadow-lg shadow-teal-900/20 active:scale-95">
                   {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />} Guardar
                 </button>
               </div>

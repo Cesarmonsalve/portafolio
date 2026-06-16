@@ -3,117 +3,120 @@ import { motion } from 'framer-motion';
 import SectionWrapper from './SectionWrapper';
 import { useSiteConfig } from '@/lib/SiteConfigContext';
 import { DEFAULT_SECTION_VISUAL } from '@/lib/config';
-import { Layers3, Sparkles } from 'lucide-react';
+import { Layers3, Video, Aperture, Palette, Box, Code2, Sparkles } from 'lucide-react';
 import { IconRenderer } from './admin/IconPicker';
 
-// Remove CATEGORY_ICONS since we use real icons now
+const CATEGORY_ICONS: Record<string, any> = {
+  'Motion': Video,
+  'Diseño': Palette,
+  'Edición': Aperture,
+  '3D': Box,
+  'Branding': Layers3,
+  'Desarrollo': Code2,
+  'Tools': Sparkles
+};
 
 export default function Skills() {
   const { cfg, skills } = useSiteConfig();
 
-  // Group skills by category to position them in different orbits
+  // Agrupar skills por categoría
   const categories = [...new Set(skills.map(s => s.category))];
   
   return (
-    <SectionWrapper id="skills" visual={cfg.section_skills || DEFAULT_SECTION_VISUAL} className="relative min-h-screen py-24 md:py-32 flex items-center overflow-hidden">
+    <SectionWrapper id="skills" visual={cfg.section_skills || DEFAULT_SECTION_VISUAL} className="relative min-h-screen py-24 md:py-32 flex flex-col justify-center overflow-hidden">
+      {/* Background Glows */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-600/10 rounded-full blur-[150px] pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[150px] pointer-events-none translate-x-1/3 -translate-y-1/3" />
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none -translate-x-1/3 translate-y-1/3" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-6 md:px-12 w-full flex flex-col items-center">
+      <div className="relative z-10 mx-auto max-w-7xl px-6 md:px-12 w-full">
         
-        <div className="text-center mb-16 md:mb-24">
-          <div className="flex items-center justify-center gap-3 mb-4">
+        {/* Encabezado */}
+        <div className="mb-16 md:mb-24 max-w-2xl">
+          <div className="flex items-center gap-3 mb-6">
             <span className="w-8 h-[1px] bg-gradient-to-r from-transparent to-purple-500" />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-purple-400">Skill Galaxy</span>
-            <span className="w-8 h-[1px] bg-gradient-to-l from-transparent to-purple-500" />
+            <span className="text-[10px] font-bold uppercase tracking-widest text-purple-400">Ecosistema Técnico</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-display font-black tracking-tighter text-white">
-            {cfg.skills_heading || 'Dominio Técnico'}
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-black tracking-tighter text-white leading-tight">
+            {cfg.skills_heading || 'Mi Arsenal Creativo'}
           </h2>
-          <p className="mt-4 text-gray-400 font-light max-w-lg mx-auto">
-            {cfg.skills_desc || 'Un ecosistema en constante expansión de tecnologías y herramientas dominadas.'}
+          <p className="mt-6 text-gray-400 font-light text-lg">
+            {cfg.skills_desc || 'Un conjunto de herramientas de grado industrial diseñadas para transformar conceptos abstractos en realidades visuales asombrosas.'}
           </p>
         </div>
 
-        {/* Skill Galaxy Orbital System */}
-        <div className="relative w-[300px] h-[300px] md:w-[600px] md:h-[600px] flex items-center justify-center">
-          
-          {/* Central Core */}
-          <div className="absolute z-20 w-28 h-28 md:w-36 md:h-36 rounded-full bg-surface border border-purple-500/30 flex items-center justify-center shadow-[0_0_60px_rgba(168,85,247,0.2)]">
-            <motion.div 
-              animate={{ scale: [1, 1.05, 1], opacity: [0.8, 1, 0.8] }}
-              transition={{ duration: 4, ease: "easeInOut", repeat: Infinity }}
-              className="absolute inset-0 rounded-full bg-gradient-to-tr from-purple-600/20 to-blue-600/20 blur-md"
-            />
-            <div className="relative text-center flex flex-col items-center">
-              <Sparkles className="text-purple-400 mb-1" size={20} />
-              <div className="font-display font-black text-xl text-white tracking-widest">SKILLS</div>
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+          {categories.length === 0 && (
+            <div className="col-span-full py-12 text-center text-gray-500 border border-dashed border-white/10 rounded-3xl">
+              Aún no hay skills configuradas. Añádelas desde el Admin.
             </div>
-          </div>
+          )}
 
-          {/* Orbits */}
-          {categories.map((category, orbitIndex) => {
-            const orbitSkills = skills.filter(s => s.category === category);
-            // Increase radius for each orbit
-            const radius = 100 + (orbitIndex * 60); 
-            const duration = 20 + (orbitIndex * 10);
-            // Alternate direction
-            const direction = orbitIndex % 2 === 0 ? 360 : -360;
+          {categories.map((category, i) => {
+            const catSkills = skills.filter(s => s.category === category);
+            const CatIcon = CATEGORY_ICONS[category] || Sparkles;
 
             return (
               <motion.div
                 key={category}
-                className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                animate={{ rotate: direction }}
-                transition={{ duration: duration, ease: "linear", repeat: Infinity }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="group relative bg-surface/40 backdrop-blur-md border border-white/5 rounded-[2rem] p-8 overflow-hidden hover:bg-surface/60 transition-colors duration-500"
               >
-                {/* Orbit Ring */}
-                <div 
-                  className="absolute rounded-full border border-white/[0.04]"
-                  style={{ width: radius * 2, height: radius * 2 }}
-                />
+                {/* Subtle internal glow on hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/0 via-transparent to-blue-500/0 group-hover:from-purple-500/5 group-hover:to-blue-500/5 transition-all duration-500" />
+                
+                {/* Background Icon Watermark */}
+                <CatIcon className="absolute -bottom-6 -right-6 w-48 h-48 text-white/[0.02] -rotate-12 transition-transform duration-700 group-hover:scale-110 group-hover:-rotate-6 pointer-events-none" />
 
-                {orbitSkills.map((skill, index) => {
-                  const angle = (index / orbitSkills.length) * 2 * Math.PI;
-                  const x = Math.cos(angle) * radius;
-                  const y = Math.sin(angle) * radius;
+                {/* Header Categoría */}
+                <div className="flex items-center gap-4 mb-8 relative z-10">
+                  <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shadow-lg">
+                    <CatIcon size={20} className="text-purple-400" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white tracking-wide">{category}</h3>
+                </div>
 
-                  return (
-                    <motion.div
-                      key={skill.id}
-                      className="absolute pointer-events-auto"
-                      style={{ x, y }}
-                      // Inverse rotation to keep content upright
-                      animate={{ rotate: -direction }}
-                      transition={{ duration: duration, ease: "linear", repeat: Infinity }}
-                    >
-                      <div className="relative group cursor-pointer">
-                        <div className="w-12 h-12 md:w-14 md:h-14 bg-surface border border-white/10 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-125 group-hover:border-purple-500/50 group-hover:bg-purple-900/20 group-hover:shadow-[0_0_30px_rgba(168,85,247,0.3)] z-10 relative">
-                          <IconRenderer icon={skill.icon} size={22} />
+                {/* Lista de Skills */}
+                <div className="flex flex-col gap-6 relative z-10">
+                  {catSkills.map((skill, j) => (
+                    <div key={skill.id} className="group/skill">
+                      <div className="flex items-center gap-4 mb-3">
+                        {/* Icono del Skill */}
+                        <div className="w-10 h-10 rounded-xl bg-bg-secondary border border-white/10 flex items-center justify-center shadow-md transition-transform duration-300 group-hover/skill:scale-110 group-hover/skill:border-purple-500/50 group-hover/skill:bg-purple-900/20">
+                          <IconRenderer icon={skill.icon} size={18} />
                         </div>
                         
-                        {/* Status/Level dot indicator */}
-                        <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-surface border border-white/10 flex items-center justify-center z-20">
-                          <div className="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.8)]" />
-                        </div>
-
-                        {/* Premium Tooltip */}
-                        <div className="absolute top-16 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 bg-surface/90 backdrop-blur-xl border border-white/10 px-4 py-2 rounded-xl flex flex-col items-center shadow-2xl pointer-events-none scale-95 group-hover:scale-100 z-50">
-                          <span className="text-[11px] font-bold tracking-wide text-white whitespace-nowrap">
+                        {/* Nombre y Nivel */}
+                        <div className="flex-1 flex justify-between items-end">
+                          <span className="text-sm font-semibold text-gray-200 group-hover/skill:text-white transition-colors">
                             {skill.name}
                           </span>
-                          <span className="text-[9px] text-purple-400 mt-0.5 uppercase tracking-widest font-semibold">{skill.category}</span>
-                          {/* Level bar */}
-                          <div className="w-full bg-white/10 h-1 rounded-full mt-2 overflow-hidden">
-                            <div className="h-full bg-gradient-to-r from-blue-500 to-purple-500" style={{ width: `${skill.level}%` }} />
-                          </div>
+                          <span className="text-xs font-bold text-purple-400 font-mono">
+                            {skill.level}%
+                          </span>
                         </div>
                       </div>
-                    </motion.div>
-                  );
-                })}
+                      
+                      {/* Progress Bar */}
+                      <div className="h-1.5 w-full bg-black/40 rounded-full overflow-hidden shadow-inner">
+                        <motion.div 
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${skill.level}%` }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 1, delay: 0.2 + (j * 0.1), ease: "easeOut" }}
+                          className="h-full bg-gradient-to-r from-blue-500 to-purple-500 relative"
+                        >
+                          <div className="absolute top-0 right-0 bottom-0 w-10 bg-gradient-to-r from-transparent to-white/30" />
+                        </motion.div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </motion.div>
             );
           })}

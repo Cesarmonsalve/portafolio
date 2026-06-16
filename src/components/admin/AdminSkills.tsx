@@ -6,7 +6,7 @@ import * as SiIcons from 'react-icons/si';
 import { notifyConfigUpdate, saveConfigData } from '@/lib/SiteConfigContext';
 import { loadFromDB } from '@/lib/loadFromDB';
 import { toast } from '@/components/ui/Toast';
-import IconPicker from './IconPicker';
+import IconPicker, { IconRenderer } from './IconPicker';
 import {
   DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent
 } from '@dnd-kit/core';
@@ -35,10 +35,7 @@ function SortableSkillItem({ skill, onEdit, onDelete }: { skill: Skill, onEdit: 
         <GripVertical size={20} />
       </div>
       <span className="w-10 h-10 bg-surface angle-frame-sm flex items-center justify-center text-xl flex-shrink-0">
-        {skill.icon.startsWith('Si') ? (() => {
-            const Icon = (SiIcons as any)[skill.icon];
-            return Icon ? <Icon size={20} style={{ color: '#fff' }} /> : <span>{skill.icon}</span>;
-          })() : skill.icon}
+        <IconRenderer icon={skill.icon} size={20} />
       </span>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-bold text-white truncate mb-1">{skill.name}</p>

@@ -4,46 +4,79 @@ import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import Footer from '@/components/Footer';
 import ScrollProgress from '@/components/ScrollProgress';
+import MobileBottomNav from '@/components/layout/MobileBottomNav';
+import ConversionCTA from '@/components/home/ConversionCTA';
 import { useSiteConfig } from '@/lib/SiteConfigContext';
 import type { ReactElement } from 'react';
 
-// Lazy load everything below the fold — they only mount when needed
 const CustomCursor = dynamic(() => import('@/components/CustomCursor'), { ssr: false });
 const ProjectsGrid = dynamic(() => import('@/components/ProjectsGrid'), { ssr: false });
+const FeaturedCases = dynamic(() => import('@/components/home/FeaturedCases'), { ssr: false });
 const About = dynamic(() => import('@/components/About'), { ssr: false });
 const Skills = dynamic(() => import('@/components/Skills'), { ssr: false });
+const StorePreview = dynamic(() => import('@/components/home/StorePreview'), { ssr: false });
+const Timeline = dynamic(() => import('@/components/home/Timeline'), { ssr: false });
 const Contact = dynamic(() => import('@/components/Contact'), { ssr: false });
+
+type SectionKey =
+  | 'section_hero'
+  | 'section_projects'
+  | 'section_cases'
+  | 'section_about'
+  | 'section_skills'
+  | 'section_store'
+  | 'section_timeline'
+  | 'section_contact';
+
+const SECTION_COMPONENTS: Record<SectionKey, () => ReactElement> = {
+  section_hero: () => <Hero />,
+  section_projects: () => <ProjectsGrid />,
+  section_cases: () => <FeaturedCases />,
+  section_about: () => <About />,
+  section_skills: () => <Skills />,
+  section_store: () => <StorePreview />,
+  section_timeline: () => <Timeline />,
+  section_contact: () => <Contact />,
+};
+
+const SECTION_ORDER: SectionKey[] = [
+  'section_hero',
+  'section_projects',
+  'section_cases',
+  'section_about',
+  'section_skills',
+  'section_store',
+  'section_timeline',
+  'section_contact',
+];
 
 export default function Home() {
   const { cfg } = useSiteConfig();
 
-  // Section registry
-  const sections: { id: string; component: () => ReactElement; position: number; visible: boolean }[] = [
-    { id: 'hero',     component: () => <Hero />,         position: cfg.section_hero?.position     ?? 0, visible: cfg.section_hero?.visible     ?? true },
-    { id: 'projects', component: () => <ProjectsGrid />, position: cfg.section_projects?.position ?? 1, visible: cfg.section_projects?.visible ?? true },
-    { id: 'about',    component: () => <About />,        position: cfg.section_about?.position    ?? 2, visible: cfg.section_about?.visible    ?? true },
-    { id: 'skills',   component: () => <Skills />,       position: cfg.section_skills?.position   ?? 3, visible: cfg.section_skills?.visible   ?? true },
-    { id: 'contact',  component: () => <Contact />,      position: cfg.section_contact?.position  ?? 4, visible: cfg.section_contact?.visible  ?? true },
-  ];
-
-  // Sort by position, filter hidden
-  const ordered = sections
-    .filter(s => s.visible)
+  const ordered = SECTION_ORDER
+    .map((key) => ({
+      key,
+      position: cfg[key]?.position ?? 0,
+      visible: cfg[key]?.visible ?? true,
+      render: SECTION_COMPONENTS[key],
+    }))
+    .filter((s) => s.visible)
     .sort((a, b) => a.position - b.position);
 
   return (
-    <main className="relative">
+    <main id="main-content" className="relative pb-20 lg:pb-0">
       {cfg.show_cursor !== false && <CustomCursor />}
       {cfg.show_scroll_progress !== false && <ScrollProgress />}
       <Navbar />
       {ordered.map((s, i) => (
-        <div key={s.id}>
-          {s.component()}
-          {/* Glow line divider between sections (skip after last) */}
-          {i < ordered.length - 1 && <div className="glow-line max-w-[80%] mx-auto" />}
+        <div key={s.key}>
+          {s.render()}
+          {i < ordered.length - 1 && <div className="glow-line mx-auto max-w-[80%]" />}
         </div>
       ))}
+      <ConversionCTA />
       <Footer />
+      <MobileBottomNav />
     </main>
   );
 }

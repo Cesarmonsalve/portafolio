@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, FolderKanban, MessageSquare, Wrench,
   Settings, LogOut, Menu, X, Eye, EyeOff,
-  Lock, Zap, Bell, Palette, ShoppingBag, ChevronLeft, ShieldCheck,
+  Lock, Zap, Bell,   Palette, ShoppingBag, ChevronLeft, ShieldCheck, Bot, LayoutGrid,
 } from 'lucide-react';
 
 // Secciones del admin
@@ -16,6 +16,9 @@ import AdminSettings from '@/components/admin/AdminSettings';
 import AdminAppearance from '@/components/admin/AdminAppearance';
 import AdminStore from '@/components/admin/AdminStore';
 import AdminBackup from '@/components/admin/AdminBackup';
+import AdminSectionBuilder from '@/components/admin/AdminSectionBuilder';
+import AdminAIAssistant from '@/components/admin/AdminAIAssistant';
+import AdminAuditLogs from '@/components/admin/AdminAuditLogs';
 
 const NAV_ITEMS = [
   { id: 'dashboard',  label: 'Dashboard',   icon: LayoutDashboard, code: '01' },
@@ -23,9 +26,12 @@ const NAV_ITEMS = [
   { id: 'store',      label: 'Tienda',      icon: ShoppingBag,     code: '03' },
   { id: 'messages',   label: 'Mensajes',    icon: MessageSquare,   code: '04' },
   { id: 'skills',     label: 'Arsenal',     icon: Wrench,          code: '05' },
-  { id: 'appearance', label: 'Apariencia',  icon: Palette,         code: '06' },
-  { id: 'settings',   label: 'Config',      icon: Settings,        code: '07' },
-  { id: 'backup',     label: 'Respaldo',   icon: ShieldCheck,    code: '08' },
+  { id: 'builder',    label: 'Builder',     icon: LayoutGrid,      code: '06' },
+  { id: 'appearance', label: 'Apariencia',  icon: Palette,         code: '07' },
+  { id: 'ai',         label: 'AI Assistant',icon: Bot,             code: '08' },
+  { id: 'settings',   label: 'Config',      icon: Settings,        code: '09' },
+  { id: 'audit',      label: 'Audit Logs',  icon: ShieldCheck,     code: '10' },
+  { id: 'backup',     label: 'Respaldo',   icon: ShieldCheck,    code: '11' },
 ];
 
 export default function AdminPage() {
@@ -174,8 +180,11 @@ export default function AdminPage() {
     store:      AdminStore,
     messages:   AdminMessages,
     skills:     AdminSkills,
+    builder:    AdminSectionBuilder,
     appearance: AdminAppearance,
+    ai:         AdminAIAssistant,
     settings:   AdminSettings,
+    audit:      AdminAuditLogs,
     backup:     AdminBackup,
   }[section] || AdminDashboard;
 

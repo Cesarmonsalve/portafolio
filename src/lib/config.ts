@@ -202,6 +202,12 @@ export interface SiteConfig {
   store_label: string;
   store_desc: string;
 
+  // ── Timeline & Cases ──
+  timeline_heading: string;
+  timeline_items: { year: string; title: string; desc: string }[];
+  cases_heading: string;
+  cases_label: string;
+
   // ── General ──
   logo_url: string;
   favicon_url: string;
@@ -243,6 +249,8 @@ export interface SiteConfig {
   section_skills: SectionVisual;
   section_contact: SectionVisual;
   section_store: SectionVisual;
+  section_timeline: SectionVisual;
+  section_cases: SectionVisual;
 
   // ── Lottie ──
   lottie_hero: LottieSlot;
@@ -312,6 +320,17 @@ export const DEFAULT_CONFIG: SiteConfig = {
   store_label: 'Tienda CM Design',
   store_desc: 'Templates, presets y assets para elevar tus diseños. Descarga directa desde Mediafire y Google Drive.',
 
+  timeline_heading: 'Evolución creativa',
+  timeline_items: [
+    { year: '2021', title: 'Primeros motion graphics', desc: 'Inicio en animación para eventos y gaming.' },
+    { year: '2022', title: 'Branding competitivo', desc: 'Identidades visuales para equipos y organizadores.' },
+    { year: '2023', title: 'Expansión global', desc: 'Clientes internacionales y piezas cinematográficas.' },
+    { year: '2024', title: 'CM Design Studio', desc: 'Portafolio premium + recursos para la comunidad.' },
+    { year: '2025', title: 'Arena visual', desc: 'Experiencias inmersivas y tienda de assets.' },
+  ],
+  cases_heading: 'Proyectos que definieron el estándar',
+  cases_label: 'Casos de estudio',
+
   logo_url: '/logo.png',
   favicon_url: '/favicon.ico',
   contact_email: 'cm@design.com',
@@ -345,8 +364,10 @@ export const DEFAULT_CONFIG: SiteConfig = {
   section_projects: { visible: true, position: 1, background: { ...DEFAULT_SECTION_BG },                                               effects: { ...DEFAULT_SECTION_FX } },
   section_about:    { visible: true, position: 2, background: { ...DEFAULT_SECTION_BG, color: '#10151D' },                              effects: { ...DEFAULT_SECTION_FX } },
   section_skills:   { visible: true, position: 3, background: { ...DEFAULT_SECTION_BG },                                               effects: { ...DEFAULT_SECTION_FX } },
-  section_contact:  { visible: true, position: 4, background: { ...DEFAULT_SECTION_BG, color: '#090D12' },                              effects: { ...DEFAULT_SECTION_FX } },
-  section_store:    { visible: true, position: 5, background: { ...DEFAULT_SECTION_BG, color: '#0F141B' },                              effects: { ...DEFAULT_SECTION_FX, particles: true, particleCount: 30 } },
+  section_contact:  { visible: true, position: 6, background: { ...DEFAULT_SECTION_BG, color: '#090D12' },                              effects: { ...DEFAULT_SECTION_FX } },
+  section_store:    { visible: true, position: 4, background: { ...DEFAULT_SECTION_BG, color: '#0F141B' },                              effects: { ...DEFAULT_SECTION_FX, particles: true, particleCount: 30 } },
+  section_timeline: { visible: true, position: 5, background: { ...DEFAULT_SECTION_BG, color: '#0D1118' },                              effects: { ...DEFAULT_SECTION_FX } },
+  section_cases:    { visible: true, position: 3, background: { ...DEFAULT_SECTION_BG, color: '#10151D' },                              effects: { ...DEFAULT_SECTION_FX, parallax: true, parallaxIntensity: 20 } },
 
   lottie_hero:     { ...DEFAULT_LOTTIE },
   lottie_about:    { ...DEFAULT_LOTTIE },
@@ -452,15 +473,27 @@ export async function getMessages(): Promise<Message[]> {
 }
 
 export async function sendMessage(data: { name: string; email: string; message: string }): Promise<boolean> {
-  if (isClient()) {
-    const messages = JSON.parse(localStorage.getItem('cm_messages') || '[]');
-    messages.push({
-      id: crypto.randomUUID(),
-      ...data,
-      read: false,
-      created_at: new Date().toISOString(),
+  try {
+    const res = await fetch('/api/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
     });
-    localStorage.setItem('cm_messages', JSON.stringify(messages));
+    const json = await res.json();
+    if (!json.success) return false;
+
+    if (isClient()) {
+      const messages = JSON.parse(localStorage.getItem('cm_messages') || '[]');
+      messages.unshift({
+        id: json.id ?? crypto.randomUUID(),
+        ...data,
+        read: false,
+        created_at: new Date().toISOString(),
+      });
+      localStorage.setItem('cm_messages', JSON.stringify(messages));
+    }
+    return true;
+  } catch {
+    return false;
   }
-  return true;
 }

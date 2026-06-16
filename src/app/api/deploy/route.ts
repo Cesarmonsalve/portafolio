@@ -1,26 +1,29 @@
 import { NextResponse } from 'next/server';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
+import { cookies } from 'next/headers';
+import { verifyAdminSession, ADMIN_COOKIE } from '@/lib/adminAuth';
+import { AuditService } from '@/domain/services/audit.service';
 
-export async function POST(req: Request) {
+export async function POST() {
   try {
-    // En Vercel no podemos correr "git push" desde el servidor.
-    // Pero como los datos salen de Supabase, lo único que necesitamos
-    // es limpiar el caché de Next.js para que muestre los datos frescos.
-    
-    // Esto revalida absolutamente todas las páginas del portafolio al instante:
-    revalidatePath('/', 'layout');
+    const token = cookies().get(ADMIN_COOKIE)?.value;
+    if (!verifyAdminSession(token)) {
+      return NextResponse.json({ success: false, error: 'No autorizado' }, { status: 401 });
+    }
 
-    return NextResponse.json(
-      { 
-        success: true, 
-        output: '¡Actualización rápida exitosa! ⚡\nSe ha limpiado el caché. Los cambios de tus textos, colores y proyectos ya están visibles en vivo sin tener que recompilar.' 
-      }, 
-      { status: 200 }
-    );
+    revalidatePath('/', 'layout');
+    revalidateTag('site-data');
+    revalidateTag('projects');
+    await AuditService.log('REVALIDATE', 'site', 'Deploy cache clear');
+
+    return NextResponse.json({
+      success: true,
+      output: 'Caché limpiado. Los cambios ya están visibles en vivo.',
+    });
   } catch (e) {
     return NextResponse.json(
-      { success: false, error: 'Error actualizando: ' + (e instanceof Error ? e.message : 'Unknown') },
-      { status: 500 }
+      { success: false, error: e instanceof Error ? e.message : 'Unknown' },
+      { status: 500 },
     );
   }
 }

@@ -1,4 +1,4 @@
-
+@import '../styles/tokens.css';
 
 @tailwind base;
 @tailwind components;
@@ -16,8 +16,8 @@
    ═══════════════════════════════════════════ */
 
 :root {
-  --font-outfit: 'Arial Black', Impact, sans-serif;
-  --font-inter: Arial, Helvetica, sans-serif;
+  --font-outfit: var(--font-outfit, 'Outfit', 'Arial Black', sans-serif);
+  --font-inter: var(--font-inter, 'Inter', Arial, sans-serif);
   --neon-red: #ff0033;
   --neon-purple: #a855f7;
   --neon-pink: #ec4899;

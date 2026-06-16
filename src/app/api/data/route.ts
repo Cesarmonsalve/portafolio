@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
 import { cookies } from 'next/headers';
 import { ADMIN_COOKIE, verifyAdminSession } from '@/lib/adminAuth';
+import { AuditService } from '@/domain/services/audit.service';
 
 export async function GET(req: Request) {
   try {
@@ -44,6 +45,8 @@ export async function POST(req: Request) {
       ON CONFLICT (key) DO UPDATE 
       SET value = EXCLUDED.value, updated_at = CURRENT_TIMESTAMP;
     `;
+
+    await AuditService.log('UPDATE', key, `Admin saved ${key}`);
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

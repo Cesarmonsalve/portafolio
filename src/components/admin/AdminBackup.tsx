@@ -12,6 +12,7 @@ const DATA_KEYS = [
   'cm_socials',
   'cm_store_items',
   'cm_messages',
+  'cm_audit_logs',
 ];
 
 type BackupPayload = {

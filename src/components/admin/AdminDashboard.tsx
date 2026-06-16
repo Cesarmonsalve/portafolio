@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { useSiteConfig } from '@/lib/SiteConfigContext';
+import AdminActivityFeed from './AdminActivityFeed';
 
 interface Props {
   onUnreadChange?: (n: number) => void;
@@ -257,6 +258,26 @@ export default function AdminDashboard({ onUnreadChange, setActiveTab }: Props) 
                   : <Circle size={15} className="flex-shrink-0 text-gray-600" />}
                 <span className={c.done ? 'text-gray-400 line-through decoration-white/20' : 'text-gray-300'}>{c.label}</span>
               </button>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Premium widgets row */}
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <AdminActivityFeed />
+        <motion.div {...fade(0.65)} className="admin-card p-5">
+          <h3 className="mb-4 text-xs font-black uppercase tracking-[.14em] text-white">Analytics avanzados</h3>
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { label: 'Destacados', value: projects.filter((p) => p.featured).length },
+              { label: 'Socials', value: enabledSocials },
+              { label: 'Completitud', value: `${completeness}%` },
+            ].map((w) => (
+              <div key={w.label} className="border border-white/[0.08] p-3 text-center angle-frame-sm">
+                <p className="text-2xl font-black text-neon-red">{w.value}</p>
+                <p className="mt-1 text-[9px] font-black uppercase tracking-wider text-gray-500">{w.label}</p>
+              </div>
             ))}
           </div>
         </motion.div>

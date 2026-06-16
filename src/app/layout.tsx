@@ -1,8 +1,11 @@
 import type { Metadata } from 'next';
-import { getFullConfig } from '@/lib/config';
+import { getCachedSiteData, getStaticFallback } from '@/lib/server/cache';
+import type { SiteData } from '@/domain/services/config.service';
+import { fontVariables } from '@/lib/fonts';
 import ThemeApplier from '@/components/ThemeApplier';
 import CommandPalette from '@/components/CommandPalette';
 import ToastContainer from '@/components/ui/Toast';
+import SkipLink from '@/components/ui/SkipLink';
 import SmoothScroll from '@/components/SmoothScroll';
 import { SiteConfigProvider } from '@/lib/SiteConfigContext';
 import { SITE_URL } from './sitemap';
@@ -81,7 +84,13 @@ const hexToRgb = (hex: string) => {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const cfg = await getFullConfig();
+  let siteData: SiteData;
+  try {
+    siteData = await getCachedSiteData();
+  } catch {
+    siteData = getStaticFallback();
+  }
+  const cfg = siteData.config;
 
   return (
     <html lang="es" style={{
@@ -92,7 +101,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head>
         <meta name="theme-color" content="#0B0E13" />
       </head>
-      <body className="bg-bg antialiased">
+      <body className={`${fontVariables} bg-bg font-body antialiased`}>
+        <SkipLink />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -138,7 +148,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             }),
           }}
         />
-        <SiteConfigProvider>
+        <SiteConfigProvider initialData={siteData}>
           <SmoothScroll>
             <ThemeApplier />
             <CommandPalette />

@@ -9,6 +9,7 @@ export interface Project {
   client?: string;
   featured?: boolean;
   display_mode?: 'default' | 'youtube' | 'spotify' | 'instagram' | 'phone';
+  created_at?: string;
 }
 
 export const initialProjects: Project[] = [

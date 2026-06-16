@@ -2,12 +2,17 @@
 import { useState, useRef } from 'react';
 import {
   ShoppingBag, Download, ExternalLink, ArrowRight, Package, Search,
-  Sparkles, X, MessageCircle, Zap, Star, ArrowUpRight
+  Sparkles, X, MessageCircle, Zap, Star, ArrowUpRight, Heart, GitCompare, Eye
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionWrapper from '@/components/SectionWrapper';
 import { useSiteConfig } from '@/lib/SiteConfigContext';
+import { useWishlist } from '@/features/store/hooks/useWishlist';
+import { useCompare } from '@/features/store/hooks/useCompare';
+import QuickViewModal from '@/features/store/components/QuickViewModal';
+import CompareBar from '@/features/store/components/CompareBar';
+import Recommendations from '@/features/store/components/Recommendations';
 import type { StoreItem } from '@/lib/config';
 
 // ═══════════════════════════════════════════
@@ -28,7 +33,23 @@ const CATEGORIES = ['Todos', 'Templates', 'Presets', 'Assets', 'Plugins', 'Otros
 // ═══════════════════════════════════════════
 // STORE CARD — Premium Glassmorphism
 // ═══════════════════════════════════════════
-function StoreCard({ item, index }: { item: StoreItem; index: number }) {
+function StoreCard({
+  item,
+  index,
+  onQuickView,
+  onWishlist,
+  onCompare,
+  isWishlisted,
+  isCompared,
+}: {
+  item: StoreItem;
+  index: number;
+  onQuickView: () => void;
+  onWishlist: () => void;
+  onCompare: () => void;
+  isWishlisted: boolean;
+  isCompared: boolean;
+}) {
   const [expanded, setExpanded] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const catColor = getCatColor(item.category);
@@ -49,6 +70,29 @@ function StoreCard({ item, index }: { item: StoreItem; index: number }) {
       className="store-card card-spotlight angle-frame bg-white/[0.025] border border-white/[0.08] group opacity-0 animate-slide-up"
       style={{ animationDelay: `${index * 0.08}s` }}
     >
+      <div className="absolute right-3 top-3 z-30 flex gap-1.5">
+        <button
+          onClick={(e) => { e.stopPropagation(); onQuickView(); }}
+          className="flex h-8 w-8 items-center justify-center border border-white/10 bg-black/50 text-gray-300 backdrop-blur hover:border-neon-red/50 hover:text-neon-red"
+          aria-label="Vista rápida"
+        >
+          <Eye size={14} />
+        </button>
+        <button
+          onClick={(e) => { e.stopPropagation(); onWishlist(); }}
+          className={`flex h-8 w-8 items-center justify-center border bg-black/50 backdrop-blur ${isWishlisted ? 'border-neon-red/50 text-neon-red' : 'border-white/10 text-gray-300 hover:text-neon-red'}`}
+          aria-label="Wishlist"
+        >
+          <Heart size={14} fill={isWishlisted ? 'currentColor' : 'none'} />
+        </button>
+        <button
+          onClick={(e) => { e.stopPropagation(); onCompare(); }}
+          className={`flex h-8 w-8 items-center justify-center border bg-black/50 backdrop-blur ${isCompared ? 'border-neon-red/50 text-neon-red' : 'border-white/10 text-gray-300 hover:text-neon-red'}`}
+          aria-label="Comparar"
+        >
+          <GitCompare size={14} />
+        </button>
+      </div>
       {/* Shimmer sweep */}
       <div className="store-shimmer" />
 
@@ -259,9 +303,12 @@ function StoreCard({ item, index }: { item: StoreItem; index: number }) {
 // ═══════════════════════════════════════════
 export default function TiendaPage() {
   const { cfg, storeItems } = useSiteConfig();
+  const { toggle: toggleWishlist, has: hasWishlist } = useWishlist();
+  const { toggle: toggleCompare, has: hasCompare, ids: compareIds, clear: clearCompare } = useCompare();
   const [activeCategory, setActiveCategory] = useState('Todos');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
+  const [quickViewItem, setQuickViewItem] = useState<StoreItem | null>(null);
   const filterRef = useRef<HTMLDivElement>(null);
 
   const filtered = storeItems.filter((item) => {
@@ -410,7 +457,16 @@ export default function TiendaPage() {
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             >
               {filtered.map((item, i) => (
-                <StoreCard key={item.id} item={item} index={i} />
+                <StoreCard
+                  key={item.id}
+                  item={item}
+                  index={i}
+                  onQuickView={() => setQuickViewItem(item)}
+                  onWishlist={() => toggleWishlist(item.id)}
+                  onCompare={() => toggleCompare(item.id)}
+                  isWishlisted={hasWishlist(item.id)}
+                  isCompared={hasCompare(item.id)}
+                />
               ))}
             </div>
 
@@ -484,7 +540,29 @@ export default function TiendaPage() {
             </div>
           </div>
         </section>
+
+        {filtered.length > 0 && (
+          <section className="relative z-10 px-6 pb-16">
+            <div className="mx-auto max-w-7xl">
+              <Recommendations items={storeItems} currentId={filtered[0].id} />
+            </div>
+          </section>
+        )}
       </SectionWrapper>
+
+      <QuickViewModal
+        item={quickViewItem}
+        open={!!quickViewItem}
+        onClose={() => setQuickViewItem(null)}
+        onWishlist={() => quickViewItem && toggleWishlist(quickViewItem.id)}
+        isWishlisted={quickViewItem ? hasWishlist(quickViewItem.id) : false}
+      />
+      <CompareBar
+        items={storeItems}
+        compareIds={compareIds}
+        onRemove={toggleCompare}
+        onClear={clearCompare}
+      />
 
       <Footer />
     </main>

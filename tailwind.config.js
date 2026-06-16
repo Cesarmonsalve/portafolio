@@ -16,8 +16,9 @@ module.exports = {
         border: { DEFAULT: 'rgba(255,255,255,0.06)', hover: 'rgba(255,255,255,0.12)' },
       },
       fontFamily: {
-        display: ['var(--font-outfit)', 'sans-serif'],
-        body: ['var(--font-inter)', 'sans-serif'],
+        display: ['var(--font-outfit)', 'Outfit', 'sans-serif'],
+        body: ['var(--font-inter)', 'Inter', 'sans-serif'],
+        accent: ['var(--font-syne)', 'Syne', 'sans-serif'],
       },
       letterSpacing: {
         'tighter-custom': '-0.03em',

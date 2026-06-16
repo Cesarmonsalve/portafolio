@@ -1,5 +1,6 @@
 'use client';
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
+import type { SiteData } from '@/domain/services/config.service';
 import { DEFAULT_CONFIG, type SiteConfig, type Skill, type SocialLink, type Project, type StoreItem } from './config';
 import { initialProjects } from '../data/projects';
 
@@ -71,12 +72,20 @@ export const useSiteConfig = () => useContext(SiteConfigCtx);
 // ═══════════════════════════════════════════
 // PROVIDER
 // ═══════════════════════════════════════════
-export function SiteConfigProvider({ children }: { children: ReactNode }) {
-  const [cfg, setCfg] = useState<SiteConfig>(DEFAULT_CONFIG);
-  const [projects, setProjects] = useState<Project[]>(initialProjects);
-  const [skills, setSkills] = useState<Skill[]>(DEFAULT_SKILLS);
-  const [socials, setSocials] = useState<SocialLink[]>([]);
-  const [storeItems, setStoreItems] = useState<StoreItem[]>(DEFAULT_STORE_ITEMS);
+export function SiteConfigProvider({
+  children,
+  initialData,
+}: {
+  children: ReactNode;
+  initialData?: SiteData;
+}) {
+  const [cfg, setCfg] = useState<SiteConfig>(initialData?.config ?? DEFAULT_CONFIG);
+  const [projects, setProjects] = useState<Project[]>(initialData?.projects ?? initialProjects);
+  const [skills, setSkills] = useState<Skill[]>(initialData?.skills?.length ? initialData.skills : DEFAULT_SKILLS);
+  const [socials, setSocials] = useState<SocialLink[]>(initialData?.socials ?? []);
+  const [storeItems, setStoreItems] = useState<StoreItem[]>(
+    initialData?.storeItems?.length ? initialData.storeItems : DEFAULT_STORE_ITEMS,
+  );
 
   const loadAll = useCallback(async () => {
     let serverData: Record<string, any> = {};

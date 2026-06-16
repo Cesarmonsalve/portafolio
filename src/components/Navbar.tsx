@@ -5,18 +5,22 @@ import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { LayoutGrid, Menu, Search, ShoppingBag, X, Zap } from 'lucide-react';
 import { useSiteConfig } from '@/lib/SiteConfigContext';
+import { useActiveSection } from '@/hooks/useActiveSection';
+import FocusTrap from '@/components/ui/FocusTrap';
 
 const links = [
-  { href: '/#home', label: 'Inicio', code: '01' },
-  { href: '/#work', label: 'Trabajos', code: '02' },
-  { href: '/#about', label: 'Perfil', code: '03' },
-  { href: '/#skills', label: 'Skills', code: '04' },
-  { href: '/#contact', label: 'Contacto', code: '05' },
+  { href: '/#home', label: 'Inicio', code: '01', section: 'home' },
+  { href: '/#work', label: 'Trabajos', code: '02', section: 'work' },
+  { href: '/#about', label: 'Perfil', code: '03', section: 'about' },
+  { href: '/#skills', label: 'Skills', code: '04', section: 'skills' },
+  { href: '/#contact', label: 'Contacto', code: '05', section: 'contact' },
 ];
 
 export default function Navbar() {
   const { cfg } = useSiteConfig();
   const pathname = usePathname();
+  const activeSection = useActiveSection();
+  const onHome = pathname === '/';
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -46,13 +50,15 @@ export default function Navbar() {
           </div>
 
           <div className="hidden items-center gap-5 lg:flex">
-            {links.map((link) => (
-              <Link key={link.href} href={link.href} className="group flex items-center gap-1.5 py-2 text-[10px] font-extrabold uppercase tracking-[0.14em] text-gray-400 transition hover:text-white" data-cursor-hover>
+            {links.map((link) => {
+              const active = onHome && activeSection === link.section;
+              return (
+              <Link key={link.href} href={link.href} className={`group flex items-center gap-1.5 py-2 text-[10px] font-extrabold uppercase tracking-[0.14em] transition ${active ? 'text-neon-red' : 'text-gray-400 hover:text-white'}`} data-cursor-hover aria-current={active ? 'true' : undefined}>
                 <span className="text-[8px] text-neon-red/70">{link.code}</span>
                 <span>{link.label}</span>
-                <span className="ml-0.5 h-[2px] w-0 bg-neon-red transition-all duration-300 group-hover:w-4" />
+                <span className={`ml-0.5 h-[2px] bg-neon-red transition-all duration-300 ${active ? 'w-4' : 'w-0 group-hover:w-4'}`} />
               </Link>
-            ))}
+            );})}
             <div className="hidden items-center gap-1 border-l border-white/10 pl-5 text-[9px] font-bold tracking-wider text-gray-600 xl:flex"><Search size={11} /> CMD+K</div>
             <Link href="/galeria" className={`ghost-button !px-3.5 !py-2.5 ${pathname === '/galeria' ? '!border-neon-red/60 !text-neon-red' : ''}`}><LayoutGrid size={13} /> Galería</Link>
             <Link href="/tienda" className="acid-button !px-3.5 !py-2.5"><ShoppingBag size={13} /> Tienda</Link>
@@ -64,7 +70,8 @@ export default function Navbar() {
 
       <AnimatePresence>
         {mobileOpen && (
-          <motion.aside initial={{ opacity: 0, x: '100%' }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: '100%' }} transition={{ duration: .28 }} className="fixed inset-0 z-[60] overflow-hidden bg-[#0B0E13] px-6 py-7 lg:hidden">
+          <FocusTrap active={mobileOpen} onClose={() => setMobileOpen(false)} label="Menú de navegación">
+          <motion.aside initial={{ opacity: 0, x: '100%' }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: '100%' }} transition={{ duration: .28 }} className="fixed inset-0 z-[60] overflow-hidden bg-[#0B0E13] px-6 py-7 lg:hidden" role="dialog" aria-modal="true">
             <div className="arena-grid absolute inset-0 opacity-50" />
             <div className="relative flex items-center justify-between border-b border-white/10 pb-5">
               <img src={cfg.logo_url || '/logo.png'} alt="CM Design" className="h-10 w-32 object-contain object-left" />
@@ -85,6 +92,7 @@ export default function Navbar() {
             </div>
             <div className="relative mt-12 flex items-center gap-2 text-[10px] font-black uppercase tracking-[.2em] text-neon-red"><Zap size={14} /> CM Design Visual Lab</div>
           </motion.aside>
+          </FocusTrap>
         )}
       </AnimatePresence>
     </>

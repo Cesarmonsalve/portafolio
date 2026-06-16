@@ -7,8 +7,8 @@ const STEPS = [
   { num: '01', title: 'Descubrimiento', desc: 'Análisis profundo de necesidades, marca, audiencia y objetivos del proyecto. Investigación de mercado y benchmarking.', icon: Search, accent: 'var(--accent-cyan)' },
   { num: '02', title: 'Estrategia', desc: 'Definición de la dirección creativa, wireframes conceptuales y arquitectura de información.', icon: Lightbulb, accent: 'var(--accent-blue)' },
   { num: '03', title: 'Diseño', desc: 'Creación visual con UI premium, motion design y prototipos interactivos de alta fidelidad.', icon: Palette, accent: 'var(--accent-violet)' },
-  { num: '04', title: 'Desarrollo', desc: 'Implementación técnica con código limpio, optimización de rendimiento y animaciones fluidas.', icon: Code2, accent: 'var(--accent-cyan)' },
-  { num: '05', title: 'Optimización', desc: 'Testing exhaustivo, métricas de conversión, ajustes iterativos y entrega final impecable.', icon: BarChart3, accent: 'var(--accent-blue)' },
+  { num: '04', title: 'Producción', desc: 'Ejecución visual, animación cuadro por cuadro y renderizado optimizado.', icon: Code2, accent: 'var(--accent-cyan)' },
+  { num: '05', title: 'Optimización', desc: 'Renderizado final, color grading, diseño sonoro y entrega de masters en alta resolución.', icon: BarChart3, accent: 'var(--accent-blue)' },
 ];
 
 export default function WorkflowVisualizer() {

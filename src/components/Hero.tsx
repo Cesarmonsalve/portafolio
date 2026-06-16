@@ -8,10 +8,10 @@ import { useSiteConfig } from '@/lib/SiteConfigContext';
 import { DEFAULT_SECTION_VISUAL } from '@/lib/config';
 
 const ROTATING_TEXTS = [
-  'Creative Developer',
-  'Digital Builder',
-  'AI Creator',
-  'UI Architect'
+  'Motion Designer',
+  'Graphic Designer',
+  'Video Editor',
+  'Creative Director'
 ];
 
 export default function Hero() {

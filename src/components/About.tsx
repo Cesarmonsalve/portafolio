@@ -15,7 +15,7 @@ export default function About() {
       id: 0,
       title: 'Historia',
       icon: User,
-      content: cfg.about_bio || 'Diseñador y desarrollador con visión de producto.',
+      content: cfg.about_bio || 'Diseñador visual y animador con visión estratégica.',
     },
     {
       id: 1,
@@ -27,13 +27,13 @@ export default function About() {
       id: 2,
       title: 'Filosofía',
       icon: BookOpen,
-      content: 'El diseño no es solo cómo se ve, sino cómo funciona. Ultra Modern Minimalism.',
+      content: 'El diseño no es solo cómo se ve, sino cómo se siente. Ultra Modern Minimalism en cada frame.',
     },
     {
       id: 3,
       title: 'Especialidades',
       icon: Target,
-      content: 'Motion Graphics, UI/UX, y arquitecturas front-end robustas.',
+      content: 'Motion Graphics, Edición de Video de alto impacto, y Dirección de Arte.',
       specialties: cfg.about_specialties || []
     }
   ];

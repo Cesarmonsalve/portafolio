@@ -3,10 +3,10 @@ import { motion } from 'framer-motion';
 import { FlaskConical, ExternalLink } from 'lucide-react';
 
 const EXPERIMENTS = [
-  { title: 'AI Image Generator', desc: 'Prototipo de generador de imágenes con inteligencia artificial para crear assets visuales en tiempo real.', status: 'En progreso', tags: ['IA', 'React', 'API'] },
-  { title: 'WebGL Shader Lab', desc: 'Colección de shaders GLSL experimentales para efectos visuales en el navegador.', status: 'Concepto', tags: ['Three.js', 'GLSL', 'WebGL'] },
-  { title: 'Motion System', desc: 'Librería de animaciones reutilizables optimizadas para rendimiento en interfaces complejas.', status: 'Beta', tags: ['Framer', 'GSAP', 'React'] },
-  { title: 'Design Token Engine', desc: 'Motor de generación automática de design tokens basado en IA y paletas dinámicas.', status: 'Concepto', tags: ['Design', 'CSS', 'IA'] },
+  { title: 'CGI Product Reveal', desc: 'Exploración de iluminación y texturas 3D aplicadas a revelación de productos.', status: 'En progreso', tags: ['C4D', 'Octane', 'After Effects'] },
+  { title: 'Kinetic Typography', desc: 'Sistemas de tipografía animada para títulos de crédito cinematográficos.', status: 'Concepto', tags: ['Typography', 'Motion', 'Design'] },
+  { title: 'VFX Compositing', desc: 'Integración de elementos CGI en metraje real con corrección de color avanzada.', status: 'Beta', tags: ['Nuke', 'Premiere', 'VFX'] },
+  { title: 'Design Token Engine', desc: 'Motor de generación automática de paletas dinámicas y sistemas de color.', status: 'Concepto', tags: ['Design', 'Color', 'Branding'] },
 ];
 
 const STATUS_COLORS: Record<string, string> = {

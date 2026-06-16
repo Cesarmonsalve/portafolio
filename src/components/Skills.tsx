@@ -3,14 +3,14 @@ import { motion } from 'framer-motion';
 import SectionWrapper from './SectionWrapper';
 import { useSiteConfig } from '@/lib/SiteConfigContext';
 import { DEFAULT_SECTION_VISUAL } from '@/lib/config';
-import { Layers3, Database, Cpu, Palette, Megaphone } from 'lucide-react';
+import { Layers3, Video, Aperture, Palette, Box } from 'lucide-react';
 
 const CATEGORY_ICONS: Record<string, any> = {
-  'Frontend': Layers3,
-  'Backend': Database,
-  'IA': Cpu,
+  'Motion': Video,
   'Diseño': Palette,
-  'Marketing': Megaphone
+  'Edición': Aperture,
+  '3D': Box,
+  'Branding': Layers3
 };
 
 export default function Skills() {

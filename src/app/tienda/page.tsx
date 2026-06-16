@@ -335,44 +335,48 @@ export default function TiendaPage() {
       <SectionWrapper visual={cfg.section_store}>
         <div className="arena-grid absolute inset-0 opacity-35" />
         {/* ═══ HERO ═══ */}
-        <section className="relative pt-32 pb-16 px-6 z-10">
-          <div className="max-w-5xl mx-auto text-center">
+        <section className="relative pt-32 pb-8 px-6 z-10">
+          <div className="max-w-6xl mx-auto">
             {/* Badge */}
             <div
-              className="angle-frame-sm inline-flex items-center gap-2.5 border border-neon-red/25 bg-neon-red/[0.06] px-6 py-2.5 mb-8 opacity-0 animate-fade-in"
+              className="inline-flex items-center gap-2.5 border-2 border-purple-500/25 bg-purple-500/[0.06] px-6 py-2.5 rounded-full mb-8 opacity-0 animate-fade-in"
             >
-              <ShoppingBag size={14} className="text-neon-red" />
-              <span className="text-[10px] font-semibold tracking-[0.14em] uppercase text-neon-red">
+              <ShoppingBag size={14} className="text-purple-400" />
+              <span className="text-mono-tech text-[10px] font-bold tracking-[0.14em] uppercase text-purple-400">
                 {cfg.store_label || 'Tienda'}
               </span>
-              <span className="w-1.5 h-1.5 rounded-full bg-neon-red/60 animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-purple-400/60 animate-pulse" />
             </div>
 
-            {/* Title */}
+            {/* Gigantic Brutalist Title */}
             <h1
-              className="heading-slashed text-display text-4xl font-black uppercase leading-[.94] tracking-[-.045em] sm:text-5xl md:text-6xl lg:text-7xl mb-6 opacity-0 animate-slide-up"
-              style={{ fontFamily: `${cfg.font_display}, sans-serif`, animationDelay: '0.15s' }}
+              className="text-brutal text-[14vw] md:text-[10vw] text-white leading-[0.85] tracking-tighter mb-6 opacity-0 animate-slide-up"
+              style={{ animationDelay: '0.15s' }}
             >
-              {cfg.store_heading}
+              {cfg.store_heading || 'TIENDA'}
             </h1>
 
-            {/* Description */}
-            <p
-              className="text-gray-400 text-sm sm:text-base max-w-lg mx-auto mb-12 leading-relaxed opacity-0 animate-slide-up"
-              style={{ animationDelay: '0.3s' }}
-            >
-              {cfg.store_desc}
-            </p>
+            {/* Brutalist divider + metadata row */}
+            <div className="brutal-divider mb-4" />
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 opacity-0 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+              <p className="text-mono-tech text-xs text-gray-500 uppercase tracking-widest">
+                {storeItems.length} Recursos disponibles
+              </p>
+              <p className="text-gray-400 text-sm max-w-md md:text-right">
+                {cfg.store_desc}
+              </p>
+            </div>
+            <div className="brutal-divider mb-8" />
 
-            {/* Search bar with glow */}
+            {/* Search bar */}
             <div
-              className="max-w-lg mx-auto relative opacity-0 animate-slide-up"
+              className="max-w-lg relative opacity-0 animate-slide-up"
               style={{ animationDelay: '0.4s' }}
             >
               <div
                 className="absolute -inset-0.5 rounded-2xl transition-opacity duration-500 blur-md"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(203,254,28,0.22), rgba(139,92,246,0.2))',
+                  background: 'linear-gradient(135deg, rgba(168,85,247,0.22), rgba(59,130,246,0.2))',
                   opacity: searchFocused ? 1 : 0,
                 }}
               />
@@ -380,7 +384,7 @@ export default function TiendaPage() {
                 <div
                   className={`absolute left-4 top-1/2 -translate-y-1/2 transition-transform duration-300 ${searchFocused ? 'rotate-90' : ''}`}
                 >
-                  <Search size={16} className={`transition-colors duration-300 ${searchFocused ? 'text-neon-red' : 'text-gray-500'}`} />
+                  <Search size={16} className={`transition-colors duration-300 ${searchFocused ? 'text-purple-400' : 'text-gray-500'}`} />
                 </div>
                 <input
                   type="text"
@@ -389,12 +393,11 @@ export default function TiendaPage() {
                   onFocus={() => setSearchFocused(true)}
                   onBlur={() => setSearchFocused(false)}
                   placeholder="Buscar recursos, templates, presets..."
-                  className="angle-frame-sm w-full border border-white/[0.1] bg-white/[0.035] py-4 pl-12 pr-20 text-sm text-white placeholder:text-gray-600 backdrop-blur-sm transition-all focus:border-neon-red/50 focus:outline-none"
+                  className="text-mono-tech w-full border-2 border-white/[0.1] bg-surface/50 py-4 pl-12 pr-20 text-sm text-white placeholder:text-gray-600 backdrop-blur-sm rounded-2xl transition-all focus:border-purple-500/50 focus:outline-none"
                 />
-                {/* Results counter */}
                 {searchQuery && (
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 animate-fade-in">
-                    <span className="text-[10px] text-gray-500 font-mono">{filtered.length}</span>
+                    <span className="text-mono-tech text-[10px] text-gray-500">{filtered.length}</span>
                     <button
                       onClick={() => setSearchQuery('')}
                       className="p-1 rounded-lg hover:bg-white/10 text-gray-500 hover:text-white transition"
@@ -407,6 +410,17 @@ export default function TiendaPage() {
             </div>
           </div>
         </section>
+
+        {/* ═══ MARQUEE SEPARATOR ═══ */}
+        <div className="relative w-full overflow-hidden py-6 md:py-10 bg-surface/40 skew-section my-8">
+          <div className="flex whitespace-nowrap animate-marquee">
+            {[1,2].map(n => (
+              <span key={n} className="text-brutal text-[7vw] md:text-[4vw] text-purple-500/60 mr-8">
+                RECURSOS • TEMPLATES • PRESETS • ASSETS • PLUGINS • PACKS •{' '}
+              </span>
+            ))}
+          </div>
+        </div>
 
         {/* ═══ FILTERS + GRID ═══ */}
         <section className="px-6 pb-12 relative z-10">
@@ -425,17 +439,18 @@ export default function TiendaPage() {
                   <button
                     key={cat}
                     onClick={() => setActiveCategory(cat)}
-                    className={`relative px-5 py-2.5 rounded-xl text-[11px] font-semibold tracking-wide transition-all duration-300 flex items-center gap-2 active:scale-95 ${
+                    className={`relative px-5 py-2.5 rounded-xl text-mono-tech text-[11px] font-bold tracking-wide transition-all duration-300 flex items-center gap-2 active:scale-95 border-2 hover:scale-105 ${
                       isActive
                         ? 'text-white shadow-lg'
-                        : 'bg-white/[0.03] text-gray-400 hover:text-white hover:bg-white/[0.06] border border-white/[0.04]'
+                        : 'bg-white/[0.03] text-gray-400 hover:text-white border-white/[0.06]'
                     }`}
                     style={isActive ? {
                       background: cat === 'Todos'
-                        ? 'linear-gradient(135deg, rgba(203,254,28,0.98), rgba(181,230,17,0.92))'
+                        ? 'linear-gradient(135deg, rgba(168,85,247,0.98), rgba(139,92,246,0.92))'
                         : color?.bg.replace('0.08', '0.9'),
+                      borderColor: cat === 'Todos' ? 'rgba(168,85,247,0.6)' : color?.border || 'transparent',
                       boxShadow: cat === 'Todos'
-                        ? '0 4px 20px rgba(203,254,28,0.24)'
+                        ? '0 4px 20px rgba(168,85,247,0.24)'
                         : `0 4px 20px ${color?.glow}`,
                     } : undefined}
                   >
@@ -503,40 +518,41 @@ export default function TiendaPage() {
           </div>
         </section>
 
-        {/* ═══ CTA BANNER ═══ */}
+        {/* ═══ CTA BANNER — Brutalist ═══ */}
         <section className="px-6 pb-24 relative z-10">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-5xl mx-auto">
             <div
-              className="cta-gradient acid-panel angle-frame border border-neon-red/15 p-10 md:p-14 relative overflow-hidden opacity-0 animate-slide-up"
+              className="relative bg-surface/50 backdrop-blur-xl rounded-[2rem] brutal-border p-10 md:p-16 overflow-hidden opacity-0 animate-slide-up"
             >
               {/* Decorative elements */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-neon-red/5 rounded-full blur-[100px] pointer-events-none" />
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-neon-purple/5 rounded-full blur-[80px] pointer-events-none" />
+              <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-[100px] pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-500/10 rounded-full blur-[80px] pointer-events-none" />
 
-              <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
-                <div className="flex-1 text-center md:text-left">
-                  <div className="inline-flex items-center gap-2 bg-white/[0.04] border border-white/[0.08] px-4 py-1.5 rounded-full mb-4">
-                    <Zap size={12} className="text-neon-red" />
-                    <span className="text-[9px] font-semibold tracking-[0.12em] uppercase text-gray-400">Packs Personalizados</span>
-                  </div>
-                  <h3 className="text-2xl md:text-3xl font-display font-bold text-white mb-3">
-                    ¿Necesitas algo <span className="neon-text">a medida</span>?
-                  </h3>
-                  <p className="text-gray-400 text-sm leading-relaxed max-w-md">
-                    Puedo crear packs exclusivos de templates, presets o assets diseñados específicamente para tu marca o proyecto.
-                  </p>
+              <div className="relative z-10 flex flex-col items-center text-center gap-8">
+                <div className="inline-flex items-center gap-2 bg-white/[0.04] border border-white/[0.08] px-4 py-1.5 rounded-full">
+                  <Zap size={12} className="text-purple-400" />
+                  <span className="text-mono-tech text-[9px] font-bold tracking-[0.12em] uppercase text-gray-400">Packs Personalizados</span>
                 </div>
-                <div className="flex flex-col gap-3">
-                  <a
-                    href="/#contact"
-                    className="acid-button !px-8 !py-4"
-                  >
-                    <MessageCircle size={16} />
-                    Contáctame
-                    <ArrowRight size={14} />
-                  </a>
-                  <span className="text-[10px] text-gray-600 text-center tracking-wide">Respuesta en menos de 24h</span>
-                </div>
+
+                <h3 className="text-brutal text-[8vw] md:text-[5vw] text-white leading-[0.85]">
+                  ¿NECESITAS ALGO
+                  <br />
+                  <span className="gradient-text">A MEDIDA</span>?
+                </h3>
+
+                <p className="text-gray-400 text-sm leading-relaxed max-w-md">
+                  Puedo crear packs exclusivos de templates, presets o assets diseñados específicamente para tu marca o proyecto.
+                </p>
+
+                <a
+                  href="/#contact"
+                  className="inline-flex items-center gap-3 px-10 py-5 rounded-full brutal-border bg-white text-black text-mono-tech text-sm font-bold uppercase tracking-widest hover:scale-105 hover:shadow-[0_0_40px_rgba(168,85,247,0.3)] transition-all duration-300"
+                >
+                  <MessageCircle size={16} />
+                  Contáctame
+                  <ArrowRight size={14} />
+                </a>
+                <span className="text-mono-tech text-[10px] text-gray-600 tracking-wide">Respuesta en menos de 24h</span>
               </div>
             </div>
           </div>

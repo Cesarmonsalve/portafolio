@@ -40,7 +40,7 @@ export default function Hero() {
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
           className="relative"
         >
-          <h1 className="font-display font-black text-[18vw] leading-[0.8] tracking-tighter text-white select-none relative z-10">
+          <h1 className="text-brutal text-[20vw] leading-[0.8] tracking-tighter text-white select-none relative z-10">
             {cfg.hero_name || 'CESAR'}<span className="text-[var(--accent-cyan)]">.</span>
           </h1>
         </motion.div>
@@ -76,17 +76,35 @@ export default function Hero() {
       {/* Command Center Float */}
       <CommandCenter />
 
-      {/* Scroll indicator */}
+      {/* Divider and Metadata Row */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1, duration: 1 }}
-        className="absolute bottom-12 left-6 md:left-12 flex items-center gap-3 text-xs font-semibold tracking-[0.2em] uppercase text-gray-500"
+        className="absolute bottom-12 left-0 right-0 px-6 md:px-12 flex flex-col md:flex-row items-center justify-between pointer-events-none"
       >
-        <div className="w-8 h-[1px] bg-white/20" />
-        <span className="flex items-center gap-2">
-          Scroll <ArrowDown size={14} className="animate-bounce text-[var(--accent-cyan)]" />
-        </span>
+        <div className="brutal-divider absolute top-1/2 left-0 right-0 -z-10 opacity-50" />
+        
+        <div className="bg-bg px-4 py-2 text-mono-tech text-xs tracking-widest text-gray-500 uppercase hidden md:block">
+          BASED IN MEDELLÍN, COL
+        </div>
+
+        {/* Rotating Scroll Indicator */}
+        <div className="relative w-28 h-28 bg-bg rounded-full flex items-center justify-center p-2 border-4 border-bg shadow-[0_0_0_2px_rgba(255,255,255,0.1)]">
+          <svg className="absolute inset-0 w-full h-full animate-spin-slow text-gray-400" viewBox="0 0 144 144">
+            <path id="circlePath" d="M 72, 72 m -56, 0 a 56,56 0 1,1 112,0 a 56,56 0 1,1 -112,0" fill="none" />
+            <text className="text-mono-tech uppercase font-bold text-[10px] tracking-[0.2em]" fill="currentColor">
+              <textPath href="#circlePath" startOffset="0%">
+                SCROLL DOWN • SCROLL DOWN • SCROLL DOWN • 
+              </textPath>
+            </text>
+          </svg>
+          <ArrowDown size={20} className="text-[var(--accent-cyan)]" />
+        </div>
+
+        <div className="bg-bg px-4 py-2 text-mono-tech text-xs tracking-widest text-gray-500 uppercase hidden md:block text-right">
+          CREATIVE DIRECTOR
+        </div>
       </motion.div>
     </SectionWrapper>
   );

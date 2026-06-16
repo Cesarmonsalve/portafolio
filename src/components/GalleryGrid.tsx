@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Film, Image as ImageIcon, LayoutGrid, Play, X, Volume2, VolumeX, Maximize2, ArrowLeft } from 'lucide-react';
+import { Film, Image as ImageIcon, LayoutGrid, Play, X, Volume2, VolumeX, Maximize2, ArrowLeft, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { type Project } from '@/lib/config';
 import { initialProjects } from '@/data/projects';
@@ -71,10 +71,10 @@ function VideoLightbox({ project, onClose }: { project: Project; onClose: () => 
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-        className="relative z-10 w-[92vw] max-w-5xl aspect-video overflow-hidden shadow-[0_0_100px_rgba(203,254,28,0.12)] angle-frame"
+        className="relative z-10 w-[92vw] max-w-5xl aspect-video overflow-hidden shadow-[0_0_100px_rgba(0,229,255,0.12)] rounded-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="absolute inset-0 bg-black angle-frame-sm">
+        <div className="absolute inset-0 bg-black rounded-2xl">
           {isEmbed ? (
             <iframe src={getEmbedUrl(videoUrl)} className="w-full h-full" allow="autoplay; encrypted-media; fullscreen" allowFullScreen title={project.title} />
           ) : videoUrl ? (
@@ -86,13 +86,13 @@ function VideoLightbox({ project, onClose }: { project: Project; onClose: () => 
           )}
         </div>
 
-        <button onClick={onClose} className="absolute top-4 right-4 z-20 w-10 h-10 bg-black/60 backdrop-blur angle-frame-sm flex items-center justify-center text-white hover:bg-neon-red/80 transition-all group">
+        <button onClick={onClose} className="absolute top-4 right-4 z-20 w-10 h-10 bg-black/60 backdrop-blur rounded-full flex items-center justify-center text-white hover:bg-[var(--accent-cyan)]/80 transition-all group">
           <X size={18} className="group-hover:rotate-90 transition-transform duration-300" />
         </button>
 
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 pt-16 pointer-events-none">
-          <h3 className="text-heading text-lg text-white mb-1">{project.title}</h3>
-          <span className="bg-neon-red/20 border border-neon-red/30 px-2.5 py-0.5 angle-frame-sm text-[10px] font-medium text-neon-red">{project.category}</span>
+          <h3 className="text-brutal text-lg text-white mb-1">{project.title}</h3>
+          <span className="text-mono-tech bg-[var(--accent-cyan)]/20 border border-[var(--accent-cyan)]/30 px-2.5 py-0.5 rounded-lg text-[10px] font-medium text-[var(--accent-cyan)]">{project.category}</span>
         </div>
       </motion.div>
     </motion.div>
@@ -111,7 +111,7 @@ function VideoCard({ project, index, onPlay }: { project: Project; index: number
       className="group"
     >
       <div
-        className="relative overflow-hidden project-arena-card bg-surface border border-white/[0.08] transition-all duration-500 hover:border-neon-red/20 cursor-pointer video-card-glow"
+        className="relative overflow-hidden rounded-2xl bg-surface brutal-border transition-all duration-500 hover:border-[var(--accent-cyan)]/40 cursor-pointer"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         onClick={onPlay}
@@ -126,21 +126,21 @@ function VideoCard({ project, index, onPlay }: { project: Project; index: number
           />
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <motion.div animate={{ scale: hovered ? 1.15 : 1, opacity: hovered ? 1 : 0.6 }} className="relative">
-              <div className="relative w-16 h-16 bg-neon-red/90 backdrop-blur-sm angle-frame-sm flex items-center justify-center shadow-[0_0_30px_rgba(203,254,28,0.3)] group-hover:shadow-[0_0_50px_rgba(203,254,28,0.55)] transition-shadow duration-500">
-                <Play size={22} className="text-white ml-1" fill="white" />
+              <div className="relative w-16 h-16 bg-[var(--accent-cyan)]/90 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(0,229,255,0.3)] group-hover:shadow-[0_0_50px_rgba(0,229,255,0.55)] transition-shadow duration-500">
+                <Play size={22} className="text-black ml-1" fill="black" />
               </div>
             </motion.div>
           </div>
-          <div className="absolute top-3 right-3 bg-neon-red/90 backdrop-blur-sm px-2 py-0.5 rounded text-[9px] text-white font-bold uppercase tracking-wider flex items-center gap-1">
+          <div className="absolute top-3 right-3 bg-[var(--accent-cyan)]/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[9px] text-black font-bold uppercase tracking-wider flex items-center gap-1">
             <Film size={10} /> Video
           </div>
         </div>
-        <div className="p-4">
-          <h3 className="text-subheading text-sm text-white group-hover:text-neon-red transition-colors mb-1 truncate">{project.title}</h3>
-          <p className="text-[11px] text-gray-500 line-clamp-1 mb-2">{project.description}</p>
+        <div className="p-5">
+          <h3 className="text-brutal text-sm text-white group-hover:text-[var(--accent-cyan)] transition-colors mb-1.5 group-hover:translate-x-2 duration-300">{project.title}</h3>
+          <p className="text-[11px] text-gray-500 line-clamp-1 mb-3">{project.description}</p>
           <div className="flex flex-wrap gap-1.5">
             {project.tags.slice(0, 3).map((tag) => (
-              <span key={tag} className="bg-white/[0.03] px-2 py-0.5 angle-frame-sm text-[10px] text-gray-500">{tag}</span>
+              <span key={tag} className="text-mono-tech bg-white/[0.03] px-2.5 py-0.5 rounded-lg text-[10px] text-gray-500 border border-white/[0.06]">{tag}</span>
             ))}
           </div>
         </div>
@@ -149,9 +149,30 @@ function VideoCard({ project, index, onPlay }: { project: Project; index: number
   );
 }
 
+// ═══════════════════════════════════════════════
+// MARQUEE COMPONENT
+// ═══════════════════════════════════════════════
+function BrutalMarquee() {
+  const WORDS = ['GALERÍA', 'TRABAJOS', 'MOTION', 'DESIGN', 'BRANDING', 'VIDEO', 'EDITORIAL'];
+  const row = WORDS.map(w => `${w} •`).join(' ');
+  return (
+    <div className="relative w-full overflow-hidden py-8 md:py-12 bg-surface/60 skew-section my-12 md:my-20">
+      {/* Row 1: Accent color, left to right */}
+      <div className="flex whitespace-nowrap animate-marquee mb-3">
+        <span className="text-brutal text-[8vw] md:text-[5vw] text-[var(--accent-cyan)] opacity-90 mr-8">{row} {row}</span>
+        <span className="text-brutal text-[8vw] md:text-[5vw] text-[var(--accent-cyan)] opacity-90 mr-8">{row} {row}</span>
+      </div>
+      {/* Row 2: White, right to left */}
+      <div className="flex whitespace-nowrap animate-marquee-reverse">
+        <span className="text-brutal text-[6vw] md:text-[3vw] text-white/30 mr-8">{row} {row}</span>
+        <span className="text-brutal text-[6vw] md:text-[3vw] text-white/30 mr-8">{row} {row}</span>
+      </div>
+    </div>
+  );
+}
+
 export default function GalleryGrid() {
   const { projects: allProjects } = useSiteConfig();
-  // Filter out hidden projects for public display
   const projects = allProjects.filter(p => !(p as any).hidden);
   const [activeCategory, setActiveCategory] = useState('Todos');
   const [mediaFilter, setMediaFilter] = useState<MediaFilter>('all');
@@ -175,77 +196,107 @@ export default function GalleryGrid() {
   ];
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-bg px-6 pb-20 pt-32 text-white">
-      <div className="arena-grid absolute inset-0 opacity-35" />
-      <div className="relative mx-auto max-w-7xl">
-        <Link href="/#work" className="ghost-button mb-12 !px-4 !py-3">
-          <ArrowLeft size={16} />
-          <span className="text-xs font-bold uppercase tracking-widest">Volver al inicio</span>
-        </Link>
+    <div className="relative min-h-screen overflow-hidden bg-bg text-white">
+      {/* ═══ HERO ═══ */}
+      <div className="relative px-6 pt-32 pb-8 md:pb-0">
+        <div className="max-w-7xl mx-auto">
+          <Link href="/#work" className="inline-flex items-center gap-2 text-mono-tech text-xs text-gray-500 hover:text-[var(--accent-cyan)] transition-colors mb-12 group">
+            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+            <span className="uppercase tracking-widest font-bold">Volver al inicio</span>
+          </Link>
 
-        <div className="mb-16">
-          <h1 className="heading-slashed text-display mb-4 text-4xl font-black uppercase leading-[.95] tracking-[-.04em] md:text-6xl">
-            Galería de <span className="gradient-text-animated">Trabajos</span>
+          {/* Gigantic Brutalist Title */}
+          <h1 className="text-brutal text-[16vw] md:text-[12vw] text-white leading-[0.85] tracking-tighter mb-6">
+            GALERÍA
           </h1>
-          <p className="text-gray-400 max-w-2xl">
-            Explora la colección completa de proyectos, diseños visuales, motion graphics y campañas desarrolladas.
-          </p>
-        </div>
 
-        {/* Filters */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12 border-b border-white/[0.05] pb-8">
-          <div className="acid-panel angle-frame-sm flex items-center gap-0.5 p-1">
-            {MEDIA_FILTERS.map((filter) => {
-              const isActive = mediaFilter === filter.id;
-              return (
+          {/* Metadata row — brutalist divider */}
+          <div className="brutal-divider mb-6" />
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+            <p className="text-mono-tech text-xs text-gray-500 uppercase tracking-widest">
+              {projects.length} Proyectos • Todos los trabajos
+            </p>
+            <p className="text-mono-tech text-xs text-gray-400 max-w-md text-right">
+              Explora la colección completa de motion graphics, diseños visuales y campañas.
+            </p>
+          </div>
+          <div className="brutal-divider" />
+        </div>
+      </div>
+
+      {/* ═══ MARQUEE SKEWED ═══ */}
+      <BrutalMarquee />
+
+      {/* ═══ FILTERS + GRID ═══ */}
+      <div className="relative px-6 pb-20">
+        <div className="max-w-7xl mx-auto">
+          {/* Filters */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
+            {/* Media Type Filters */}
+            <div className="flex items-center gap-2 p-1.5 bg-surface/50 rounded-2xl border border-white/[0.06]">
+              {MEDIA_FILTERS.map((filter) => {
+                const isActive = mediaFilter === filter.id;
+                return (
+                  <button
+                    key={filter.id}
+                    onClick={() => { setMediaFilter(filter.id); setActiveCategory('Todos'); }}
+                    className={`relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-mono-tech text-[11px] font-bold uppercase tracking-wide transition-all duration-300 ${isActive ? 'bg-[var(--accent-cyan)] text-black shadow-lg shadow-[var(--accent-cyan)]/20' : 'text-gray-500 hover:text-white'}`}
+                  >
+                    <filter.icon size={14} />
+                    {filter.label}
+                    <span className={`text-[9px] px-1.5 py-0.5 rounded-md ${isActive ? 'bg-black/20' : 'bg-white/[0.06]'}`}>{filter.count}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Category Filters */}
+            <div className="flex flex-wrap items-center gap-2">
+              {['Todos', ...Array.from(new Set(projects.filter(p => mediaFilter === 'all' || (mediaFilter === 'videos' ? isVideoProject(p) : !isVideoProject(p))).map(p => p.category)))].map((cat) => (
                 <button
-                  key={filter.id}
-                  onClick={() => { setMediaFilter(filter.id); setActiveCategory('Todos'); }}
-                  className={`relative flex items-center gap-2 px-5 py-2.5 angle-frame-sm text-[11px] font-black uppercase tracking-wide transition-colors duration-300 ${isActive ? 'bg-neon-red text-[#0B0E13]' : 'text-gray-500 hover:text-neon-red'}`}
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`px-5 py-2 rounded-xl text-mono-tech text-[11px] font-bold uppercase tracking-wide transition-all duration-300 border-2 hover:scale-105 active:scale-95 ${activeCategory === cat ? 'border-[var(--accent-cyan)] bg-[var(--accent-cyan)]/10 text-[var(--accent-cyan)]' : 'border-white/[0.08] text-gray-400 hover:border-white/20 hover:text-white'}`}
                 >
-                  <filter.icon size={14} />
-                  {filter.label}
+                  {cat}
                 </button>
-              );
-            })}
+              ))}
+            </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            {['Todos', ...Array.from(new Set(projects.filter(p => mediaFilter === 'all' || (mediaFilter === 'videos' ? isVideoProject(p) : !isVideoProject(p))).map(p => p.category)))].map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-1.5 angle-frame-sm border px-4 py-1.5 text-[11px] font-black uppercase tracking-wide transition-all duration-300 ${activeCategory === cat ? 'border-neon-red bg-neon-red text-[#0B0E13]' : 'border-white/[0.08] bg-white/[0.03] text-gray-400 hover:border-neon-red/50 hover:text-neon-red'}`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+          {/* Grid */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`${activeCategory}-${mediaFilter}`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              {filtered.map((project, index) =>
+                mediaFilter === 'videos' ? (
+                  <VideoCard key={project.id} project={project} index={index} onPlay={() => setSelectedVideo(project)} />
+                ) : (
+                  <ProjectCard key={project.id} project={project} index={index} />
+                )
+              )}
+            </motion.div>
+          </AnimatePresence>
+
+          {filtered.length === 0 && (
+            <div className="mt-8 py-20 text-center rounded-2xl brutal-border bg-surface/30">
+              <p className="text-brutal text-xl text-gray-600">No se encontraron proyectos</p>
+              <p className="text-mono-tech text-xs text-gray-500 mt-2">Intenta con otra categoría o filtro</p>
+            </div>
+          )}
+
+          {filtered.length > 0 && (
+            <p className="text-center mt-12 text-mono-tech text-[10px] text-gray-600 uppercase tracking-[0.2em]">
+              {filtered.length} {filtered.length === 1 ? 'proyecto' : 'proyectos'} encontrados
+            </p>
+          )}
         </div>
-
-        {/* Grid */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={`${activeCategory}-${mediaFilter}`}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            {filtered.map((project, index) =>
-              mediaFilter === 'videos' ? (
-                <VideoCard key={project.id} project={project} index={index} onPlay={() => setSelectedVideo(project)} />
-              ) : (
-                <ProjectCard key={project.id} project={project} index={index} />
-              )
-            )}
-          </motion.div>
-        </AnimatePresence>
-
-        {filtered.length === 0 && (
-          <div className="acid-panel angle-frame mt-8 py-20 text-center text-gray-500">No se encontraron proyectos.</div>
-        )}
       </div>
 
       <AnimatePresence>

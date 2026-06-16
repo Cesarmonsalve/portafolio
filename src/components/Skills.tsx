@@ -36,10 +36,10 @@ export default function Skills() {
         <div className="mb-16 md:mb-24 max-w-2xl">
           <div className="flex items-center gap-3 mb-6">
             <span className="w-8 h-[1px] bg-gradient-to-r from-transparent to-purple-500" />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-purple-400">Ecosistema Técnico</span>
+            <span className="text-mono-tech text-[10px] font-bold uppercase tracking-widest text-purple-400">Ecosistema Técnico</span>
           </div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-black tracking-tighter text-white leading-tight">
-            {cfg.skills_heading || 'Mi Arsenal Creativo'}
+          <h2 className="text-brutal text-[12vw] md:text-[8vw] tracking-tighter text-white leading-[0.85]">
+            {cfg.skills_heading || 'MI ARSENAL CREATIVO'}
           </h2>
           <p className="mt-6 text-gray-400 font-light text-lg">
             {cfg.skills_desc || 'Un conjunto de herramientas de grado industrial diseñadas para transformar conceptos abstractos en realidades visuales asombrosas.'}

@@ -16,9 +16,7 @@ import AdminSettings from '@/components/admin/AdminSettings';
 import AdminAppearance from '@/components/admin/AdminAppearance';
 import AdminStore from '@/components/admin/AdminStore';
 import AdminBackup from '@/components/admin/AdminBackup';
-import AdminSectionBuilder from '@/components/admin/AdminSectionBuilder';
-import AdminAIAssistant from '@/components/admin/AdminAIAssistant';
-import AdminAuditLogs from '@/components/admin/AdminAuditLogs';
+
 
 const NAV_ITEMS = [
   { id: 'dashboard',  label: 'Dashboard',   icon: LayoutDashboard, code: '01' },
@@ -180,11 +178,11 @@ export default function AdminPage() {
     store:      AdminStore,
     messages:   AdminMessages,
     skills:     AdminSkills,
-    builder:    AdminSectionBuilder,
+    builder:    AdminDashboard,
     appearance: AdminAppearance,
-    ai:         AdminAIAssistant,
+    ai:         AdminDashboard,
     settings:   AdminSettings,
-    audit:      AdminAuditLogs,
+    audit:      AdminDashboard,
     backup:     AdminBackup,
   }[section] || AdminDashboard;
 

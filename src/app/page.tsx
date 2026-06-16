@@ -4,18 +4,17 @@ import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import Footer from '@/components/Footer';
 import ScrollProgress from '@/components/ScrollProgress';
-import MobileBottomNav from '@/components/layout/MobileBottomNav';
-import ConversionCTA from '@/components/home/ConversionCTA';
+
 import { useSiteConfig } from '@/lib/SiteConfigContext';
 import type { ReactElement } from 'react';
 
 const CustomCursor = dynamic(() => import('@/components/CustomCursor'), { ssr: false });
 const ProjectsGrid = dynamic(() => import('@/components/ProjectsGrid'), { ssr: false });
-const FeaturedCases = dynamic(() => import('@/components/home/FeaturedCases'), { ssr: false });
+const FeaturedCases = () => null;
 const About = dynamic(() => import('@/components/About'), { ssr: false });
 const Skills = dynamic(() => import('@/components/Skills'), { ssr: false });
-const StorePreview = dynamic(() => import('@/components/home/StorePreview'), { ssr: false });
-const Timeline = dynamic(() => import('@/components/home/Timeline'), { ssr: false });
+const StorePreview = () => null;
+const Timeline = () => null;
 const Contact = dynamic(() => import('@/components/Contact'), { ssr: false });
 
 type SectionKey =
@@ -74,9 +73,7 @@ export default function Home() {
           {i < ordered.length - 1 && <div className="glow-line mx-auto max-w-[80%]" />}
         </div>
       ))}
-      <ConversionCTA />
       <Footer />
-      <MobileBottomNav />
     </main>
   );
 }

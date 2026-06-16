@@ -94,9 +94,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="es" style={{
-      '--theme-primary': hexToRgb(cfg.theme_primary || '#CBFE1C'),
-      '--theme-secondary': hexToRgb(cfg.theme_secondary || '#8B5CF6'),
-      '--theme-accent': hexToRgb(cfg.theme_accent || '#00E5FF'),
+      '--theme-primary': hexToRgb(cfg.theme_primary || '#818cf8'),
+      '--theme-secondary': hexToRgb(cfg.theme_secondary || '#c084fc'),
+      '--theme-accent': hexToRgb(cfg.theme_accent || '#60a5fa'),
     } as React.CSSProperties}>
       <head>
         <meta name="theme-color" content="#0B0E13" />

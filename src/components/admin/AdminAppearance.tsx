@@ -19,6 +19,11 @@ const SECTION_NAMES: Record<string, string> = {
   skills: '🛠️ Skills',
   contact: '✉️ Contacto',
   store: '🛍️ Tienda',
+  timeline: '⏳ Timeline',
+  workflow: '⚡ Workflow',
+  testimonials: '💬 Testimonios',
+  lab: '🧪 Laboratorio',
+  cases: '📁 Casos',
 };
 
 const FONT_OPTIONS = [
@@ -139,7 +144,7 @@ export default function AdminAppearance(_p: Props) {
     }));
   };
 
-  const sectionKeys = ['hero', 'projects', 'about', 'skills', 'contact', 'store'];
+  const sectionKeys = ['hero', 'projects', 'about', 'skills', 'workflow', 'timeline', 'testimonials', 'lab', 'contact', 'store', 'cases'];
 
   return (
     <div className="space-y-4 max-w-3xl">

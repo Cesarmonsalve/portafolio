@@ -24,12 +24,9 @@ const NAV_ITEMS = [
   { id: 'store',      label: 'Tienda',      icon: ShoppingBag,     code: '03' },
   { id: 'messages',   label: 'Mensajes',    icon: MessageSquare,   code: '04' },
   { id: 'skills',     label: 'Arsenal',     icon: Wrench,          code: '05' },
-  { id: 'builder',    label: 'Builder',     icon: LayoutGrid,      code: '06' },
-  { id: 'appearance', label: 'Apariencia',  icon: Palette,         code: '07' },
-  { id: 'ai',         label: 'AI Assistant',icon: Bot,             code: '08' },
-  { id: 'settings',   label: 'Config',      icon: Settings,        code: '09' },
-  { id: 'audit',      label: 'Audit Logs',  icon: ShieldCheck,     code: '10' },
-  { id: 'backup',     label: 'Respaldo',   icon: ShieldCheck,    code: '11' },
+  { id: 'appearance', label: 'Apariencia',  icon: Palette,         code: '06' },
+  { id: 'settings',   label: 'Config',      icon: Settings,        code: '07' },
+  { id: 'backup',     label: 'Respaldo',    icon: ShieldCheck,     code: '08' },
 ];
 
 export default function AdminPage() {
@@ -178,11 +175,8 @@ export default function AdminPage() {
     store:      AdminStore,
     messages:   AdminMessages,
     skills:     AdminSkills,
-    builder:    AdminDashboard,
     appearance: AdminAppearance,
-    ai:         AdminDashboard,
     settings:   AdminSettings,
-    audit:      AdminDashboard,
     backup:     AdminBackup,
   }[section] || AdminDashboard;
 

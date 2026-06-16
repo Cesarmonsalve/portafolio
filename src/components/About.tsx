@@ -1,56 +1,156 @@
 'use client';
-import { ArrowUpRight, Crosshair, Layers3, Sparkles } from 'lucide-react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowUpRight, Crosshair, Layers3, Sparkles, User, Briefcase, BookOpen, Target } from 'lucide-react';
 import SectionWrapper from './SectionWrapper';
-import LottieRenderer from './LottieRenderer';
 import { useSiteConfig } from '@/lib/SiteConfigContext';
-import { DEFAULT_SECTION_VISUAL, HEADING_SIZE_MAP } from '@/lib/config';
-
-const specialtyIcons = [Layers3, Sparkles, Crosshair];
+import { DEFAULT_SECTION_VISUAL } from '@/lib/config';
 
 export default function About() {
   const { cfg } = useSiteConfig();
-  const visual = cfg.section_about || DEFAULT_SECTION_VISUAL;
-  const hCls = HEADING_SIZE_MAP[cfg.heading_size] || HEADING_SIZE_MAP.md;
+  const [activeCard, setActiveCard] = useState<number | null>(0);
+
+  const CARDS = [
+    {
+      id: 0,
+      title: 'Historia',
+      icon: User,
+      content: cfg.about_bio || 'Diseñador y desarrollador con visión de producto.',
+    },
+    {
+      id: 1,
+      title: 'Experiencia',
+      icon: Briefcase,
+      content: cfg.about_bio_extended || 'Años construyendo experiencias digitales memorables.',
+    },
+    {
+      id: 2,
+      title: 'Filosofía',
+      icon: BookOpen,
+      content: 'El diseño no es solo cómo se ve, sino cómo funciona. Ultra Modern Minimalism.',
+    },
+    {
+      id: 3,
+      title: 'Especialidades',
+      icon: Target,
+      content: 'Motion Graphics, UI/UX, y arquitecturas front-end robustas.',
+      specialties: cfg.about_specialties || []
+    }
+  ];
 
   return (
-    <SectionWrapper id="about" visual={visual} fallbackBg="#10151D" className="section-shell px-5 py-24 md:px-8 md:py-32">
-      <div className="arena-grid absolute inset-0 opacity-25" />
-      {cfg.lottie_about?.enabled && cfg.lottie_about.source && <div className="lottie-section opacity-20"><LottieRenderer source={cfg.lottie_about.source} speed={cfg.lottie_about.speed} /></div>}
-      <div className="relative z-10 mx-auto grid max-w-7xl gap-12 lg:grid-cols-[.82fr_1.18fr] lg:items-center">
-        <div className="relative mx-auto w-full max-w-[460px]">
-          <div className="absolute -inset-5 translate-x-5 translate-y-5 border border-neon-red/25 angle-frame" />
-          <div className="acid-panel angle-frame relative overflow-hidden p-3">
-            <div className="relative aspect-[4/5] overflow-hidden angle-frame-sm bg-[#0B0E13]">
-              {cfg.about_photo ? <img src={cfg.about_photo} alt="Retrato de CM Design, director creativo y diseñador de motion graphics" loading="lazy" decoding="async" className="h-full w-full object-cover grayscale transition duration-700 hover:grayscale-0" /> : <div className="arena-grid flex h-full items-center justify-center"><span className="text-[9rem] font-black tracking-[-.12em] text-white/[0.055]">CM</span></div>}
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/75 to-transparent p-6 pt-20">
-                <div className="acid-kicker">{cfg.about_job_title}</div>
-                <div className="mt-2 text-2xl font-black uppercase tracking-[-.04em] text-white">{cfg.hero_name}</div>
-              </div>
+    <SectionWrapper id="about" visual={cfg.section_about || DEFAULT_SECTION_VISUAL} className="relative py-24 md:py-32 min-h-screen flex items-center">
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div className="absolute right-0 top-1/3 w-[600px] h-[600px] bg-[var(--accent-blue)]/5 rounded-full blur-[100px] animate-float" />
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-7xl px-6 md:px-12 w-full">
+        
+        <div className="mb-16 md:mb-24 flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="w-8 h-[1px] bg-[var(--accent-cyan)]" />
+              <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Identity Explorer</span>
             </div>
+            <h2 className="text-4xl md:text-6xl font-display font-black tracking-tighter text-white">
+              {cfg.about_heading || 'Sobre mí'}
+            </h2>
           </div>
-          <div className="absolute -bottom-5 -left-5 border border-neon-red/30 bg-[#0B0E13] px-4 py-3 angle-frame-sm">
-            <div className="text-[9px] font-black uppercase tracking-[.18em] text-gray-500">Creative profile</div>
-            <div className="mt-1 text-xs font-black uppercase tracking-[.12em] text-neon-red">Impact first</div>
+          <div className="max-w-md text-gray-400 font-light">
+            Selecciona una tarjeta para explorar mi perfil, experiencia y visión como creador digital.
           </div>
         </div>
 
-        <div>
-          <div className="mb-4 flex items-center gap-3"><span className="h-px w-12 bg-neon-red" /><span className="acid-kicker">{cfg.about_label}</span></div>
-          {cfg.about_heading_type === 'image' && cfg.about_heading_image ? <img src={cfg.about_heading_image} alt={cfg.about_heading} className="mb-7 max-h-48 max-w-full object-contain object-left" style={{ width: `${cfg.about_heading_scale || 100}%` }} /> : <h2 className={`heading-slashed max-w-3xl font-black uppercase leading-[.95] tracking-[-.045em] text-white ${hCls}`} style={{ fontFamily: `${cfg.font_display}, sans-serif` }}>{cfg.about_heading}</h2>}
-          <div className="mt-7 space-y-4 border-l-2 border-neon-red/60 pl-5">
-            <p className="text-base leading-7 text-gray-200 md:text-lg">{cfg.about_bio}</p>
-            <p className="text-sm leading-7 text-gray-500 md:text-base">{cfg.about_bio_extended}</p>
-          </div>
-          <div className="mt-9 grid grid-cols-3 border-y border-white/[0.09]">
-            {(cfg.about_stats || []).map((stat, index) => <div key={`${stat.label}-${index}`} className="border-r border-white/[0.09] px-3 py-5 last:border-r-0 md:px-5"><div className="text-xl font-black text-white md:text-3xl">{stat.value}</div><div className="mt-1 text-[9px] font-black uppercase tracking-[.14em] text-gray-500">{stat.label}</div></div>)}
-          </div>
-          <div className="mt-8 grid gap-3 md:grid-cols-3">
-            {(cfg.about_specialties || []).map((item, index) => {
-              const Icon = specialtyIcons[index % specialtyIcons.length];
-              return <div key={`${item.title}-${index}`} className="acid-panel angle-frame-sm p-4"><Icon size={16} className="mb-4 text-neon-red" /><div className="text-xs font-black uppercase tracking-[.08em] text-white">{item.title}</div><div className="mt-2 text-[11px] leading-5 text-gray-500">{item.desc}</div></div>;
+        <div className="grid md:grid-cols-[1fr_2fr] gap-8 items-start">
+          
+          {/* Card List */}
+          <div className="flex flex-col gap-3">
+            {CARDS.map((card, idx) => {
+              const isActive = activeCard === idx;
+              const Icon = card.icon;
+              return (
+                <button
+                  key={card.id}
+                  onClick={() => setActiveCard(idx)}
+                  className={`text-left w-full p-5 rounded-2xl border transition-all duration-300 flex items-center justify-between ${
+                    isActive 
+                      ? 'bg-white/[0.03] border-[var(--accent-cyan)]/30 shadow-[0_0_20px_rgba(0,229,255,0.05)]' 
+                      : 'bg-transparent border-white/[0.05] hover:bg-white/[0.02]'
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <Icon size={18} className={isActive ? 'text-[var(--accent-cyan)]' : 'text-gray-500'} />
+                    <span className={`font-semibold tracking-wide ${isActive ? 'text-white' : 'text-gray-400'}`}>
+                      {card.title}
+                    </span>
+                  </div>
+                  <span className={`text-[10px] uppercase tracking-wider font-bold ${isActive ? 'text-[var(--accent-cyan)]' : 'text-gray-600'}`}>
+                    0{idx + 1}
+                  </span>
+                </button>
+              );
             })}
           </div>
-          <a href="#contact" className="ghost-button mt-8">Hablemos de tu proyecto <ArrowUpRight size={15} /></a>
+
+          {/* Card Content Viewer */}
+          <div className="glass-panel p-8 md:p-12 rounded-3xl min-h-[400px] flex flex-col justify-between relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--accent-violet)]/5 blur-[80px] pointer-events-none" />
+            
+            <AnimatePresence mode="wait">
+              {CARDS.map((card, idx) => {
+                if (idx !== activeCard) return null;
+                const Icon = card.icon;
+                return (
+                  <motion.div
+                    key={card.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                    className="relative z-10"
+                  >
+                    <div className="w-12 h-12 rounded-2xl bg-white/[0.02] border border-white/[0.05] flex items-center justify-center mb-8">
+                      <Icon size={20} className="text-white" />
+                    </div>
+                    
+                    <h3 className="text-2xl md:text-3xl font-display font-bold text-white mb-6">
+                      {card.title}
+                    </h3>
+                    
+                    <p className="text-lg text-gray-300 leading-relaxed font-light mb-8 max-w-2xl">
+                      {card.content}
+                    </p>
+
+                    {card.specialties && card.specialties.length > 0 && (
+                      <div className="grid sm:grid-cols-2 gap-4 mt-8">
+                        {card.specialties.map((spec, i) => (
+                          <div key={i} className="p-4 rounded-xl border border-white/[0.04] bg-white/[0.01]">
+                            <div className="text-sm font-bold text-white mb-1">{spec.title}</div>
+                            <div className="text-xs text-gray-500">{spec.desc}</div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+
+            <div className="relative z-10 mt-12 pt-8 border-t border-white/[0.05] flex items-center justify-between">
+              <div className="flex gap-6">
+                {(cfg.about_stats || []).map((stat, i) => (
+                  <div key={i}>
+                    <div className="text-2xl font-display font-black text-white">{stat.value}</div>
+                    <div className="text-[9px] uppercase tracking-widest text-gray-500 mt-1">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+              <a href="#contact" className="flex items-center justify-center w-12 h-12 rounded-full border border-white/[0.05] bg-white/[0.02] text-white hover:bg-white/[0.05] transition-colors">
+                <ArrowUpRight size={18} />
+              </a>
+            </div>
+          </div>
+
         </div>
       </div>
     </SectionWrapper>

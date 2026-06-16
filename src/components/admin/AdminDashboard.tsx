@@ -54,10 +54,10 @@ export default function AdminDashboard({ onUnreadChange, setActiveTab }: Props) 
   }, [projects]);
 
   const cards = [
-    { label: 'Proyectos', value: projects.length, icon: FolderKanban, tab: 'projects', accent: '#CBFE1C' },
-    { label: 'Recursos', value: storeItems.length, icon: ShoppingBag, tab: 'store', accent: '#8B5CF6' },
-    { label: 'Skills', value: skills.length, icon: Wrench, tab: 'skills', accent: '#00E5FF' },
-    { label: 'Mensajes', value: messages.length, icon: MessageSquare, tab: 'messages', accent: '#CBFE1C', badge: unread },
+    { label: 'Proyectos', value: projects.length, icon: FolderKanban, tab: 'projects', accent: '#818cf8' },
+    { label: 'Recursos', value: storeItems.length, icon: ShoppingBag, tab: 'store', accent: '#c084fc' },
+    { label: 'Skills', value: skills.length, icon: Wrench, tab: 'skills', accent: '#60a5fa' },
+    { label: 'Mensajes', value: messages.length, icon: MessageSquare, tab: 'messages', accent: '#818cf8', badge: unread },
   ];
 
   // Real setup-completeness checklist
@@ -219,14 +219,14 @@ export default function AdminDashboard({ onUnreadChange, setActiveTab }: Props) 
                     interval={0}
                   />
                   <Tooltip
-                    cursor={{ fill: 'rgba(203,254,28,.06)' }}
-                    contentStyle={{ background: '#0B0E13', border: '1px solid rgba(203,254,28,.3)', borderRadius: 0, fontSize: 12, color: '#fff' }}
-                    itemStyle={{ color: '#CBFE1C', fontWeight: 800 }}
+                    cursor={{ fill: 'rgba(129,140,248,.06)' }}
+                    contentStyle={{ background: '#0B0E13', border: '1px solid rgba(129,140,248,.3)', borderRadius: 0, fontSize: 12, color: '#fff' }}
+                    itemStyle={{ color: '#818cf8', fontWeight: 800 }}
                     labelStyle={{ color: '#9aa3b0' }}
                   />
                   <Bar dataKey="total" radius={[0, 0, 0, 0]} maxBarSize={48}>
                     {categoryData.map((_, i) => (
-                      <Cell key={i} fill={i % 2 === 0 ? '#CBFE1C' : '#8B5CF6'} />
+                      <Cell key={i} fill={i % 2 === 0 ? '#818cf8' : '#c084fc'} />
                     ))}
                   </Bar>
                 </BarChart>

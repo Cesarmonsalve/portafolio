@@ -79,7 +79,6 @@ export default function Skills() {
                   const angle = (index / orbitSkills.length) * 2 * Math.PI;
                   const x = Math.cos(angle) * radius;
                   const y = Math.sin(angle) * radius;
-                  const Icon = CATEGORY_ICONS[skill.category] || Layers3;
 
                   return (
                     <motion.div

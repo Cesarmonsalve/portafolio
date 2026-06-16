@@ -28,16 +28,16 @@ export default function ProjectsGrid() {
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <div className="flex items-center gap-3 mb-4">
               <span className="w-8 h-[1px] bg-[var(--accent-cyan)]" />
-              <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{cfg.projects_label || 'Portfolio'}</span>
+              <span className="text-mono-tech text-[10px] font-bold uppercase tracking-widest text-gray-400">{cfg.projects_label || 'Portfolio'}</span>
             </div>
-            <h2 className="text-4xl md:text-6xl font-display font-black tracking-tighter text-white">
-              {cfg.projects_heading || 'Trabajos Destacados'}
+            <h2 className="text-brutal text-[10vw] md:text-[8vw] tracking-tighter text-white leading-[0.85]">
+              {cfg.projects_heading || 'TRABAJOS DESTACADOS'}
             </h2>
-            <p className="mt-4 max-w-xl text-gray-400 font-light">{cfg.projects_desc}</p>
+            <p className="mt-4 max-w-xl text-gray-400 font-light leading-relaxed">{cfg.projects_desc}</p>
           </motion.div>
 
-          <Link href="/galeria" className="flex items-center gap-2 px-5 py-3 rounded-xl border border-white/[0.08] text-sm font-medium text-gray-300 hover:text-white hover:border-white/20 transition-all w-fit">
-            <LayoutGrid size={16} /> Galería <ArrowUpRight size={14} />
+          <Link href="/galeria" className="group flex items-center gap-2 px-8 py-4 rounded-full brutal-border bg-white text-black text-mono-tech text-sm font-bold uppercase tracking-widest hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all w-fit whitespace-nowrap">
+            <LayoutGrid size={16} /> VER GALERÍA <ArrowUpRight size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
           </Link>
         </div>
 
@@ -47,10 +47,10 @@ export default function ProjectsGrid() {
             <button
               key={category}
               onClick={() => setActive(category)}
-              className={`px-4 py-2 rounded-full text-[11px] font-semibold uppercase tracking-wider transition-all duration-300 ${
+              className={`px-6 py-2 rounded-xl text-mono-tech text-[11px] font-bold uppercase tracking-wider transition-all duration-300 border-2 hover:scale-105 active:scale-95 ${
                 active === category
-                  ? 'bg-white text-black'
-                  : 'bg-white/[0.03] text-gray-400 border border-white/[0.06] hover:bg-white/[0.06] hover:text-white'
+                  ? 'border-[var(--accent-cyan)] bg-[var(--accent-cyan)]/10 text-[var(--accent-cyan)] shadow-[0_0_15px_rgba(0,229,255,0.2)]'
+                  : 'bg-white/[0.03] text-gray-400 border-white/[0.06] hover:border-white/20 hover:text-white'
               }`}
             >
               {category}
@@ -61,7 +61,7 @@ export default function ProjectsGrid() {
         {/* Projects Grid */}
         <motion.div layout className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <AnimatePresence mode="popLayout">
-            {filtered.map((project, index) => (
+            {filtered.slice(0, 3).map((project, index) => (
               <ProjectCard key={project.id} project={project} index={index} featured={project.featured && active === 'Todos'} />
             ))}
           </AnimatePresence>

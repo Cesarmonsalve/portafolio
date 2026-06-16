@@ -31,50 +31,53 @@ export default function Hero() {
         <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-[var(--accent-violet)]/5 rounded-full blur-[100px] animate-float" style={{ animationDelay: '-3s' }} />
       </div>
 
-      <div className="relative z-10 w-full max-w-[1600px] mx-auto px-6 md:px-12 flex flex-col justify-center">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-20">
         
-        {/* Huge Name Presentation */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="relative"
-        >
-          <h1 className="text-brutal text-[20vw] leading-[0.8] tracking-tighter text-white select-none relative z-10">
-            {cfg.hero_name || 'CESAR'}<span className="text-[var(--accent-cyan)]">.</span>
-          </h1>
-        </motion.div>
-
-        {/* Dynamic Rotating Text & Description */}
-        <div className="mt-8 md:mt-12 max-w-2xl ml-2 md:ml-4 flex flex-col gap-6">
-          <div className="h-12 flex items-center overflow-hidden">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={textIndex}
-                initial={{ y: 40, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: -40, opacity: 0 }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="text-2xl md:text-4xl font-display font-bold gradient-text"
-              >
-                {ROTATING_TEXTS[textIndex]}
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
-            className="text-lg md:text-xl text-gray-400 font-light leading-relaxed max-w-xl"
+        {/* Left Column: Name & Description */}
+        <div className="lg:col-span-8 flex flex-col justify-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
           >
-            {cfg.hero_description || 'Diseñando experiencias digitales de vanguardia que combinan tecnología, arte y usabilidad extrema.'}
-          </motion.p>
+            <h1 className="text-brutal text-[16vw] lg:text-[10vw] leading-[0.85] tracking-tighter text-white select-none">
+              {cfg.hero_name || 'CESAR'}<span className="text-[var(--accent-cyan)]">.</span>
+            </h1>
+          </motion.div>
+
+          {/* Dynamic Rotating Text & Description */}
+          <div className="mt-8 max-w-xl flex flex-col gap-6">
+            <div className="h-12 flex items-center overflow-hidden">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={textIndex}
+                  initial={{ y: 40, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -40, opacity: 0 }}
+                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-2xl md:text-4xl font-display font-bold gradient-text uppercase tracking-wide"
+                >
+                  {ROTATING_TEXTS[textIndex]}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+              className="text-lg text-gray-400 font-light leading-relaxed"
+            >
+              {cfg.hero_description || 'Diseñando experiencias digitales de vanguardia que combinan tecnología, arte y usabilidad extrema.'}
+            </motion.p>
+          </div>
+        </div>
+
+        {/* Right Column: Command Center */}
+        <div className="lg:col-span-4 hidden lg:flex justify-end">
+          <CommandCenter />
         </div>
       </div>
-
-      {/* Command Center Float */}
-      <CommandCenter />
 
       {/* Divider and Metadata Row */}
       <motion.div
@@ -90,7 +93,7 @@ export default function Hero() {
         </div>
 
         {/* Rotating Scroll Indicator */}
-        <div className="relative w-28 h-28 bg-bg rounded-full flex items-center justify-center p-2 border-4 border-bg shadow-[0_0_0_2px_rgba(255,255,255,0.1)]">
+        <div className="relative w-24 h-24 bg-bg rounded-full flex items-center justify-center border-2 border-white/10 shadow-[0_0_20px_rgba(0,229,255,0.1)]">
           <svg className="absolute inset-0 w-full h-full animate-spin-slow text-gray-400" viewBox="0 0 144 144">
             <path id="circlePath" d="M 72, 72 m -56, 0 a 56,56 0 1,1 112,0 a 56,56 0 1,1 -112,0" fill="none" />
             <text className="text-mono-tech uppercase font-bold text-[10px] tracking-[0.2em]" fill="currentColor">

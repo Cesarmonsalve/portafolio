@@ -6,6 +6,7 @@ import * as SiIcons from 'react-icons/si';
 import { notifyConfigUpdate, saveConfigData } from '@/lib/SiteConfigContext';
 import { loadFromDB } from '@/lib/loadFromDB';
 import { toast } from '@/components/ui/Toast';
+import IconPicker from './IconPicker';
 import {
   DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent
 } from '@dnd-kit/core';
@@ -23,68 +24,6 @@ interface Props { onUnreadChange?: (n: number) => void; }
 
 const CATS = ['Design', 'Motion', '3D', 'Tools', 'Other'];
 
-// Professional Icon Library (Si = Simple Icons) with brand colors
-const ICON_LIBRARY: { id: string; label: string; color: string }[] = [
-  { id: 'SiAdobephotoshop', label: 'Photoshop', color: '#31A8FF' },
-  { id: 'SiAdobeaftereffects', label: 'After Effects', color: '#9999FF' },
-  { id: 'SiAdobeillustrator', label: 'Illustrator', color: '#FF9A00' },
-  { id: 'SiAdobepremierepro', label: 'Premiere Pro', color: '#9999FF' },
-  { id: 'SiAdobelightroom', label: 'Lightroom', color: '#31A8FF' },
-  { id: 'SiAdobeindesign', label: 'InDesign', color: '#FF3366' },
-  { id: 'SiAdobeaudition', label: 'Audition', color: '#9999FF' },
-  { id: 'SiAdobexd', label: 'Adobe XD', color: '#FF61F6' },
-  { id: 'SiBlender', label: 'Blender', color: '#F5792A' },
-  { id: 'SiCinema4d', label: 'Cinema 4D', color: '#011A6A' },
-  { id: 'SiAutodesk', label: 'Autodesk', color: '#0696D7' },
-  { id: 'SiUnrealengine', label: 'Unreal Engine', color: '#FFFFFF' },
-  { id: 'SiUnity', label: 'Unity', color: '#FFFFFF' },
-  { id: 'SiHoudini', label: 'Houdini', color: '#FF4713' },
-  { id: 'SiFigma', label: 'Figma', color: '#F24E1E' },
-  { id: 'SiSketch', label: 'Sketch', color: '#F7B500' },
-  { id: 'SiCanva', label: 'Canva', color: '#00C4CC' },
-  { id: 'SiInvision', label: 'InVision', color: '#FF3366' },
-  { id: 'SiAffinitydesigner', label: 'Affinity Designer', color: '#1B72BE' },
-  { id: 'SiAffinityphoto', label: 'Affinity Photo', color: '#7E4DD2' },
-  { id: 'SiAffinitypublisher', label: 'Affinity Publisher', color: '#C9514D' },
-  { id: 'SiDavinciresolve', label: 'DaVinci Resolve', color: '#E12E2E' },
-  { id: 'SiObsstudio', label: 'OBS', color: '#302E31' },
-  { id: 'SiCapcut', label: 'CapCut', color: '#FFFFFF' },
-  { id: 'SiGimp', label: 'GIMP', color: '#5C5543' },
-  { id: 'SiInkscape', label: 'Inkscape', color: '#000000' },
-  { id: 'SiCoreldraw', label: 'CorelDRAW', color: '#000000' },
-  { id: 'SiVimeo', label: 'Vimeo', color: '#1AB7EA' },
-  { id: 'SiYoutube', label: 'YouTube', color: '#FF0000' },
-  { id: 'SiInstagram', label: 'Instagram', color: '#E4405F' },
-  { id: 'SiTiktok', label: 'TikTok', color: '#000000' },
-  { id: 'SiBehance', label: 'Behance', color: '#1769FF' },
-  { id: 'SiDribbble', label: 'Dribbble', color: '#EA4C89' },
-  { id: 'SiJavascript', label: 'JavaScript', color: '#F7DF1E' },
-  { id: 'SiTypescript', label: 'TypeScript', color: '#3178C6' },
-  { id: 'SiReact', label: 'React', color: '#61DAFB' },
-  { id: 'SiNextdotjs', label: 'Next.js', color: '#FFFFFF' },
-  { id: 'SiTailwindcss', label: 'Tailwind CSS', color: '#06B6D4' },
-  { id: 'SiThreedotjs', label: 'Three.js', color: '#FFFFFF' },
-  { id: 'SiVite', label: 'Vite', color: '#646CFF' },
-  { id: 'SiGithub', label: 'GitHub', color: '#FFFFFF' },
-  { id: 'SiDiscord', label: 'Discord', color: '#5865F2' },
-  { id: 'SiSlack', label: 'Slack', color: '#4A154B' },
-  { id: 'SiSpotify', label: 'Spotify', color: '#1DB954' },
-  { id: 'SiApple', label: 'Apple', color: '#FFFFFF' },
-  { id: 'SiWindows', label: 'Windows', color: '#0078D4' },
-  { id: 'SiAndroid', label: 'Android', color: '#3DDC84' },
-  { id: 'SiWordpress', label: 'WordPress', color: '#21759B' },
-  { id: 'SiShopify', label: 'Shopify', color: '#7AB55C' },
-  { id: 'SiNotion', label: 'Notion', color: '#FFFFFF' },
-  { id: 'SiLinkedin', label: 'LinkedIn', color: '#0A66C2' },
-  { id: 'SiTwitter', label: 'Twitter', color: '#1DA1F2' },
-  { id: 'SiFacebook', label: 'Facebook', color: '#1877F2' },
-  { id: 'SiPinterest', label: 'Pinterest', color: '#BD081C' },
-  { id: 'SiWhatsapp', label: 'WhatsApp', color: '#25D366' },
-  { id: 'SiTelegram', label: 'Telegram', color: '#26A5E4' },
-];
-
-const EMOJIS = ['🎨','🎬','✏️','🖥️','📐','🎯','🔥','💎','⚡','🎮','📸','🎵'];
-
 function SortableSkillItem({ skill, onEdit, onDelete }: { skill: Skill, onEdit: () => void, onDelete: () => void }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: skill.id });
   const style = { transform: CSS.Transform.toString(transform), transition, zIndex: isDragging ? 10 : 1 };
@@ -98,8 +37,7 @@ function SortableSkillItem({ skill, onEdit, onDelete }: { skill: Skill, onEdit: 
       <span className="w-10 h-10 bg-surface angle-frame-sm flex items-center justify-center text-xl flex-shrink-0">
         {skill.icon.startsWith('Si') ? (() => {
             const Icon = (SiIcons as any)[skill.icon];
-            const brandColor = ICON_LIBRARY.find(i => i.id === skill.icon)?.color || '#fff';
-            return Icon ? <Icon size={20} style={{ color: brandColor }} /> : <span>{skill.icon}</span>;
+            return Icon ? <Icon size={20} style={{ color: '#fff' }} /> : <span>{skill.icon}</span>;
           })() : skill.icon}
       </span>
       <div className="flex-1 min-w-0">
@@ -124,7 +62,6 @@ export default function AdminSkills(_p: Props) {
   const [editing, setEditing] = useState<Skill | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [iconSearch, setIconSearch] = useState('');
 
   const loadData = useCallback(async () => {
     const dbSkills = await loadFromDB<Skill[]>('cm_skills', []);
@@ -243,60 +180,7 @@ export default function AdminSkills(_p: Props) {
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 block">Ícono</label>
-                  
-                  {/* Search icons */}
-                  <div className="relative mb-3">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={14} />
-                    <input 
-                      type="text" 
-                      placeholder="Buscar logo (ej: Photoshop)..."
-                      className="w-full bg-surface border border-white/[0.1] angle-frame-sm pl-9 pr-4 py-2 text-xs text-white focus:outline-none focus:border-purple-500/50 transition"
-                      value={iconSearch}
-                      onChange={(e) => setIconSearch(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-6 gap-2 max-h-48 overflow-y-auto p-2 bg-surface/50 angle-frame-sm border border-white/[0.1]/50 custom-scrollbar">
-                    {/* Brand Icons */}
-                    {ICON_LIBRARY.filter(ic => ic.label.toLowerCase().includes(iconSearch.toLowerCase())).map(ic => {
-                      const Icon = (SiIcons as any)[ic.id];
-                      return (
-                        <button key={ic.id} onClick={() => setEditing({ ...editing, icon: ic.id })}
-                          title={ic.label}
-                          className={`w-full aspect-square angle-frame-sm flex items-center justify-center transition ${editing.icon === ic.id ? 'bg-purple-600 ring-2 ring-purple-400 text-white' : 'bg-surface hover:bg-surface-hover text-gray-400 hover:text-white'}`}>
-                          {Icon ? <Icon size={18} style={{ color: editing.icon === ic.id ? '#fff' : ic.color }} /> : ic.label.charAt(0)}
-                        </button>
-                      );
-                    })}
-                    
-                    {/* Separator */}
-                    <div className="col-span-6 h-px bg-surface-hover/50 my-2" />
-                    
-                    {/* Emojis as fallback */}
-                    {EMOJIS.map(ic => (
-                      <button key={ic} onClick={() => setEditing({ ...editing, icon: ic })}
-                        className={`w-full aspect-square angle-frame-sm flex items-center justify-center text-lg transition ${editing.icon === ic ? 'bg-purple-600 ring-2 ring-purple-400' : 'bg-surface hover:bg-surface-hover'}`}>
-                        {ic}
-                      </button>
-                    ))}
-                  </div>
-                  
-                  {/* Selected Preview */}
-                  <div className="mt-3 flex items-center gap-3 p-3 bg-surface/30 angle-frame-sm border border-white/[0.1]/30">
-                    <div className="w-10 h-10 bg-surface angle-frame-sm flex items-center justify-center text-xl">
-                      {editing.icon.startsWith('Si') ? (() => {
-                          const Icon = (SiIcons as any)[editing.icon];
-                          const brandColor = ICON_LIBRARY.find(i => i.id === editing.icon)?.color || '#a78bfa';
-                          return Icon ? <Icon size={24} style={{ color: brandColor }} /> : <span>{editing.icon}</span>;
-                        })() : editing.icon}
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Seleccionado</p>
-                      <p className="text-sm text-white font-medium">
-                        {ICON_LIBRARY.find(i => i.id === editing.icon)?.label || 'Emoji / Custom'}
-                      </p>
-                    </div>
-                  </div>
+                  <IconPicker value={editing.icon} onChange={v => setEditing({ ...editing, icon: v })} />
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1 block">Nivel: {editing.level}%</label>

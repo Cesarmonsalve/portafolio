@@ -2,12 +2,7 @@
 import { motion } from 'framer-motion';
 import { FlaskConical, ExternalLink } from 'lucide-react';
 
-const EXPERIMENTS = [
-  { title: 'CGI Product Reveal', desc: 'Exploración de iluminación y texturas 3D aplicadas a revelación de productos.', status: 'En progreso', tags: ['C4D', 'Octane', 'After Effects'] },
-  { title: 'Kinetic Typography', desc: 'Sistemas de tipografía animada para títulos de crédito cinematográficos.', status: 'Concepto', tags: ['Typography', 'Motion', 'Design'] },
-  { title: 'VFX Compositing', desc: 'Integración de elementos CGI en metraje real con corrección de color avanzada.', status: 'Beta', tags: ['Nuke', 'Premiere', 'VFX'] },
-  { title: 'Design Token Engine', desc: 'Motor de generación automática de paletas dinámicas y sistemas de color.', status: 'Concepto', tags: ['Design', 'Color', 'Branding'] },
-];
+import { useSiteConfig } from '@/lib/SiteConfigContext';
 
 const STATUS_COLORS: Record<string, string> = {
   'En progreso': 'var(--accent-cyan)',
@@ -16,6 +11,9 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function LabSection() {
+  const { cfg } = useSiteConfig();
+  const experiments = cfg.lab_experiments?.length > 0 ? cfg.lab_experiments : [];
+
   return (
     <section className="relative py-24 md:py-32 px-6 md:px-12">
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
@@ -38,7 +36,7 @@ export default function LabSection() {
         </div>
 
         <div className="grid sm:grid-cols-2 gap-5">
-          {EXPERIMENTS.map((exp, i) => {
+          {experiments.map((exp, i) => {
             const statusColor = STATUS_COLORS[exp.status] || 'var(--accent-cyan)';
             return (
               <motion.div

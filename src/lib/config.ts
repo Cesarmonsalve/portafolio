@@ -160,6 +160,11 @@ export interface SiteConfig {
   hero_description: string;
   hero_badge: string;
   hero_stats: { value: string; label: string }[];
+  hero_rotating_texts: string[];
+
+  // ── Command Center ──
+  command_center_tools: string[];
+  command_center_label: string;
 
   // ── About ──
   about_title: string;
@@ -207,6 +212,10 @@ export interface SiteConfig {
   timeline_items: { year: string; title: string; desc: string }[];
   cases_heading: string;
   cases_label: string;
+
+  // ── Workflow & Lab ──
+  workflow_steps: { title: string; desc: string; icon: string; accent: string }[];
+  lab_experiments: { title: string; desc: string; status: string; tags: string[] }[];
 
   // ── General ──
   logo_url: string;
@@ -279,6 +288,15 @@ export const DEFAULT_CONFIG: SiteConfig = {
     { value: '30+', label: 'Clientes' },
     { value: '3+', label: 'Años Exp.' },
   ],
+  hero_rotating_texts: [
+    'Motion Designer',
+    'Graphic Designer',
+    'Video Editor',
+    'Creative Director'
+  ],
+
+  command_center_tools: ['After Effects', 'Cinema 4D', 'Premiere Pro', 'Illustrator'],
+  command_center_label: 'Campañas',
 
   about_title: 'Diseñador Visual',
   about_heading: 'Impulsando la visión detrás del diseño',
@@ -333,6 +351,21 @@ export const DEFAULT_CONFIG: SiteConfig = {
   ],
   cases_heading: 'Proyectos que definieron el estándar',
   cases_label: 'Casos de estudio',
+
+  workflow_steps: [
+    { title: 'Descubrimiento', desc: 'Análisis profundo de necesidades, marca, audiencia y objetivos del proyecto. Investigación de mercado y benchmarking.', icon: 'Search', accent: '#60a5fa' },
+    { title: 'Estrategia', desc: 'Definición de la dirección creativa, wireframes conceptuales y arquitectura de información.', icon: 'Lightbulb', accent: '#818cf8' },
+    { title: 'Diseño', desc: 'Creación visual con UI premium, motion design y prototipos interactivos de alta fidelidad.', icon: 'Palette', accent: '#c084fc' },
+    { title: 'Producción', desc: 'Ejecución visual, animación cuadro por cuadro y renderizado optimizado.', icon: 'Code2', accent: '#60a5fa' },
+    { title: 'Optimización', desc: 'Renderizado final, color grading, diseño sonoro y entrega de masters en alta resolución.', icon: 'BarChart3', accent: '#818cf8' },
+  ],
+
+  lab_experiments: [
+    { title: 'CGI Product Reveal', desc: 'Exploración de iluminación y texturas 3D aplicadas a revelación de productos.', status: 'En progreso', tags: ['C4D', 'Octane', 'After Effects'] },
+    { title: 'Kinetic Typography', desc: 'Sistemas de tipografía animada para títulos de crédito cinematográficos.', status: 'Concepto', tags: ['Typography', 'Motion', 'Design'] },
+    { title: 'VFX Compositing', desc: 'Integración de elementos CGI en metraje real con corrección de color avanzada.', status: 'Beta', tags: ['Nuke', 'Premiere', 'VFX'] },
+    { title: 'Design Token Engine', desc: 'Motor de generación automática de paletas dinámicas y sistemas de color.', status: 'Concepto', tags: ['Design', 'Color', 'Branding'] },
+  ],
 
   logo_url: '/logo.png',
   favicon_url: '/favicon.ico',

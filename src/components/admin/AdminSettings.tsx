@@ -5,7 +5,7 @@ import {
   Save, Loader2, Palette, Type, Mail, Info, Globe, Hash,
   Plus, X, Trash2, GripVertical, ChevronDown, ChevronUp,
   Sparkles, Image as ImageIcon, Link as LinkIcon, Award,
-  Eye, RotateCcw, ShoppingBag, CreditCard
+  Eye, RotateCcw, ShoppingBag, CreditCard, Layers3, FlaskConical
 } from 'lucide-react';
 import {
   FaInstagram, FaYoutube, FaTiktok, FaWhatsapp,
@@ -15,6 +15,7 @@ import {
 import { DEFAULT_CONFIG, type SiteConfig, type SocialLink } from '@/lib/config';
 import { notifyConfigUpdate, saveConfigData } from '@/lib/SiteConfigContext';
 import { loadFromDB } from '@/lib/loadFromDB';
+import IconPicker from './IconPicker';
 
 interface Props { onUnreadChange?: (n: number) => void; }
 
@@ -233,6 +234,83 @@ export default function AdminSettings(_p: Props) {
         </AnimatePresence>
       </motion.div>
 
+      {/* ═══ HERO ROTATING TEXTS ═══ */}
+      <motion.div className="bg-bg-secondary border border-white/[0.08] angle-frame overflow-hidden">
+        <SectionHeader openSections={openSections} toggleSection={toggleSection} id="herotexts" title="Roles del Hero" icon={Type} iconColor="text-pink-400" count={(cfg.hero_rotating_texts || []).length} />
+        <AnimatePresence>
+          {openSections.herotexts && (
+            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }} className="overflow-hidden">
+              <div className="px-5 pb-5 space-y-3">
+                {(cfg.hero_rotating_texts || []).map((text, i) => (
+                  <div key={i} className="flex items-center gap-3 bg-surface/30 angle-frame-sm p-3 border border-white/[0.1]/30">
+                    <GripVertical size={14} className="text-gray-600 flex-shrink-0" />
+                    <input value={text} onChange={e => {
+                      const texts = [...(cfg.hero_rotating_texts || [])];
+                      texts[i] = e.target.value;
+                      update('hero_rotating_texts', texts);
+                    }} className="flex-1 bg-surface border border-white/[0.1] angle-frame-sm px-3 py-1.5 text-white text-sm focus:outline-none focus:border-pink-500/50 transition" placeholder="Motion Designer" />
+                    <button onClick={() => {
+                      const texts = [...(cfg.hero_rotating_texts || [])];
+                      texts.splice(i, 1);
+                      update('hero_rotating_texts', texts);
+                    }} className="p-1.5 angle-frame-sm text-gray-500 hover:text-red-400 hover:bg-red-900/20 transition">
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                ))}
+                <button onClick={() => update('hero_rotating_texts', [...(cfg.hero_rotating_texts || []), 'Nuevo Rol'])}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 angle-frame-sm border border-dashed border-white/[0.1] text-gray-500 hover:text-white hover:border-white/20 transition text-sm">
+                  <Plus size={14} /> Agregar Rol
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+
+      {/* ═══ COMMAND CENTER ═══ */}
+      <motion.div className="bg-bg-secondary border border-white/[0.08] angle-frame overflow-hidden">
+        <SectionHeader openSections={openSections} toggleSection={toggleSection} id="cmdcenter" title="Command Center" icon={Sparkles} iconColor="text-cyan-400" count={(cfg.command_center_tools || []).length} />
+        <AnimatePresence>
+          {openSections.cmdcenter && (
+            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }} className="overflow-hidden">
+              <div className="px-5 pb-5 space-y-4">
+                <Field getFieldValue={getFieldValue} update={update} label="Etiqueta Inferior Izquierda" field="command_center_label" placeholder="Campañas" />
+                
+                <div>
+                  <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1.5 block">Herramientas (Textos rotativos)</label>
+                  <div className="space-y-3">
+                    {(cfg.command_center_tools || []).map((tool, i) => (
+                      <div key={i} className="flex items-center gap-3 bg-surface/30 angle-frame-sm p-3 border border-white/[0.1]/30">
+                        <GripVertical size={14} className="text-gray-600 flex-shrink-0" />
+                        <input value={tool} onChange={e => {
+                          const tools = [...(cfg.command_center_tools || [])];
+                          tools[i] = e.target.value;
+                          update('command_center_tools', tools);
+                        }} className="flex-1 bg-surface border border-white/[0.1] angle-frame-sm px-3 py-1.5 text-white text-sm focus:outline-none focus:border-cyan-500/50 transition" placeholder="After Effects" />
+                        <button onClick={() => {
+                          const tools = [...(cfg.command_center_tools || [])];
+                          tools.splice(i, 1);
+                          update('command_center_tools', tools);
+                        }} className="p-1.5 angle-frame-sm text-gray-500 hover:text-red-400 hover:bg-red-900/20 transition">
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    ))}
+                    <button onClick={() => update('command_center_tools', [...(cfg.command_center_tools || []), 'Nueva Herramienta'])}
+                      className="w-full flex items-center justify-center gap-2 py-2.5 angle-frame-sm border border-dashed border-white/[0.1] text-gray-500 hover:text-white hover:border-white/20 transition text-sm">
+                      <Plus size={14} /> Agregar Herramienta
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+
       {/* ═══ ABOUT SECTION ═══ */}
       <motion.div className="bg-bg-secondary border border-white/[0.08] angle-frame overflow-hidden">
         <SectionHeader openSections={openSections} toggleSection={toggleSection} id="about" title="Sección About" icon={Info} iconColor="text-blue-400" />
@@ -340,6 +418,145 @@ export default function AdminSettings(_p: Props) {
                 <button onClick={addSpecialty}
                   className="w-full flex items-center justify-center gap-2 py-2.5 angle-frame-sm border border-dashed border-white/[0.1] text-gray-500 hover:text-white hover:border-white/20 transition text-sm">
                   <Plus size={14} /> Agregar Especialidad
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+
+      {/* ═══ WORKFLOW SECTION ═══ */}
+      <motion.div className="bg-bg-secondary border border-white/[0.08] angle-frame overflow-hidden">
+        <SectionHeader openSections={openSections} toggleSection={toggleSection} id="workflow" title="Mi Proceso (Workflow)" icon={Layers3} iconColor="text-blue-400" count={(cfg.workflow_steps || []).length} />
+        <AnimatePresence>
+          {openSections.workflow && (
+            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }} className="overflow-hidden">
+              <div className="px-5 pb-5 space-y-4">
+                {(cfg.workflow_steps || []).map((step, i) => (
+                  <div key={i} className="bg-surface/30 angle-frame-sm p-4 border border-white/[0.1]/30 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Paso {i + 1}</span>
+                      <button onClick={() => {
+                        const steps = [...(cfg.workflow_steps || [])];
+                        steps.splice(i, 1);
+                        update('workflow_steps', steps);
+                      }} className="p-1.5 angle-frame-sm text-gray-500 hover:text-red-400 hover:bg-red-900/20 transition">
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                    <input value={step.title} onChange={e => {
+                      const steps = [...(cfg.workflow_steps || [])];
+                      steps[i] = { ...steps[i], title: e.target.value };
+                      update('workflow_steps', steps);
+                    }} className="w-full bg-surface border border-white/[0.1] angle-frame-sm px-3 py-1.5 text-white text-sm font-bold focus:outline-none focus:border-blue-500/50 transition" placeholder="Título" />
+                    
+                    <textarea value={step.desc} onChange={e => {
+                      const steps = [...(cfg.workflow_steps || [])];
+                      steps[i] = { ...steps[i], desc: e.target.value };
+                      update('workflow_steps', steps);
+                    }} className="w-full bg-surface border border-white/[0.1] angle-frame-sm px-3 py-1.5 text-gray-300 text-sm focus:outline-none focus:border-blue-500/50 transition resize-none" placeholder="Descripción del paso" rows={2} />
+                    
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-xs text-gray-500 block mb-1">Color (HEX)</label>
+                        <input type="color" value={step.accent || '#60a5fa'} onChange={e => {
+                          const steps = [...(cfg.workflow_steps || [])];
+                          steps[i] = { ...steps[i], accent: e.target.value };
+                          update('workflow_steps', steps);
+                        }} className="w-full h-8 angle-frame-sm border border-white/[0.1] bg-surface cursor-pointer" />
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-500 block mb-1">Ícono</label>
+                        <select value={step.icon} onChange={e => {
+                          const steps = [...(cfg.workflow_steps || [])];
+                          steps[i] = { ...steps[i], icon: e.target.value };
+                          update('workflow_steps', steps);
+                        }} className="w-full h-8 bg-surface border border-white/[0.1] angle-frame-sm px-2 text-xs text-white focus:outline-none">
+                          <option value="Search">Search</option>
+                          <option value="Lightbulb">Lightbulb</option>
+                          <option value="Palette">Palette</option>
+                          <option value="Code2">Code2</option>
+                          <option value="BarChart3">BarChart</option>
+                          <option value="Monitor">Monitor</option>
+                          <option value="PenTool">Pen</option>
+                          <option value="Video">Video</option>
+                          <option value="Zap">Zap</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <button onClick={() => update('workflow_steps', [...(cfg.workflow_steps || []), { title: 'Nuevo', desc: '', icon: 'Search', accent: '#ffffff' }])}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 angle-frame-sm border border-dashed border-white/[0.1] text-gray-500 hover:text-white hover:border-white/20 transition text-sm">
+                  <Plus size={14} /> Agregar Paso
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+
+      {/* ═══ LAB SECTION ═══ */}
+      <motion.div className="bg-bg-secondary border border-white/[0.08] angle-frame overflow-hidden">
+        <SectionHeader openSections={openSections} toggleSection={toggleSection} id="lab" title="Laboratorio / Experimentos" icon={FlaskConical} iconColor="text-green-400" count={(cfg.lab_experiments || []).length} />
+        <AnimatePresence>
+          {openSections.lab && (
+            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }} className="overflow-hidden">
+              <div className="px-5 pb-5 space-y-4">
+                {(cfg.lab_experiments || []).map((exp, i) => (
+                  <div key={i} className="bg-surface/30 angle-frame-sm p-4 border border-white/[0.1]/30 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Experimento {i + 1}</span>
+                      <button onClick={() => {
+                        const exps = [...(cfg.lab_experiments || [])];
+                        exps.splice(i, 1);
+                        update('lab_experiments', exps);
+                      }} className="p-1.5 angle-frame-sm text-gray-500 hover:text-red-400 hover:bg-red-900/20 transition">
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                    
+                    <input value={exp.title} onChange={e => {
+                      const exps = [...(cfg.lab_experiments || [])];
+                      exps[i] = { ...exps[i], title: e.target.value };
+                      update('lab_experiments', exps);
+                    }} className="w-full bg-surface border border-white/[0.1] angle-frame-sm px-3 py-1.5 text-white text-sm font-bold focus:outline-none focus:border-green-500/50 transition" placeholder="Título del experimento" />
+                    
+                    <textarea value={exp.desc} onChange={e => {
+                      const exps = [...(cfg.lab_experiments || [])];
+                      exps[i] = { ...exps[i], desc: e.target.value };
+                      update('lab_experiments', exps);
+                    }} className="w-full bg-surface border border-white/[0.1] angle-frame-sm px-3 py-1.5 text-gray-300 text-sm focus:outline-none focus:border-green-500/50 transition resize-none" placeholder="Descripción breve" rows={2} />
+                    
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1">
+                        <label className="text-xs text-gray-500 block mb-1">Estado</label>
+                        <select value={exp.status} onChange={e => {
+                          const exps = [...(cfg.lab_experiments || [])];
+                          exps[i] = { ...exps[i], status: e.target.value };
+                          update('lab_experiments', exps);
+                        }} className="w-full h-8 bg-surface border border-white/[0.1] angle-frame-sm px-2 text-xs text-white focus:outline-none">
+                          <option value="En progreso">En progreso</option>
+                          <option value="Concepto">Concepto</option>
+                          <option value="Beta">Beta</option>
+                        </select>
+                      </div>
+                      <div className="flex-[2]">
+                        <label className="text-xs text-gray-500 block mb-1">Tags (separados por coma)</label>
+                        <input value={exp.tags?.join(', ') || ''} onChange={e => {
+                          const exps = [...(cfg.lab_experiments || [])];
+                          exps[i] = { ...exps[i], tags: e.target.value.split(',').map(t => t.trim()).filter(Boolean) };
+                          update('lab_experiments', exps);
+                        }} className="w-full h-8 bg-surface border border-white/[0.1] angle-frame-sm px-3 text-xs text-white focus:outline-none" placeholder="C4D, Motion, Design..." />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <button onClick={() => update('lab_experiments', [...(cfg.lab_experiments || []), { title: 'Nuevo', desc: '', status: 'Concepto', tags: [] }])}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 angle-frame-sm border border-dashed border-white/[0.1] text-gray-500 hover:text-white hover:border-white/20 transition text-sm">
+                  <Plus size={14} /> Agregar Experimento
                 </button>
               </div>
             </motion.div>

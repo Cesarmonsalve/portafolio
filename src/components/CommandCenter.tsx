@@ -6,7 +6,10 @@ import { useSiteConfig } from '@/lib/SiteConfigContext';
 export default function CommandCenter() {
   const { projects, cfg } = useSiteConfig();
   
-  const techStack = ['After Effects', 'Cinema 4D', 'Premiere Pro', 'Illustrator'];
+  const techStack = cfg.command_center_tools?.length > 0 
+    ? cfg.command_center_tools 
+    : ['After Effects', 'Cinema 4D', 'Premiere Pro', 'Illustrator'];
+  const label = cfg.command_center_label || 'Campañas';
   const clients = 12; // Example static value or derived from data
 
   return (
@@ -39,7 +42,7 @@ export default function CommandCenter() {
           <div className="glass-panel p-3 rounded-xl border border-white/[0.04]">
             <Layers3 size={14} className="text-gray-400 mb-2" />
             <div className="text-xl font-display font-bold">{projects.length}</div>
-            <div className="text-[9px] uppercase tracking-wider text-gray-500">Campañas</div>
+            <div className="text-[9px] uppercase tracking-wider text-gray-500">{label}</div>
           </div>
           <div className="glass-panel p-3 rounded-xl border border-white/[0.04]">
             <Users size={14} className="text-gray-400 mb-2" />

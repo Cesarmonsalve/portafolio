@@ -7,23 +7,21 @@ import CommandCenter from './CommandCenter';
 import { useSiteConfig } from '@/lib/SiteConfigContext';
 import { DEFAULT_SECTION_VISUAL } from '@/lib/config';
 
-const ROTATING_TEXTS = [
-  'Motion Designer',
-  'Graphic Designer',
-  'Video Editor',
-  'Creative Director'
-];
-
 export default function Hero() {
   const { cfg } = useSiteConfig();
+  const sv = cfg.section_hero || DEFAULT_SECTION_VISUAL;
   const [textIndex, setTextIndex] = useState(0);
+
+  const ROTATING_TEXTS = cfg.hero_rotating_texts?.length > 0 
+    ? cfg.hero_rotating_texts 
+    : ['Motion Designer', 'Graphic Designer', 'Video Editor', 'Creative Director'];
 
   useEffect(() => {
     const interval = setInterval(() => {
       setTextIndex((prev) => (prev + 1) % ROTATING_TEXTS.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [ROTATING_TEXTS.length]);
 
   return (
     <SectionWrapper id="home" visual={cfg.section_hero || DEFAULT_SECTION_VISUAL} className="relative min-h-screen flex flex-col justify-center overflow-hidden">

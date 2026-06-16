@@ -3,16 +3,14 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Lightbulb, Palette, Code2, BarChart3 } from 'lucide-react';
 
-const STEPS = [
-  { num: '01', title: 'Descubrimiento', desc: 'Análisis profundo de necesidades, marca, audiencia y objetivos del proyecto. Investigación de mercado y benchmarking.', icon: Search, accent: 'var(--accent-cyan)' },
-  { num: '02', title: 'Estrategia', desc: 'Definición de la dirección creativa, wireframes conceptuales y arquitectura de información.', icon: Lightbulb, accent: 'var(--accent-blue)' },
-  { num: '03', title: 'Diseño', desc: 'Creación visual con UI premium, motion design y prototipos interactivos de alta fidelidad.', icon: Palette, accent: 'var(--accent-violet)' },
-  { num: '04', title: 'Producción', desc: 'Ejecución visual, animación cuadro por cuadro y renderizado optimizado.', icon: Code2, accent: 'var(--accent-cyan)' },
-  { num: '05', title: 'Optimización', desc: 'Renderizado final, color grading, diseño sonoro y entrega de masters en alta resolución.', icon: BarChart3, accent: 'var(--accent-blue)' },
-];
+import * as LucideIcons from 'lucide-react';
+import { useSiteConfig } from '@/lib/SiteConfigContext';
 
 export default function WorkflowVisualizer() {
+  const { cfg } = useSiteConfig();
   const [activeStep, setActiveStep] = useState(0);
+
+  const steps = cfg.workflow_steps?.length > 0 ? cfg.workflow_steps : [];
 
   return (
     <section className="relative py-24 md:py-32 px-6 md:px-12">
@@ -35,8 +33,8 @@ export default function WorkflowVisualizer() {
         <div className="grid lg:grid-cols-[1fr_1.5fr] gap-12 items-start">
           {/* Steps List */}
           <div className="flex flex-col gap-2">
-            {STEPS.map((step, idx) => {
-              const Icon = step.icon;
+            {steps.map((step, idx) => {
+              const Icon = (LucideIcons as any)[step.icon] || LucideIcons.Circle;
               const isActive = activeStep === idx;
               return (
                 <button
@@ -49,7 +47,7 @@ export default function WorkflowVisualizer() {
                   }`}
                 >
                   <span className={`text-2xl font-display font-black transition-colors ${isActive ? 'gradient-text' : 'text-gray-700'}`}>
-                    {step.num}
+                    {String(idx + 1).padStart(2, '0')}
                   </span>
                   <div className="flex-1 min-w-0">
                     <div className={`font-semibold transition-colors ${isActive ? 'text-white' : 'text-gray-500'}`}>{step.title}</div>
@@ -61,7 +59,7 @@ export default function WorkflowVisualizer() {
 
             {/* Progress dots */}
             <div className="flex justify-center gap-2 mt-6">
-              {STEPS.map((_, i) => (
+              {steps.map((_, i) => (
                 <div key={i} className={`h-1.5 rounded-full transition-all duration-300 ${activeStep === i ? 'w-8 bg-[var(--accent-cyan)]' : 'w-1.5 bg-white/10'}`} />
               ))}
             </div>
@@ -72,9 +70,9 @@ export default function WorkflowVisualizer() {
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--accent-cyan)] via-[var(--accent-blue)] to-[var(--accent-violet)]" />
             
             <AnimatePresence mode="wait">
-              {STEPS.map((step, idx) => {
+              {steps.map((step, idx) => {
                 if (idx !== activeStep) return null;
-                const Icon = step.icon;
+                const Icon = (LucideIcons as any)[step.icon] || LucideIcons.Circle;
                 return (
                   <motion.div
                     key={idx}
@@ -88,7 +86,7 @@ export default function WorkflowVisualizer() {
                       <Icon size={28} style={{ color: step.accent }} />
                     </div>
                     <div className="text-sm font-bold uppercase tracking-widest mb-3" style={{ color: step.accent }}>
-                      Fase {step.num}
+                      Fase {String(idx + 1).padStart(2, '0')}
                     </div>
                     <h3 className="text-3xl md:text-4xl font-display font-black text-white mb-6">
                       {step.title}

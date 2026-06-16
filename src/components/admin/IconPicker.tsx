@@ -4,10 +4,15 @@ import * as LucideIcons from 'lucide-react';
 import { Search } from 'lucide-react';
 
 const COMMON_SI = [
-  'SiAdobephotoshop', 'SiAdobeaftereffects', 'SiAdobeillustrator', 'SiAdobepremierepro',
+  'SiPhotoshop', 'SiAdobephotoshop', 
+  'SiAftereffects', 'SiAdobeaftereffects', 
+  'SiIllustrator', 'SiAdobeillustrator', 
+  'SiPremierepro', 'SiAdobepremierepro',
   'SiBlender', 'SiCinema4d', 'SiFigma', 'SiCanva', 'SiDavinciresolve', 'SiObsstudio',
   'SiYoutube', 'SiInstagram', 'SiTiktok', 'SiBehance', 'SiReact', 'SiGithub'
 ];
+
+const ADOBE_ALIASES = ['photoshop', 'aftereffects', 'illustrator', 'premiere', 'lightroom', 'indesign', 'creativecloud'];
 
 const EMOJIS = ['🎨','🎬','✏️','🖥️','📐','🎯','🔥','💎','⚡','🎮','📸','🎵', '💬', '🚀', '🧪'];
 
@@ -22,11 +27,23 @@ export default function IconPicker({ value, onChange, defaultColor = '#a78bfa' }
   
   const results = useMemo(() => {
     if (!search.trim()) {
-      return COMMON_SI;
+      // Return only valid keys from COMMON_SI
+      return COMMON_SI.filter(key => !!(SiIcons as any)[key]).slice(0, 20);
     }
     const q = search.toLowerCase().replace(/\s+/g, '');
-    const keys = Object.keys(SiIcons).filter(key => key.toLowerCase().includes(q) || key.toLowerCase().includes('si' + q));
-    return keys.slice(0, 100); // Limit to 100 to prevent lag
+    let keys = Object.keys(SiIcons).filter(key => key.toLowerCase().includes(q) || key.toLowerCase().includes('si' + q));
+    
+    // Si buscan "adobe", forzar la inclusión de sus programas principales porque simple-icons les quitó el prefijo
+    if (q.includes('adobe')) {
+      const adobeMatches = Object.keys(SiIcons).filter(key => 
+        ADOBE_ALIASES.some(alias => key.toLowerCase().includes(alias))
+      );
+      keys = [...keys, ...adobeMatches];
+    }
+    
+    // Remove duplicates
+    keys = Array.from(new Set(keys));
+    return keys.slice(0, 100);
   }, [search]);
 
   return (

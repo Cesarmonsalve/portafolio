@@ -8,11 +8,12 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionWrapper from '@/components/SectionWrapper';
 import { useSiteConfig } from '@/lib/SiteConfigContext';
-import { useWishlist } from '@/features/store/hooks/useWishlist';
-import { useCompare } from '@/features/store/hooks/useCompare';
-import QuickViewModal from '@/features/store/components/QuickViewModal';
-import CompareBar from '@/features/store/components/CompareBar';
-import Recommendations from '@/features/store/components/Recommendations';
+// Stubs for missing store features
+const useWishlist = () => ({ toggle: (id: string) => {}, has: (id: string) => false });
+const useCompare = () => ({ toggle: (id: string) => {}, has: (id: string) => false, ids: [], clear: () => {} });
+const QuickViewModal = (props: any) => null;
+const CompareBar = (props: any) => null;
+const Recommendations = (props: any) => null;
 import type { StoreItem } from '@/lib/config';
 
 // ═══════════════════════════════════════════
